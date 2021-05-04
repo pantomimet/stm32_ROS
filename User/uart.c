@@ -2,6 +2,7 @@
 
 u8 rxbuf[8],Urxbuf[8],CAN_ON_Flag,Usart_ON_Flag,Usart_Flag,PID_Send;  //CAN和串口控制相关变量
 u8 txbuf[8],txbuf2[8];  //CAN发送相关变量
+
 void usart1_init(u32 bound)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -113,11 +114,12 @@ void USART_TX(void)
 
 
 
-int USART1_lRQHandler(void)
+void USART1_IRQHandler(void)
 {
+	u8 temp;
 	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 	{
-		u8 temp;
+		
 		static u8 count,last_data,last_last_data,Usart_ON_Count;
 		if(Usart_ON_Flag==0)
 		{
@@ -126,19 +128,27 @@ int USART1_lRQHandler(void)
 		temp=USART1->DR;
 		if(Usart_Flag==0)
 		{
-			if(last_data==0x5a && last_last_data==0xa5)
+			if(last_data==0x5A && last_last_data==0xA5)
 			Usart_Flag=1,count=0;
 		}
-	if(Usart_Flag==1) 
-	{
-		Urxbuf[count]=temp;
-		count++;
-		if(count==8) Usart_Flag=0;
+		if(Usart_Flag==1) 
+		{
+			Urxbuf[count]=temp;
+			count++;
+			if(count==8) 
+			{
+				Usart_Flag=0;
+				//Get_commands();
+			}
+		}
+		last_last_data=last_data;
+		last_data=temp;
 	}
-	last_last_data=last_data;
-	last_data=temp;
-	}
-	return 0;
+	while(USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET){
+        USART_ReceiveData(USART1);
+        USART_ClearFlag(USART1, USART_FLAG_ORE);
+    }   
+    USART_ClearFlag(USART1, USART_IT_RXNE);
 }
 
 

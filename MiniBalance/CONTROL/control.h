@@ -2,6 +2,7 @@
 #define __CONTROL_H
 #include "sys.h"
 
+extern u8 mode;
 #define PI 3.14159265
 #define ZHONGZHI 0 
 #define DIFFERENCE 100
@@ -18,4 +19,5 @@ int Incremental_PI_Left (int Encoder,int Target);
 int Incremental_PI_Right (int Encoder,int Target);
 void Get_RC(void);
 void  Find_CCD_Zhongzhi(void);
+void Get_commands(void);
 #endif

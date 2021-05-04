@@ -40,4 +40,5 @@ float Kalman_Filter(float Accel,float Gyro)
 	angle += K_0 * Angle_err; 
 	Q_bias += K_1 * Angle_err; 
 	angle_dot = Gyro - Q_bias; 
+	return angle;
 }

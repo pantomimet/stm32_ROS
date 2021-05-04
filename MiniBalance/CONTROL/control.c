@@ -1,9 +1,10 @@
-#include "control.h"	
 #include "filter.h"	
+#include "control.h"
 
 u8 Flag_Target,Flag_Change;  //相关标志位
 float Voltage_Count,Voltage_All;  //电压采样相关变量
 int j,sum;
+u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define T 0.245f
 #define L 0.29f
 #define K 14.00f
@@ -25,8 +26,8 @@ void Kinematic_Analysis(float velocity,float angle)
 		}
 		
 	Tand = tan(angle/57.3);;//(int)tan(angle);
-		Target_Left=-velocity*(1-T*Tand/2/L); 
-		Target_Right=velocity*(1+T*Tand/2/L);      //后轮差速
+		Target_Left=velocity*(1-T*Tand/2/L); 
+		Target_Right=-velocity*(1+T*Tand/2/L);      //后轮差速
 		Servo=SERVO_INIT+angle*K; //舵机转向   
 }
 /**************************************************************************
@@ -35,38 +36,64 @@ void Kinematic_Analysis(float velocity,float angle)
          严格保证采样和数据处理的时间同步				 
 **************************************************************************/
 short accont = 0;
+int LEFT=0;
+float Velocity_L,Velocity_R;
 void TIM6_IRQHandler(void)   //TIM6中断
 {
 	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) 	
 	{     	
 			TIM_ClearITPendingBit(TIM6, TIM_IT_Update);          //清除中断标志位  	
 			Flag_Target=!Flag_Target; //分频标志位
-//			if(delay_flag==1)
-//			{
-//					if(++delay_50==2)	 delay_50=0,delay_flag=0; //给主函数提供50ms的精准延时
-//			}
-//			if(Flag_Target==1)
-//			{
-//			  	Key();//扫描按键变化	
-//   									                                        
-//			}
-//			else if(Flag_Target == 0)
-//			{   
+			if(delay_flag==1)
+			{
+					if(++delay_50==2)	 delay_50=0,delay_flag=0; //给主函数提供50ms的精准延时
+			}
+			if(Flag_Target==1)
+			{
+			  	Key();//扫描按键变化	
+   									                                        
+			}
+			else if(Flag_Target == 0)
+			{   
 				Encoder_Right=Read_Encoder(3);  //===读取编码器的值
-				Encoder_Left=Read_Encoder(2);    //===读取编码器的值				
-				//Get_RC();   //===接收控制指令
+				Encoder_Left=Read_Encoder(2);    //===读取编码器的值
+					
+//				if(Encoder_Right < 210 && Encoder_Right > -210){
+//					Encoder_Right = 0;
+//					Velocity_R = 0;
+//				}
+//				else 
+//				{
+//					Velocity_R = (Encoder_Right + 200) / 0.6 / 26.9;
+//				}
+//				if(Encoder_Left < 210 && Encoder_Left > -210){
+//					Encoder_Left = 0;
+//					Velocity_L = 0;
+//				}
+//				else{
+//					
+//					Velocity_L = (Encoder_Left + 200) / 0.6 / 26.9;
+//				}
+//				if(mode == 0)
+//				{
+				
+					//Key();//扫描按键变化	
+					Get_RC();   //===接收控制指令
+//				}
 	
-//				Kinematic_Analysis(Velocity,-Angle); 	//小车运动学分析   
-//				Motor_Left=Incremental_PI_Left(Encoder_Left,Target_Left);  
-//				Motor_Right=Incremental_PI_Right(Encoder_Right,Target_Right);
-				//Xianfu_Pwm(6900);                          //===PWM限幅
-				//Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  
-//			}
-			readimu();
-			accont += gyroX;
-			oled_show();
-			USART_TX();
- }
+				Kinematic_Analysis(Velocity,-Angle); 	//小车运动学分析   
+				Motor_Left=Incremental_PI_Left(Encoder_Left*11/17,Target_Left);  
+				Motor_Right=Incremental_PI_Right(Encoder_Right*11/17,Target_Right);
+				Xianfu_Pwm(6900);                          //===PWM限幅
+				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  
+//				Set_Pwm(LEFT,-LEFT,1600);
+				
+				//accont += gyroX;
+				//oled_show();
+				readimu();	
+				USART_TX();
+			}	
+	}
 } 
 /**************************************************************************
 函数功能：赋值给PWM寄存器
@@ -153,25 +180,29 @@ pwm代表增量输出
 在我们的速度控制闭环系统里面，只使用PI控制
 pwm+=Kp[e（k）-e(k-1)]+Ki*e(k)
 **************************************************************************/
+int PWM_LEFT,PWM_RIGHT;
+int Bias_L,Pwm,Last_bias_L;
+int Bias_R,Pwm,Last_bias_R;
 int Incremental_PI_Left (int Encoder,int Target)
 { 	
-	 static int Bias,Pwm,Last_bias;
-	 Bias=Encoder-Target;                //计算偏差
-	 Pwm+=Velocity_KP*(Bias-Last_bias)+Velocity_KI*Bias;   //增量式PI控制器
-	 if(Pwm>7200)Pwm=7200;
-	 if(Pwm<-7200)Pwm=-7200;
-	 Last_bias=Bias;	                   //保存上一次偏差 
-	 return Pwm;                         //增量输出
+	 
+	 
+	 Bias_L=Encoder - Target;                //计算偏差
+	 PWM_LEFT+=Velocity_KP*(Bias_L-Last_bias_L)+Velocity_KI*Bias_L;   //增量式PI控制器
+	 if(Pwm>7200)PWM_LEFT=7200;
+	 if(Pwm<-7200)PWM_LEFT=-7200;
+	 Last_bias_L=Bias_L;	                   //保存上一次偏差 
+	 return PWM_LEFT;                         //增量输出
 }
 int Incremental_PI_Right (int Encoder,int Target)
 { 	
-	 static int Bias,Pwm,Last_bias;
-	 Bias=Encoder-Target;                //计算偏差
-	 Pwm+=Velocity_KP*(Bias-Last_bias)+Velocity_KI*Bias;   //增量式PI控制器
-	 if(Pwm>7200)Pwm=7200;
-	 if(Pwm<-7200)Pwm=-7200;
-	 Last_bias=Bias;	                   //保存上一次偏差 
-	 return Pwm;                         //增量输出
+	 
+	 Bias_R=Encoder - Target;                //计算偏差
+	 PWM_RIGHT+=Velocity_KP*(Bias_R-Last_bias_R)+Velocity_KI*Bias_R;   //增量式PI控制器
+	 if(Pwm>7200)PWM_RIGHT=7200;
+	 if(Pwm<-7200)PWM_RIGHT=-7200;
+	 Last_bias_R=Bias_R;	                   //保存上一次偏差 
+	 return PWM_RIGHT;                         //增量输出
 }
 /**************************************************************************
 函数功能：通过指令对小车进行遥控
@@ -185,10 +216,39 @@ void Get_RC(void)
 
 				LY=PS2_LY - 128;    
 				RX=PS2_RX - 128; 
-				if(LY>-Yuzhi&&LY<Yuzhi)LY=0;   
-				if(RX>-Yuzhi&&RX<Yuzhi)RX=0;
+				if( LY>-Yuzhi && LY<Yuzhi )LY=0;   
+				if( RX>-Yuzhi && RX<Yuzhi )RX=0;
 				Velocity=-(float)LY/4;	
 				Angle=RX/4; 	
 			
 }
 
+void Get_commands(void)
+{
+	u8 Direction;
+	//u8 Angle;
+	//u8 Velocity;
+	//u8 mode;
+	u8 Position;
+	
+	//获取方向和角度
+	Direction = Urxbuf[1];
+	
+	if(Direction == 0x00)
+		Angle = 0;
+	else if(Direction == 0x10)//向左
+		Angle = -Urxbuf[2];
+	else if(Direction == 0x20)//向右
+		Angle = Urxbuf[2];
+	
+	//获取档位和速度
+	Position = Urxbuf[5];
+	if(Position == 0)
+		Velocity = 0;
+	else if(Position == 0x01)
+		Velocity = Urxbuf[3] * 0.25;
+	else if(Position == 0x02)
+		Velocity = -Urxbuf[3] * 0.25;
+	
+	mode = Urxbuf[4];
+}

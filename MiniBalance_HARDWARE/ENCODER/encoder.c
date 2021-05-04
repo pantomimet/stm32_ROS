@@ -139,7 +139,7 @@ int Read_Encoder(u8 TIMX)
 			TIM3 -> CNT=0;break;	
 		 default:  Encoder_TIM=0;
 	 }
-		Encoder_TIM=(Encoder_TIM*11/17);
+//		Encoder_TIM=(Encoder_TIM*11/17);
 	 
 		return Encoder_TIM;
 }

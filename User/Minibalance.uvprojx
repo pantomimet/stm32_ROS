@@ -332,7 +332,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_ HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\User;..\MiniBalance_COER;..\STM32F10x_FWLib\inc;..\MiniBalance_HARDWARE;..\SYSTEM;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\MiniBalance_HARDWARE\DMP;..\MiniBalance_HARDWARE\IIC;..\MiniBalance_HARDWARE\ENCODER;..\MiniBalance_HARDWARE\OLED;..\MiniBalance\show;..\MiniBalance_HARDWARE\LED;..\MiniBalance_HARDWARE\KEY;..\MiniBalance_HARDWARE\ADC;..\MiniBalance_HARDWARE\MOTOR;..\MiniBalance_HARDWARE\TIMER;..\MiniBalance_HARDWARE\EXTI;..\MiniBalance\DataScope_DP;..\MiniBalance\filter;..\MiniBalance_HARDWARE\STMFLASH;..\MiniBalance_HARDWARE\USARTX;..\MiniBalance_HARDWARE\NRF24L01;..\MiniBalance_HARDWARE\SPI;..\MiniBalance_HARDWARE\CAN;..\MiniBalance_HARDWARE\PS2;..\MiniBalance_HARDWARE\MPU9250;..\STM32F10x_FWLib;..\STM32F10x_FWLib\src;..\User</IncludePath>
+              <IncludePath>..\User;..\MiniBalance_COER;..\STM32F10x_FWLib\inc;..\MiniBalance_HARDWARE;..\SYSTEM;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\MiniBalance_HARDWARE\DMP;..\MiniBalance_HARDWARE\IIC;..\MiniBalance_HARDWARE\ENCODER;..\MiniBalance_HARDWARE\OLED;..\MiniBalance\show;..\MiniBalance_HARDWARE\LED;..\MiniBalance_HARDWARE\KEY;..\MiniBalance_HARDWARE\ADC;..\MiniBalance_HARDWARE\MOTOR;..\MiniBalance_HARDWARE\TIMER;..\MiniBalance_HARDWARE\EXTI;..\MiniBalance\DataScope_DP;..\MiniBalance\filter;..\MiniBalance_HARDWARE\STMFLASH;..\MiniBalance_HARDWARE\USARTX;..\MiniBalance_HARDWARE\NRF24L01;..\MiniBalance_HARDWARE\SPI;..\MiniBalance_HARDWARE\CAN;..\MiniBalance_HARDWARE\PS2;..\MiniBalance_HARDWARE\MPU9250;..\STM32F10x_FWLib;..\STM32F10x_FWLib\src;..\User;..\MiniBalance\CONTROL;..\MiniBalance_HARDWARE\DMA</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -599,6 +599,16 @@
               <FileName>mpu9250.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\mpu9250.c</FilePath>
+            </File>
+            <File>
+              <FileName>dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\MiniBalance_HARDWARE\DMA\dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>dma.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\MiniBalance_HARDWARE\DMA\dma.h</FilePath>
             </File>
           </Files>
         </Group>
