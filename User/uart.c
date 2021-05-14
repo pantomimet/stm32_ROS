@@ -117,6 +117,7 @@ void USART_TX(void)
 void USART1_IRQHandler(void)
 {
 	u8 temp;
+	
 	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 	{
 		
@@ -138,7 +139,7 @@ void USART1_IRQHandler(void)
 			if(count==8) 
 			{
 				Usart_Flag=0;
-				//Get_commands();
+//				Get_commands();
 			}
 		}
 		last_last_data=last_data;

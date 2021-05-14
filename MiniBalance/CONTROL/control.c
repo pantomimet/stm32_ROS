@@ -4,10 +4,10 @@
 u8 Flag_Target,Flag_Change;  //相关标志位
 float Voltage_Count,Voltage_All;  //电压采样相关变量
 int j,sum;
-u8 mode = 1; //手动或自动模式。手动为0，自动为1
+u8 mode = 0; //手动或自动模式。手动为0，自动为1
 #define T 0.245f
 #define L 0.29f
-#define K 14.00f
+#define K 10.00f
 /**************************************************************************
 函数功能：小车运动数学模型
 入口参数：速度和转角
@@ -37,6 +37,7 @@ void Kinematic_Analysis(float velocity,float angle)
 **************************************************************************/
 short accont = 0;
 int LEFT=0;
+int X=1600;
 float Velocity_L,Velocity_R;
 void TIM6_IRQHandler(void)   //TIM6中断
 {
@@ -44,19 +45,35 @@ void TIM6_IRQHandler(void)   //TIM6中断
 	{     	
 			TIM_ClearITPendingBit(TIM6, TIM_IT_Update);          //清除中断标志位  	
 			Flag_Target=!Flag_Target; //分频标志位
-			if(delay_flag==1)
-			{
-					if(++delay_50==2)	 delay_50=0,delay_flag=0; //给主函数提供50ms的精准延时
-			}
-			if(Flag_Target==1)
-			{
-			  	Key();//扫描按键变化	
-   									                                        
-			}
-			else if(Flag_Target == 0)
-			{   
+//			if(delay_flag==1)
+//			{
+//					if(++delay_50==2)	 delay_50=0,delay_flag=0; //给主函数提供50ms的精准延时
+//			}
+//			if(Flag_Target==1)
+//			{
+//			  	Key();//扫描按键变化	
+//   									                                        
+//			}
+//			else if(Flag_Target == 0)
+//			{   
 				Encoder_Right=Read_Encoder(3);  //===读取编码器的值
 				Encoder_Left=Read_Encoder(2);    //===读取编码器的值
+		
+		PS2_KEY=PS2_DataKey();
+		if(PS2_KEY == PSB_START)
+		{
+			delay_ms(50);
+			if(PS2_DataKey() == PS2_KEY)
+				mode = !mode;
+		}
+		  if(mode == 0)
+		  {
+			
+			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
+			PS2_LY=PS2_AnologData(PSS_LY);
+			PS2_RX=PS2_AnologData(PSS_RX);
+			PS2_RY=PS2_AnologData(PSS_RY);
+		  }
 					
 //				if(Encoder_Right < 210 && Encoder_Right > -210){
 //					Encoder_Right = 0;
@@ -76,23 +93,23 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				}
 //				if(mode == 0)
 //				{
-				
-					//Key();//扫描按键变化	
-					Get_RC();   //===接收控制指令
+//				
+//					//Key();//扫描按键变化	
+//					Get_RC();   //===接收控制指令
 //				}
-	
+				Get_commands();
 				Kinematic_Analysis(Velocity,-Angle); 	//小车运动学分析   
 				Motor_Left=Incremental_PI_Left(Encoder_Left*11/17,Target_Left);  
 				Motor_Right=Incremental_PI_Right(Encoder_Right*11/17,Target_Right);
 				Xianfu_Pwm(6900);                          //===PWM限幅
 				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  
-//				Set_Pwm(LEFT,-LEFT,1600);
+//				Set_Pwm(2000,-2000,1600);
 				
 				//accont += gyroX;
 				//oled_show();
 				readimu();	
 				USART_TX();
-			}	
+//			}	
 	}
 } 
 /**************************************************************************
@@ -214,11 +231,11 @@ void Get_RC(void)
 		int Yuzhi=2;  		
 		float LY,RX;  
 
-				LY=PS2_LY - 128;    
-				RX=PS2_RX - 128; 
-				if( LY>-Yuzhi && LY<Yuzhi )LY=0;   
+				LY=PS2_LY - 128;
+				RX=PS2_RX - 128;
+				if( LY>-Yuzhi && LY<Yuzhi )LY=0;
 				if( RX>-Yuzhi && RX<Yuzhi )RX=0;
-				Velocity=-(float)LY/4;	
+				Velocity=(float)LY/4;	
 				Angle=RX/4; 	
 			
 }
@@ -231,24 +248,34 @@ void Get_commands(void)
 	//u8 mode;
 	u8 Position;
 	
-	//获取方向和角度
-	Direction = Urxbuf[1];
+	//获取模式
+	//mode = Urxbuf[4];
 	
-	if(Direction == 0x00)
-		Angle = 0;
-	else if(Direction == 0x10)//向左
-		Angle = -Urxbuf[2];
-	else if(Direction == 0x20)//向右
-		Angle = Urxbuf[2];
+	if(mode == 1)//自动模式
+	{
+		//获取方向和角度
+		Direction = Urxbuf[1];
 	
-	//获取档位和速度
-	Position = Urxbuf[5];
-	if(Position == 0)
-		Velocity = 0;
-	else if(Position == 0x01)
-		Velocity = Urxbuf[3] * 0.25;
-	else if(Position == 0x02)
-		Velocity = -Urxbuf[3] * 0.25;
+		if(Direction == 0x00)
+			Angle = 0;
+		else if(Direction == 0x10)//向左
+			Angle = -Urxbuf[2];
+		else if(Direction == 0x20)//向右
+			Angle = Urxbuf[2];
 	
-	mode = Urxbuf[4];
+		//获取档位和速度
+		Position = Urxbuf[5];
+		if(Position == 0)
+			Velocity = 0;
+		else if(Position == 0x01)
+			Velocity = Urxbuf[3] * 0.25;
+		else if(Position == 0x02)
+			Velocity = -Urxbuf[3] * 0.25;
+	}
+	else if(mode == 0)
+	{
+		Get_RC();
+	}
+	
+	
 }

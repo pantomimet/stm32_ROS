@@ -9,7 +9,7 @@ long int Motor_Left,Motor_Right;
 long int Target_Left,Target_Right;
 float Velocity,Angle,Servo;
 u8 delay_50,delay_flag;
-float Velocity_KP=62,Velocity_KI=62;
+float Velocity_KP=15,Velocity_KI=32.5;
 int PS2_LX,PS2_LY,PS2_RX,PS2_RY,PS2_KEY,lastPS3Key,Accel_Key;
 int Remoter_Ch1,Remoter_Ch2,Remoter_Ch3,Remoter_Ch4;
 float Tand;
@@ -42,25 +42,30 @@ int main(void)
 		Target_Left = 0;
 		Target_Right = 0;
 
-		TIM6_Int_Init(99,7199);      		//=====10ms定时中断初始化
+		TIM6_Int_Init(499,7199);      		//=====10ms定时中断初始化
 		Accel_Key = 4;
     while(1)
 	  {	
-			//Led_Flash(1000);	
+//			//Led_Flash(1000);	
+//		PS2_KEY=PS2_DataKey();
+//		if(PS2_KEY == PSB_START)
+//		{
+//			mode = !mode;
+//		}
 //		  if(mode == 0)
 //		  {
-			PS2_KEY=PS2_DataKey();
-			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
-			PS2_LY=PS2_AnologData(PSS_LY);
-			PS2_RX=PS2_AnologData(PSS_RX);
-			PS2_RY=PS2_AnologData(PSS_RY);
-//		  }
 //			
-				oled_show();          		 //显示屏打开
-				delay_flag=1;	
+//			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
+//			PS2_LY=PS2_AnologData(PSS_LY);
+//			PS2_RX=PS2_AnologData(PSS_RX);
+//			PS2_RY=PS2_AnologData(PSS_RY);
+//		  }
 			
-				delay_50=0;
-				while(delay_flag);	       //通过定时中断实现的50ms精准延时	
+				oled_show();          		 //显示屏打开
+//				delay_flag=1;	
+//			
+//				delay_50=0;
+//				while(delay_flag);	       //通过定时中断实现的50ms精准延时	
 	  } 
 }
 

@@ -38,10 +38,12 @@ void oled_show(void)
 											if(Flag_Stop==0)//根据Flag_Stop标志位显示电机的状态
 											OLED_ShowString(103,50,"O-N");
 											if(Flag_Stop==1)
-											OLED_ShowString(80,50,"JOJO");
+											OLED_ShowString(80,50,"OFF");
 											//OLED_ShowNumber(80,50, accont,4,12);
-
-                      OLED_ShowString(0,50,"PS2"); //遥控模式
+					if(mode == 0)
+                      OLED_ShowString(0,50,"PS2 "); //遥控模式
+					else if(mode == 1)
+						OLED_ShowString(0,50,"AUTO"); //遥控模式
 											OLED_Refresh_Gram();	//刷新
 }
 
