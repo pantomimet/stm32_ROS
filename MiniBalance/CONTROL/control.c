@@ -7,7 +7,7 @@ int j,sum;
 u8 mode = 0; //手动或自动模式。手动为0，自动为1
 #define T 0.245f
 #define L 0.29f
-#define K 10.00f
+#define K 14.00f
 /**************************************************************************
 函数功能：小车运动数学模型
 入口参数：速度和转角
@@ -16,18 +16,18 @@ u8 mode = 0; //手动或自动模式。手动为0，自动为1
 void Kinematic_Analysis(float velocity,float angle)
 {
 		Servo=SERVO_INIT+angle*K; //舵机转向   angle*
-		if(Servo > 1850){
-			Servo = 1850;
+		if(Servo > 2200){
+			Servo = 2200;
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
-		else if(Servo < 1350){
-			Servo = 1350;
+		else if(Servo < 1000){
+			Servo = 1000;
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
 		
 	Tand = tan(angle/57.3);;//(int)tan(angle);
-		Target_Left=velocity*(1-T*Tand/2/L); 
-		Target_Right=-velocity*(1+T*Tand/2/L);      //后轮差速
+		Target_Left=velocity*(1-2.0*T*Tand/2/L); 
+		Target_Right=-velocity*(1+2.0*T*Tand/2/L);      //后轮差速
 		Servo=SERVO_INIT+angle*K; //舵机转向   
 }
 /**************************************************************************
@@ -39,12 +39,14 @@ short accont = 0;
 int LEFT=0;
 int X=1600;
 float Velocity_L,Velocity_R;
+float Velocity_dream;
+int time_flag = 0;
 void TIM6_IRQHandler(void)   //TIM6中断
 {
 	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) 	
 	{     	
 			TIM_ClearITPendingBit(TIM6, TIM_IT_Update);          //清除中断标志位  	
-			Flag_Target=!Flag_Target; //分频标志位
+//			Flag_Target=!Flag_Target; //分频标志位
 //			if(delay_flag==1)
 //			{
 //					if(++delay_50==2)	 delay_50=0,delay_flag=0; //给主函数提供50ms的精准延时
@@ -62,17 +64,17 @@ void TIM6_IRQHandler(void)   //TIM6中断
 		PS2_KEY=PS2_DataKey();
 		if(PS2_KEY == PSB_START)
 		{
-			delay_ms(50);
-			if(PS2_DataKey() == PS2_KEY)
+			delay_ms(200);
+			if(PS2_DataKey() == PSB_START)
 				mode = !mode;
 		}
 		  if(mode == 0)
 		  {
 			
-			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
+//			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
 			PS2_LY=PS2_AnologData(PSS_LY);
 			PS2_RX=PS2_AnologData(PSS_RX);
-			PS2_RY=PS2_AnologData(PSS_RY);
+//			PS2_RY=PS2_AnologData(PSS_RY);
 		  }
 					
 //				if(Encoder_Right < 210 && Encoder_Right > -210){
@@ -98,17 +100,30 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //					Get_RC();   //===接收控制指令
 //				}
 				Get_commands();
-				Kinematic_Analysis(Velocity,-Angle); 	//小车运动学分析   
+				
+				if(Velocity_dream < Velocity)
+				{
+					Velocity_dream += 8;
+				}
+				else if(Velocity_dream > Velocity)
+				{
+					Velocity_dream = Velocity_dream - 8;
+				}
+				Kinematic_Analysis(Velocity_dream,-Angle); 	//小车运动学分析   
 				Motor_Left=Incremental_PI_Left(Encoder_Left*11/17,Target_Left);  
 				Motor_Right=Incremental_PI_Right(Encoder_Right*11/17,Target_Right);
 				Xianfu_Pwm(6900);                          //===PWM限幅
 				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  
-//				Set_Pwm(2000,-2000,1600);
+//				Set_Pwm(0,-0,X);
 				
 				//accont += gyroX;
 				//oled_show();
 				readimu();	
 				USART_TX();
+				if(time_flag == 0)
+					oled_show(); 
+				
+				time_flag = !time_flag;
 //			}	
 	}
 } 
@@ -235,8 +250,8 @@ void Get_RC(void)
 				RX=PS2_RX - 128;
 				if( LY>-Yuzhi && LY<Yuzhi )LY=0;
 				if( RX>-Yuzhi && RX<Yuzhi )RX=0;
-				Velocity=(float)LY/4;	
-				Angle=RX/4; 	
+				Velocity=(float)LY*0.25;	
+				Angle=RX*0.25; 	
 			
 }
 
@@ -254,23 +269,28 @@ void Get_commands(void)
 	if(mode == 1)//自动模式
 	{
 		//获取方向和角度
-		Direction = Urxbuf[1];
-	
-		if(Direction == 0x00)
+//		Direction = Urxbuf[1];
+//	
+//		if(Direction == 0x00)
+//			Angle = 0;
+//		else if(Direction == 0x10)//向左
+		if(Urxbuf[2] == 0 )
 			Angle = 0;
-		else if(Direction == 0x10)//向左
-			Angle = -Urxbuf[2];
-		else if(Direction == 0x20)//向右
-			Angle = Urxbuf[2];
+		else if(Urxbuf[0] == 150)
+			Angle = 0;
+		else 
+			Angle = 60 - Urxbuf[2];
+//		else if(Direction == 0x20)//向右
+//			Angle = Urxbuf[2];
 	
 		//获取档位和速度
-		Position = Urxbuf[5];
-		if(Position == 0)
-			Velocity = 0;
-		else if(Position == 0x01)
-			Velocity = Urxbuf[3] * 0.25;
-		else if(Position == 0x02)
-			Velocity = -Urxbuf[3] * 0.25;
+//		Position = Urxbuf[5];
+//		if(Position == 0)
+//			Velocity = 0;
+//		else if(Position == 0x01)
+			Velocity = -Urxbuf[3] ;
+//		else if(Position == 0x02)
+//			Velocity = -Urxbuf[3] * 0.25;
 	}
 	else if(mode == 0)
 	{

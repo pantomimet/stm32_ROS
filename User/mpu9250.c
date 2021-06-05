@@ -1,9 +1,9 @@
 #include "mpu9250.h"
 #include "filter.h"
 
-short Accl[3];
-short Gyro[3];
-short Mag[3];
+//short Accl[3];
+//short Gyro[3];
+//short Mag[3];
 short gyroX,gyroY,gyroZ;
 short accelX,accelY,accelZ; 
 short magX,magY,magZ; 
@@ -117,7 +117,7 @@ void readimu() //
 //	float Angle_AY;
 	MPU9250_READ_ACCEL(); 
 	MPU9250_READ_GYRO(); 
-	MPU9250_READ_MAG();
+	//MPU9250_READ_MAG();
 //	Angle_AY = atan2(accelY , sqrt(accelZ*accelZ + accelX*accelX)) * (180 / 3.14159);
 //	angle = Kalman_Filter(Angle_AY,gyroZ);
 }

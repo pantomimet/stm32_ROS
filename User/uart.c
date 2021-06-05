@@ -48,21 +48,22 @@ int re_Encoder_Left,re_Encoder_Right;
 
 void USART_TX(void)
 {
-	Send_rasberry[0] = 0xA5; 
+	u8 * Send_rasberry_ptr = &Send_rasberry[0];
+	*(Send_rasberry_ptr+0) = 0xA5; 
 
-	Send_rasberry[1] = 0x5A;
+	*(Send_rasberry_ptr+1) = 0x5A;
 
-	Send_rasberry[2] = 0x2E;
+	*(Send_rasberry_ptr+2) = 0x2E;
 
 	re_Encoder_Left = -Encoder_Left;
 	re_Encoder_Right = -Encoder_Right;
 	
 	//左编码器
 	for(send_cnt=0; send_cnt<4; send_cnt++)	
-		Send_rasberry[3+send_cnt] = ((unsigned char *)&re_Encoder_Left)[send_cnt];
+		*(Send_rasberry_ptr+3+send_cnt) = ((unsigned char *)&re_Encoder_Left)[send_cnt];
 	//右编码器
 	for(send_cnt=0; send_cnt<4; send_cnt++)
-		Send_rasberry[7+send_cnt] = ((unsigned char *)&re_Encoder_Right)[send_cnt];
+		*(Send_rasberry_ptr+7+send_cnt) = ((unsigned char *)&re_Encoder_Right)[send_cnt];
 	
 	
 //	for(send_cnt=0; send_cnt<4; send_cnt++) //电池采样
@@ -70,27 +71,27 @@ void USART_TX(void)
 	//没有电压采集，暂时取消电压
 	
 	for(send_cnt=0; send_cnt<2; send_cnt++) // X轴加速度计
-		Send_rasberry[15+send_cnt] = ((unsigned char *)&accelX)[send_cnt];
+		*(Send_rasberry_ptr+15+send_cnt) = ((unsigned char *)&accelX)[send_cnt];
 	for(send_cnt=0; send_cnt<2; send_cnt++) // Y轴加速度计
-		Send_rasberry[17+send_cnt] = ((unsigned char *)&accelY)[send_cnt];
+		*(Send_rasberry_ptr+17+send_cnt) = ((unsigned char *)&accelY)[send_cnt];
 	for(send_cnt=0; send_cnt<2; send_cnt++) // Z轴加速度计
-	Send_rasberry[19+send_cnt] = ((unsigned char *)&accelZ)[send_cnt];
+		*(Send_rasberry_ptr+19+send_cnt) = ((unsigned char *)&accelZ)[send_cnt];
 	
 	//send gyroXYZ
 	for(send_cnt=0; send_cnt<2; send_cnt++) //x轴角速度计
-	Send_rasberry[21+send_cnt] = ((unsigned char *)&gyroX)[send_cnt];
+		*(Send_rasberry_ptr+21+send_cnt) = ((unsigned char *)&gyroX)[send_cnt];
 	for(send_cnt=0; send_cnt<2; send_cnt++) //Y轴角速度计
-	Send_rasberry[23+send_cnt] = ((unsigned char *)&gyroY)[send_cnt];
+		*(Send_rasberry_ptr+23+send_cnt) = ((unsigned char *)&gyroY)[send_cnt];
 	for(send_cnt=0; send_cnt<2; send_cnt++) //z轴角速度计
-	Send_rasberry[25+send_cnt] = ((unsigned char *)&gyroZ)[send_cnt];
+		*(Send_rasberry_ptr+25+send_cnt) = ((unsigned char *)&gyroZ)[send_cnt];
 
 	//send MAG X YZ
 	for(send_cnt=0; send_cnt<2; send_cnt++) //X ?????
-	Send_rasberry[27+send_cnt] = ((unsigned char *)&magX)[send_cnt];
+		*(Send_rasberry_ptr+27+send_cnt) = ((unsigned char *)&magX)[send_cnt];
 	for(send_cnt=0; send_cnt<2; send_cnt++) //Y ?????
-	Send_rasberry[29+send_cnt] = ((unsigned char *)&magY)[send_cnt];
+		*(Send_rasberry_ptr+29+send_cnt) = ((unsigned char *)&magY)[send_cnt];
 	for(send_cnt=0; send_cnt<2; send_cnt++) //z ?????
-	Send_rasberry[31+send_cnt] = ((unsigned char *)&magZ)[send_cnt];
+		*(Send_rasberry_ptr+31+send_cnt) = ((unsigned char *)&magZ)[send_cnt];
 	
 	//send ultrasonicABCD
 //	for(send_cnt=0; send_cnt<4;send_cnt++) // ??????A
@@ -105,7 +106,7 @@ void USART_TX(void)
 	//send Send_rasberry
 	for(send_cnt = 0;send_cnt < 49;send_cnt++)
 	{
-		USART_SendData(USART1,Send_rasberry[send_cnt]);
+		USART_SendData(USART1,*(Send_rasberry_ptr+send_cnt));
 		while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
 		//(Send_rasberry[send_cnt]);
 	}
