@@ -86,7 +86,7 @@
 #define JTAG_SWD_DISABLE   0X02
 #define SWD_ENABLE         0X01
 #define JTAG_SWD_ENABLE    0X00	
-#define SERVO_INIT 1600
+#define SERVO_INIT 1650
 extern u8 Flag_Left,Flag_Right,Flag_Direction,Flag_Way,Flag_Next,operationMode;   //蓝牙遥控相关的变量
 extern u8 Flag_Stop,Flag_Show; //停止标志位和 显示标志位 默认停止 显示打开
 extern int Encoder_Left,Encoder_Right;  //编码器的脉冲计数                

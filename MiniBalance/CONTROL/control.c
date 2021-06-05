@@ -16,12 +16,12 @@ u8 mode = 0; //手动或自动模式。手动为0，自动为1
 void Kinematic_Analysis(float velocity,float angle)
 {
 		Servo=SERVO_INIT+angle*K; //舵机转向   angle*
-		if(Servo > 2200){
-			Servo = 2200;
+		if(Servo > 2225){
+			Servo = 2225;
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
-		else if(Servo < 1000){
-			Servo = 1000;
+		else if(Servo < 1025){
+			Servo = 1025;
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
 		
@@ -103,17 +103,17 @@ void TIM6_IRQHandler(void)   //TIM6中断
 				
 				if(Velocity_dream < Velocity)
 				{
-					Velocity_dream += 8;
+					Velocity_dream = Velocity_dream + 0.5;
 				}
 				else if(Velocity_dream > Velocity)
 				{
-					Velocity_dream = Velocity_dream - 8;
+					Velocity_dream = Velocity_dream - 0.5;
 				}
 				Kinematic_Analysis(Velocity_dream,-Angle); 	//小车运动学分析   
 				Motor_Left=Incremental_PI_Left(Encoder_Left*11/17,Target_Left);  
 				Motor_Right=Incremental_PI_Right(Encoder_Right*11/17,Target_Right);
 				Xianfu_Pwm(6900);                          //===PWM限幅
-				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  
+				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
 //				Set_Pwm(0,-0,X);
 				
 				//accont += gyroX;
@@ -288,7 +288,7 @@ void Get_commands(void)
 //		if(Position == 0)
 //			Velocity = 0;
 //		else if(Position == 0x01)
-			Velocity = -Urxbuf[3] ;
+			Velocity = -1.5*Urxbuf[3] ;
 //		else if(Position == 0x02)
 //			Velocity = -Urxbuf[3] * 0.25;
 	}
