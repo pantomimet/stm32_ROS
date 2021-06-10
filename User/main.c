@@ -46,6 +46,7 @@ int main(void)
 		Accel_Key = 4;
     while(1)
 	  {	
+		  oled_show(); 
 //			//Led_Flash(1000);	
 //		PS2_KEY=PS2_DataKey();
 //		if(PS2_KEY == PSB_START)
