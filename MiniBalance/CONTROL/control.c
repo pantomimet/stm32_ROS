@@ -100,15 +100,15 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //					Get_RC();   //===接收控制指令
 //				}
 				Get_commands();
-				
-				if(Velocity_dream < Velocity)
-				{
-					Velocity_dream = Velocity_dream + 0.5;
-				}
-				else if(Velocity_dream > Velocity)
-				{
-					Velocity_dream = Velocity_dream - 0.5;
-				}
+				/*缓慢加速，防抱死防打滑	6.14注释，仅PS2手柄通控制存在*/
+//				if(Velocity_dream < Velocity)
+//				{
+//					Velocity_dream = Velocity_dream + 0.5;
+//				}
+//				else if(Velocity_dream > Velocity)
+//				{
+//					Velocity_dream = Velocity_dream - 0.5;
+//				}
 				Kinematic_Analysis(Velocity_dream,-Angle); 	//小车运动学分析   
 				Motor_Left=Incremental_PI_Left(Encoder_Left*11/17,Target_Left);  
 				Motor_Right=Incremental_PI_Right(Encoder_Right*11/17,Target_Right);
@@ -250,18 +250,19 @@ void Get_RC(void)
 				RX=PS2_RX - 128;
 				if( LY>-Yuzhi && LY<Yuzhi )LY=0;
 				if( RX>-Yuzhi && RX<Yuzhi )RX=0;
-				Velocity=(float)LY*0.25;	
+				Velocity=(float)LY*0.375;	
 				Angle=RX*0.25; 	
 			
 }
 
 void Get_commands(void)
 {
-	u8 Direction;
-	//u8 Angle;
-	//u8 Velocity;
-	//u8 mode;
-	u8 Position;
+//	u8 Direction;
+//	u8 Angle;
+//	u8 Velocity;
+//	u8 mode;
+//	u8 Position;
+	int8_t V_t;
 	
 	//获取模式
 	//mode = Urxbuf[4];
@@ -288,13 +289,29 @@ void Get_commands(void)
 //		if(Position == 0)
 //			Velocity = 0;
 //		else if(Position == 0x01)
-			Velocity = -1.5*Urxbuf[3] ;
+		if((Urxbuf[3] >> 7) == 1)//首位为1负数
+		{
+			V_t = ((Urxbuf[3] & 0x7f));
+			Velocity_dream = 1.5 * V_t;
+		}
+		else
+			Velocity_dream = -1.5*Urxbuf[3] ;
+//			Velocity_dream = -1.5*Urxbuf[3] ;
 //		else if(Position == 0x02)
 //			Velocity = -Urxbuf[3] * 0.25;
 	}
 	else if(mode == 0)
 	{
 		Get_RC();
+		/*缓慢加速，放防抱死防打滑*/
+		if(Velocity_dream < Velocity)
+		{
+			Velocity_dream = Velocity_dream + 1.0;
+		}
+		else if(Velocity_dream > Velocity)
+		{
+			Velocity_dream = Velocity_dream - 1.0;
+		}
 	}
 	
 	

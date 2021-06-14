@@ -1,3 +1,6 @@
 ﻿User/DebugConfig
 OBJ
 *.bat
+*.map
+*.uvoptx
+*.22741
