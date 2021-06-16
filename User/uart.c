@@ -110,7 +110,7 @@ void USART_TX(void)
 		while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
 		//(Send_rasberry[send_cnt]);
 	}
-	memset(Send_rasberry, 0, sizeof(u8)*50);
+	memset(Send_rasberry_ptr, 0, sizeof(u8)*33);
 }
 
 

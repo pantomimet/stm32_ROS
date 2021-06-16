@@ -64,7 +64,7 @@ void TIM6_IRQHandler(void)   //TIM6ÖÐ¶Ï
 		PS2_KEY=PS2_DataKey();
 		if(PS2_KEY == PSB_START)
 		{
-			delay_ms(200);
+//			delay_ms(200);
 			if(PS2_DataKey() == PSB_START)
 				mode = !mode;
 		}
@@ -118,8 +118,8 @@ void TIM6_IRQHandler(void)   //TIM6ÖÐ¶Ï
 				
 				//accont += gyroX;
 				//oled_show();
-				readimu();	
-				USART_TX();
+//				readimu();	
+//				USART_TX();
 				if(time_flag == 0)
 					oled_show(); 
 				

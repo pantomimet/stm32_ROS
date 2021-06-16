@@ -9,6 +9,7 @@
 
 void TIM5_Cap_Init(u16 arr,u16 psc)	; 
 void TIM4_Cap_Init(u16 arr,u16 psc)	;  
+void TIM4_Int_Init(u16 arr,u16 psc);
 void Read_Distane(void);
 void TIM5_IRQHandler(void);
 void TIM4_IRQHandler(void);

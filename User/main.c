@@ -35,13 +35,13 @@ int main(void)
 		usart1_init(115200);
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)SendBuff,SEND_BUF_SIZE);//DMA1通道4,外设为串口1的发送,存储器为SendBuff,长度SEND_BUF_SIZE.
 	  
-	  
 		PS2_Init();											
 		PS2_SetInit();									
 		Target_Left = 0;
-		Target_Right = 0;
-		TIM4_Int_Init(19999,71);
-		TIM6_Int_Init(19999,71);      		//=====10ms定时中断初始化
+		Target_Right = 0;\
+		
+		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化
+		TIM6_Int_Init(19999,71);      		//=====20ms定时中断初始化
 		Accel_Key = 4;
     while(1)
 	  {	
