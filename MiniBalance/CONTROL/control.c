@@ -4,7 +4,7 @@
 u8 Flag_Target,Flag_Change;  //相关标志位
 float Voltage_Count,Voltage_All;  //电压采样相关变量
 int j,sum;
-u8 mode = 0; //手动或自动模式。手动为0，自动为1
+u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define T 0.245f
 #define L 0.29f
 #define K 14.00f

@@ -38,10 +38,9 @@ int main(void)
 	  
 		PS2_Init();											
 		PS2_SetInit();									
-	  
 		Target_Left = 0;
 		Target_Right = 0;
-
+		TIM4_Int_Init(19999,71);
 		TIM6_Int_Init(19999,71);      		//=====10ms定时中断初始化
 		Accel_Key = 4;
     while(1)
