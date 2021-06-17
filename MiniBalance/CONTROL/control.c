@@ -110,8 +110,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //					Velocity_dream = Velocity_dream - 0.5;
 //				}
 				Kinematic_Analysis(Velocity_dream,-Angle); 	//小车运动学分析   
-				Motor_Left=Incremental_PI_Left(Encoder_Left*11/17,Target_Left);  
-				Motor_Right=Incremental_PI_Right(Encoder_Right*11/17,Target_Right);
+				Motor_Left=Incremental_PI_Left(Encoder_Left,Target_Left);  
+				Motor_Right=Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 				Xianfu_Pwm(6900);                          //===PWM限幅
 				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
 //				Set_Pwm(0,-0,X);
@@ -250,7 +250,7 @@ void Get_RC(void)
 				RX=PS2_RX - 128;
 				if( LY>-Yuzhi && LY<Yuzhi )LY=0;
 				if( RX>-Yuzhi && RX<Yuzhi )RX=0;
-				Velocity=(float)LY*0.375;	
+				Velocity_dream=(float)LY*0.375;	
 				Angle=RX*0.25; 	
 			
 }
@@ -304,14 +304,14 @@ void Get_commands(void)
 	{
 		Get_RC();
 		/*缓慢加速，放防抱死防打滑*/
-		if(Velocity_dream < Velocity)
-		{
-			Velocity_dream = Velocity_dream + 1.0;
-		}
-		else if(Velocity_dream > Velocity)
-		{
-			Velocity_dream = Velocity_dream - 1.0;
-		}
+//		if(Velocity_dream < Velocity)
+//		{
+//			Velocity_dream = Velocity_dream + 1.0;
+//		}
+//		else if(Velocity_dream > Velocity)
+//		{
+//			Velocity_dream = Velocity_dream - 1.0;
+//		}
 	}
 	
 	
