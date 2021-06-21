@@ -48,6 +48,7 @@ void TIM6_IRQHandler(void)   //TIM6中断
 		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
 		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
 		
+		//读取PS2数据，并判断是否改变模式
 		PS2_KEY=PS2_DataKey();
 		if(PS2_KEY == PSB_START)
 		{
@@ -55,16 +56,17 @@ void TIM6_IRQHandler(void)   //TIM6中断
 			if(PS2_DataKey() == PSB_START)
 				mode = !mode;
 		}
-					
+		//根据模式生成运动指令
 		Get_commands(); 
-		
+		//计算并发送PWM
 		Kinematic_Analysis(Velocity_dream,-Angle); 	//小车运动学分析   
 		Motor_Left=Incremental_PI_Left(Encoder_Left,Target_Left);  
 		Motor_Right=Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 		Xianfu_Pwm(6900);                          //===PWM限幅
 		Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
-		
-		readimu();	
+		//IMU读数
+		readimu();
+		//发送串口数据
 		USART_TX();
 	}
 } 
@@ -188,13 +190,12 @@ void Get_RC(void)
 		int Yuzhi=2;  		
 		float LY,RX;  
 
-				LY=PS2_LY - 128;
-				RX=PS2_RX - 128;
-				if( LY>-Yuzhi && LY<Yuzhi )LY=0;
-				if( RX>-Yuzhi && RX<Yuzhi )RX=0;
-				Velocity_dream=(float)LY*0.375;	
-				Angle=RX*0.25; 	
-			
+		LY=PS2_LY - 128;
+		RX=PS2_RX - 128;
+		if( LY>-Yuzhi && LY<Yuzhi )LY=0;
+		if( RX>-Yuzhi && RX<Yuzhi )RX=0;
+		Velocity_dream=(float)LY*0.375;	
+		Angle=RX*0.25; 		
 }
 
 void Get_commands(void)
