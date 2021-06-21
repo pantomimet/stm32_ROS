@@ -55,14 +55,6 @@ void TIM6_IRQHandler(void)   //TIM6中断
 			if(PS2_DataKey() == PSB_START)
 				mode = !mode;
 		}
-		if(mode == 0)
-		{
-			//PS2数据采集  
-			//PS2_LX=PS2_AnologData(PSS_LX);      
-			PS2_LY=PS2_AnologData(PSS_LY);
-			PS2_RX=PS2_AnologData(PSS_RX);
-			//PS2_RY=PS2_AnologData(PSS_RY);
-		}
 					
 		Get_commands(); 
 		
@@ -257,6 +249,12 @@ void Get_commands(void)
 	}
 	else if(mode == 0)
 	{
+		//PS2数据采集  
+		//PS2_LX=PS2_AnologData(PSS_LX);      
+		PS2_LY=PS2_AnologData(PSS_LY);
+		PS2_RX=PS2_AnologData(PSS_RX);
+		//PS2_RY=PS2_AnologData(PSS_RY);
+		
 		Get_RC();
 		/*缓慢加速，放防抱死防打滑*/
 //		if(Velocity_dream < Velocity)
