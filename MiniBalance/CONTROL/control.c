@@ -116,26 +116,11 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				Set_Pwm(0,-0,X);
 				
 				//accont += gyroX;
-				//oled_show();
-//				readimu();	
-//				USART_TX();
+				readimu();	
+				USART_TX();
 //			}	
 	}
 } 
-/**************************************************************************
-函数功能：TIM4
-入口参数：none
-返回  值：无
-**************************************************************************/
-void TIM4_IRQHandler(void)   //TIM4中断
-{
-	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  //检查TIM4更新中断发生与否
-	{
-		readimu();
-		USART_TX();
-	}
-	TIM_ClearITPendingBit(TIM4, TIM_IT_Update);  //清除TIMx更新中断标志 
-}
 
 /**************************************************************************
 函数功能：赋值给PWM寄存器

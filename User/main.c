@@ -40,7 +40,7 @@ int main(void)
 		Target_Left = 0;
 		Target_Right = 0;
 		
-		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化
+		//TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化
 		TIM6_Int_Init(19999,71);      		//=====20ms定时中断初始化
 		Accel_Key = 4;
     while(1)
@@ -60,12 +60,6 @@ int main(void)
 //			PS2_RX=PS2_AnologData(PSS_RX);
 //			PS2_RY=PS2_AnologData(PSS_RY);
 //		  }
-			
-//				oled_show();          		 //显示屏打开
-//				delay_flag=1;	
-//			
-//				delay_50=0;
-//				while(delay_flag);	       //通过定时中断实现的50ms精准延时	
 	  } 
 }
 

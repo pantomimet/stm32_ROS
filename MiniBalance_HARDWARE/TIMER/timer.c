@@ -16,8 +16,8 @@ void TIM6_Int_Init(u16 arr,u16 psc)
 	//使能或者失能指定的TIM中断  //使能
 	TIM_ITConfig( TIM6, TIM_IT_Update ,ENABLE );
 	NVIC_InitStructure.NVIC_IRQChannel = TIM6_IRQn;  //TIM6中断
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;  //先占优先级0级
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2;  //从优先级3级
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;  //先占优先级0级
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  //从优先级3级
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
 	NVIC_Init(&NVIC_InitStructure);  //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器
 
@@ -73,7 +73,7 @@ void TIM4_Cap_Init(u16 arr,u16 psc)
 	
 	//中断分组初始化
 	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;  //TIM中断
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;  //先占优先级2级
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;  //先占优先级2级
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  //从优先级0级
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
 	NVIC_Init(&NVIC_InitStructure);  //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器 	
@@ -97,7 +97,7 @@ void TIM4_Int_Init(u16 arr,u16 psc)
 	//使能或者失能指定的TIM中断  //使能
 	TIM_ITConfig( TIM4, TIM_IT_Update ,ENABLE );
 	NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;  //TIM4中断
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;  //先占优先级0级
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;  //先占优先级0级
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;  //从优先级3级
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
 	NVIC_Init(&NVIC_InitStructure);  //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器
@@ -154,7 +154,7 @@ void TIM5_Cap_Init(u16 arr,u16 psc)
 	
 	//中断分组初始化
 	NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;  //TIM中断
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;  //先占优先级2级
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;  //先占优先级2级
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  //从优先级0级
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
 	NVIC_Init(&NVIC_InitStructure);  //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器 	
@@ -191,4 +191,17 @@ void TIM3_Int_Init(u16 arr,u16 psc)
 	TIM_Cmd(TIM3, ENABLE);  //使能TIMx					 
 }
 //定时器3中断服务程序
+/**************************************************************************
+函数功能：TIM4
+入口参数：none
+返回  值：无
+**************************************************************************/
+void TIM4_IRQHandler(void)   //TIM4中断
+{
+	if (TIM_GetITStatus(TIM4, TIM_IT_Update) != RESET)  //检查TIM4更新中断发生与否
+	{
+		readimu();
+	}
+	TIM_ClearITPendingBit(TIM4, TIM_IT_Update);  //清除TIMx更新中断标志 
+}
 
