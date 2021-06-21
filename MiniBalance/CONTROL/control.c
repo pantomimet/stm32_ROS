@@ -261,9 +261,9 @@ void Get_commands(void)
 //	u8 Angle;
 //	u8 Velocity;
 //	u8 mode;
-//	u8 Position;
+	u8 Position;
 	int8_t V_t;
-	
+	Position = Urxbuf[5];
 	//获取模式
 	//mode = Urxbuf[4];
 	
@@ -289,13 +289,23 @@ void Get_commands(void)
 //		if(Position == 0)
 //			Velocity = 0;
 //		else if(Position == 0x01)
-		if((Urxbuf[3] >> 7) == 1)//首位为1负数
+		if(Position == 0)
 		{
-			V_t = ((Urxbuf[3] & 0x7f));
-			Velocity_dream = 1.5 * V_t;
+			Velocity = 0;
 		}
-		else
-			Velocity_dream = -1.5*Urxbuf[3] ;
+		else if(Position == 0x01)
+		{
+			
+			Velocity_dream = 1.5 * Urxbuf[3];
+		
+		}
+		else if(Position == 0x02)
+		{
+			
+			
+			Velocity_dream = -1.5 * Urxbuf[3];
+		
+		}
 //			Velocity_dream = -1.5*Urxbuf[3] ;
 //		else if(Position == 0x02)
 //			Velocity = -Urxbuf[3] * 0.25;
