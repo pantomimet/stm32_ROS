@@ -64,16 +64,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 			//PS2_RY=PS2_AnologData(PSS_RY);
 		}
 					
-		Get_commands();
-		/*缓慢加速，防抱死防打滑	6.14注释，仅PS2手柄通控制存在*/
-//				if(Velocity_dream < Velocity)
-//				{
-//					Velocity_dream = Velocity_dream + 0.5;
-//				}
-//				else if(Velocity_dream > Velocity)
-//				{
-//					Velocity_dream = Velocity_dream - 0.5;
-//				}
+		Get_commands(); 
+		
 		Kinematic_Analysis(Velocity_dream,-Angle); 	//小车运动学分析   
 		Motor_Left=Incremental_PI_Left(Encoder_Left,Target_Left);  
 		Motor_Right=Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17

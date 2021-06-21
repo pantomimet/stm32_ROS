@@ -46,20 +46,6 @@ int main(void)
     while(1)
 	  {	
 		  oled_show(); 
-//			//Led_Flash(1000);	
-//		PS2_KEY=PS2_DataKey();
-//		if(PS2_KEY == PSB_START)
-//		{
-//			mode = !mode;
-//		}
-//		  if(mode == 0)
-//		  {
-//			
-//			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
-//			PS2_LY=PS2_AnologData(PSS_LY);
-//			PS2_RX=PS2_AnologData(PSS_RX);
-//			PS2_RY=PS2_AnologData(PSS_RY);
-//		  }
 	  } 
 }
 
