@@ -40,7 +40,6 @@ int LEFT=0;
 int X=1600;
 float Velocity_L,Velocity_R;
 float Velocity_dream;
-int time_flag = 0;
 void TIM6_IRQHandler(void)   //TIM6ÖÐ¶Ï
 {
 	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) 	
@@ -120,10 +119,6 @@ void TIM6_IRQHandler(void)   //TIM6ÖÐ¶Ï
 				//oled_show();
 //				readimu();	
 //				USART_TX();
-				if(time_flag == 0)
-					oled_show(); 
-				
-				time_flag = !time_flag;
 //			}	
 	}
 } 

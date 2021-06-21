@@ -38,13 +38,14 @@ int main(void)
 		PS2_Init();											
 		PS2_SetInit();									
 		Target_Left = 0;
-		Target_Right = 0;\
+		Target_Right = 0;
 		
 		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化
 		TIM6_Int_Init(19999,71);      		//=====20ms定时中断初始化
 		Accel_Key = 4;
     while(1)
 	  {	
+		  oled_show(); 
 //			//Led_Flash(1000);	
 //		PS2_KEY=PS2_DataKey();
 //		if(PS2_KEY == PSB_START)
