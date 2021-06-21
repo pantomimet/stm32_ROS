@@ -1,7 +1,6 @@
 #include "filter.h"	
 #include "control.h"
 
-u8 Flag_Target,Flag_Change;  //相关标志位
 float Voltage_Count,Voltage_All;  //电压采样相关变量
 int j,sum;
 u8 mode = 1; //手动或自动模式。手动为0，自动为1
@@ -44,21 +43,10 @@ void TIM6_IRQHandler(void)   //TIM6中断
 {
 	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) 	
 	{     	
-			TIM_ClearITPendingBit(TIM6, TIM_IT_Update);          //清除中断标志位  	
-//			Flag_Target=!Flag_Target; //分频标志位
-//			if(delay_flag==1)
-//			{
-//					if(++delay_50==2)	 delay_50=0,delay_flag=0; //给主函数提供50ms的精准延时
-//			}
-//			if(Flag_Target==1)
-//			{
-//			  	Key();//扫描按键变化	
-//   									                                        
-//			}
-//			else if(Flag_Target == 0)
-//			{   
-				Encoder_Right=Read_Encoder(3);  //===读取编码器的值
-				Encoder_Left=Read_Encoder(2);    //===读取编码器的值
+		TIM_ClearITPendingBit(TIM6, TIM_IT_Update);          //清除中断标志位  	
+
+		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
+		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
 		
 		PS2_KEY=PS2_DataKey();
 		if(PS2_KEY == PSB_START)
