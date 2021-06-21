@@ -51,17 +51,17 @@ void TIM6_IRQHandler(void)   //TIM6中断
 		PS2_KEY=PS2_DataKey();
 		if(PS2_KEY == PSB_START)
 		{
-//			delay_ms(200);
+			//delay_ms(200);
 			if(PS2_DataKey() == PSB_START)
 				mode = !mode;
 		}
 		if(mode == 0)
 		{
 			//PS2数据采集  
-//			PS2_LX=PS2_AnologData(PSS_LX);      
+			//PS2_LX=PS2_AnologData(PSS_LX);      
 			PS2_LY=PS2_AnologData(PSS_LY);
 			PS2_RX=PS2_AnologData(PSS_RX);
-//			PS2_RY=PS2_AnologData(PSS_RY);
+			//PS2_RY=PS2_AnologData(PSS_RY);
 		}
 					
 		Get_commands();
@@ -79,9 +79,7 @@ void TIM6_IRQHandler(void)   //TIM6中断
 		Motor_Right=Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 		Xianfu_Pwm(6900);                          //===PWM限幅
 		Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
-//				Set_Pwm(0,-0,X);
 		
-		//accont += gyroX;
 		readimu();	
 		USART_TX();
 	}
@@ -255,16 +253,11 @@ void Get_commands(void)
 		}
 		else if(Position == 0x01)
 		{
-			
 			Velocity_dream = 1.5 * Urxbuf[3];
-		
 		}
 		else if(Position == 0x02)
 		{
-			
-			
 			Velocity_dream = -1.5 * Urxbuf[3];
-		
 		}
 //			Velocity_dream = -1.5*Urxbuf[3] ;
 //		else if(Position == 0x02)
