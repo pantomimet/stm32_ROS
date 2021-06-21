@@ -7,9 +7,14 @@ unsigned char Send_Count; //串口需要发送的数据个数
 入口参数：无
 返回  值：无
 **************************************************************************/
-						int accz;
+int accz;
 void oled_show(void)
 {
+	if(mode == 0)
+		OLED_ShowString(0,50,"PS2 "); //遥控模式
+	else if(mode == 1)
+		OLED_ShowString(0,50,"AUTO"); //遥控模式
+	OLED_Refresh_Gram();	//刷新
 												
 //					//=============第3行显示左电机的状态=======================//	
 //						if( Target_Left<0)		  OLED_ShowString(00,20,"-"),
@@ -40,11 +45,6 @@ void oled_show(void)
 //											if(Flag_Stop==1)
 //											OLED_ShowString(80,50,"OFF");
 //											//OLED_ShowNumber(80,50, accont,4,12);
-					if(mode == 0)
-                      OLED_ShowString(0,50,"PS2 "); //遥控模式
-					else if(mode == 1)
-						OLED_ShowString(0,50,"AUTO"); //遥控模式
-											OLED_Refresh_Gram();	//刷新
 }
 
 

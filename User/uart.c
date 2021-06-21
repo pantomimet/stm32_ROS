@@ -121,7 +121,6 @@ void USART1_IRQHandler(void)
 	
 	if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 	{
-		
 		static u8 count,last_data,last_last_data,Usart_ON_Count;
 		if(Usart_ON_Flag==0)
 		{
