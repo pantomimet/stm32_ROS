@@ -55,39 +55,17 @@ void TIM6_IRQHandler(void)   //TIM6中断
 			if(PS2_DataKey() == PSB_START)
 				mode = !mode;
 		}
-		  if(mode == 0)
-		  {
-			
-//			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
+		if(mode == 0)
+		{
+			//PS2数据采集  
+//			PS2_LX=PS2_AnologData(PSS_LX);      
 			PS2_LY=PS2_AnologData(PSS_LY);
 			PS2_RX=PS2_AnologData(PSS_RX);
 //			PS2_RY=PS2_AnologData(PSS_RY);
-		  }
+		}
 					
-//				if(Encoder_Right < 210 && Encoder_Right > -210){
-//					Encoder_Right = 0;
-//					Velocity_R = 0;
-//				}
-//				else 
-//				{
-//					Velocity_R = (Encoder_Right + 200) / 0.6 / 26.9;
-//				}
-//				if(Encoder_Left < 210 && Encoder_Left > -210){
-//					Encoder_Left = 0;
-//					Velocity_L = 0;
-//				}
-//				else{
-//					
-//					Velocity_L = (Encoder_Left + 200) / 0.6 / 26.9;
-//				}
-//				if(mode == 0)
-//				{
-//				
-//					//Key();//扫描按键变化	
-//					Get_RC();   //===接收控制指令
-//				}
-				Get_commands();
-				/*缓慢加速，防抱死防打滑	6.14注释，仅PS2手柄通控制存在*/
+		Get_commands();
+		/*缓慢加速，防抱死防打滑	6.14注释，仅PS2手柄通控制存在*/
 //				if(Velocity_dream < Velocity)
 //				{
 //					Velocity_dream = Velocity_dream + 0.5;
@@ -96,17 +74,16 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				{
 //					Velocity_dream = Velocity_dream - 0.5;
 //				}
-				Kinematic_Analysis(Velocity_dream,-Angle); 	//小车运动学分析   
-				Motor_Left=Incremental_PI_Left(Encoder_Left,Target_Left);  
-				Motor_Right=Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
-				Xianfu_Pwm(6900);                          //===PWM限幅
-				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
+		Kinematic_Analysis(Velocity_dream,-Angle); 	//小车运动学分析   
+		Motor_Left=Incremental_PI_Left(Encoder_Left,Target_Left);  
+		Motor_Right=Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
+		Xianfu_Pwm(6900);                          //===PWM限幅
+		Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
 //				Set_Pwm(0,-0,X);
-				
-				//accont += gyroX;
-				readimu();	
-				USART_TX();
-//			}	
+		
+		//accont += gyroX;
+		readimu();	
+		USART_TX();
 	}
 } 
 
