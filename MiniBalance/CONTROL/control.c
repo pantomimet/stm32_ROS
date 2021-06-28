@@ -4,7 +4,7 @@
 u8 Flag_Target,Flag_Change;  //相关标志位
 float Voltage_Count,Voltage_All;  //电压采样相关变量
 int j,sum;
-u8 mode = 1; //手动或自动模式。手动为0，自动为1
+u8 mode = 0; //手动或自动模式。手动为0，自动为1
 #define T 0.245f
 #define L 0.29f
 #define K 14.00f
@@ -26,8 +26,8 @@ void Kinematic_Analysis(float velocity,float angle)
 		}
 		
 	Tand = tan(angle/57.3);;//(int)tan(angle);
-		Target_Left=velocity*(1-2.0*T*Tand/2/L); 
-		Target_Right=-velocity*(1+2.0*T*Tand/2/L);      //后轮差速
+		Target_Left=velocity*(1-1.0*T*Tand/2/L); 
+		Target_Right=-velocity*(1+1.0*T*Tand/2/L);      //后轮差速
 //		Servo=SERVO_INIT+angle*K; //舵机转向   
 }
 /**************************************************************************
@@ -41,6 +41,7 @@ int X=1600;
 float Velocity_L,Velocity_R;
 float Velocity_dream;
 int time_flag = 0;
+float v_now_l = 0,v_now_r = 0;
 void TIM6_IRQHandler(void)   //TIM6中断
 {
 	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) 	
@@ -110,20 +111,24 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //					Velocity_dream = Velocity_dream - 0.5;
 //				}
 				Kinematic_Analysis(Velocity_dream,-Angle); 	//小车运动学分析   
-				Motor_Left=Incremental_PI_Left(Encoder_Left,Target_Left);  
-				Motor_Right=Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
+				v_now_l = (float)Encoder_Left*100/biaoding_1m;
+				v_now_r = (float)Encoder_Right*100/biaoding_1m;
+				Incremental_PI_Left(v_now_l,Target_Left);  
+				Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
+//				Incremental_PI_Left(Encoder_Left,Target_Left);  
+//				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 				Xianfu_Pwm(6900);                          //===PWM限幅
 				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
-//				Set_Pwm(0,-0,X);
+//				Set_Pwm(LEFT,-LEFT,1650);
 				
 				//accont += gyroX;
 				//oled_show();
 //				readimu();	
 //				USART_TX();
-				if(time_flag == 0)
-					oled_show(); 
-				
-				time_flag = !time_flag;
+//				if(time_flag == 0)
+//					oled_show(); 
+//				
+//				time_flag = !time_flag;
 //			}	
 	}
 } 
@@ -213,28 +218,34 @@ pwm代表增量输出
 pwm+=Kp[e（k）-e(k-1)]+Ki*e(k)
 **************************************************************************/
 int PWM_LEFT,PWM_RIGHT;
-int Bias_L,Pwm,Last_bias_L;
-int Bias_R,Pwm,Last_bias_R;
-int Incremental_PI_Left (int Encoder,int Target)
+float Bias_L,Pwm_L,Last_bias_L;
+float Bias_R,Pwm_R,Last_bias_R;
+float result;
+void Incremental_PI_Left (float Encoder,float Target)
 { 	
 	 
 	 
 	 Bias_L=Encoder - Target;                //计算偏差
-	 PWM_LEFT+=Velocity_KP*(Bias_L-Last_bias_L)+Velocity_KI*Bias_L;   //增量式PI控制器
-	 if(Pwm>7200)PWM_LEFT=7200;
-	 if(Pwm<-7200)PWM_LEFT=-7200;
+	 result=Velocity_KP*(Bias_L-Last_bias_L)+Velocity_KI*Bias_L;   //增量式PI控制器
+	Pwm_L+=result;
+	 if(Pwm_L>7200)Pwm_L=7200;
+	 if(Pwm_L<-7200)Motor_Left=-7200;
+	 Motor_Left = Pwm_L;
 	 Last_bias_L=Bias_L;	                   //保存上一次偏差 
-	 return PWM_LEFT;                         //增量输出
+//	 return Motor_Left;                         //增量输出
 }
-int Incremental_PI_Right (int Encoder,int Target)
+
+void Incremental_PI_Right (float Encoder,float Target)
 { 	
 	 
 	 Bias_R=Encoder - Target;                //计算偏差
-	 PWM_RIGHT+=Velocity_KP*(Bias_R-Last_bias_R)+Velocity_KI*Bias_R;   //增量式PI控制器
-	 if(Pwm>7200)PWM_RIGHT=7200;
-	 if(Pwm<-7200)PWM_RIGHT=-7200;
+	
+	 Pwm_R+=Velocity_KP*(Bias_R-Last_bias_R)+Velocity_KI*Bias_R;   //增量式PI控制器
+	 if(Pwm_R>7200)Pwm_R=7200;
+	 if(Pwm_R<-7200)Pwm_R=-7200;
+	 Motor_Right = Pwm_R;
 	 Last_bias_R=Bias_R;	                   //保存上一次偏差 
-	 return PWM_RIGHT;                         //增量输出
+//	 return Motor_Right;                         //增量输出
 }
 /**************************************************************************
 函数功能：通过指令对小车进行遥控
@@ -250,7 +261,8 @@ void Get_RC(void)
 				RX=PS2_RX - 128;
 				if( LY>-Yuzhi && LY<Yuzhi )LY=0;
 				if( RX>-Yuzhi && RX<Yuzhi )RX=0;
-				Velocity_dream=(float)LY*0.375;	
+				Velocity_dream=(float)LY/128;	
+//				Velocity_dream=-1 * X;
 				Angle=RX*0.25; 	
 			
 }
@@ -290,13 +302,13 @@ void Get_commands(void)
 			Velocity = 0;
 		else if(Position == 0x01)
 		{
-			Velocity_dream = 1.5 * Urxbuf[3];
+			Velocity_dream = 0.03125*0.43* Urxbuf[3];
 			
 		}
 //			Velocity_dream = -1.5*Urxbuf[3] ;
 		else if(Position == 0x02)
 		{
-			Velocity_dream = -1.5*Urxbuf[3] ;
+			Velocity_dream = -0.03125*0.43*Urxbuf[3] ;
 		}
 //			Velocity = -Urxbuf[3] * 0.25;
 	}

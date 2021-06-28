@@ -91,7 +91,7 @@ extern u8 Flag_Left,Flag_Right,Flag_Direction,Flag_Way,Flag_Next,operationMode; 
 extern u8 Flag_Stop,Flag_Show; //停止标志位和 显示标志位 默认停止 显示打开
 extern int Encoder_Left,Encoder_Right;  //编码器的脉冲计数                
 extern long int Motor_Left,Motor_Right; //电机PWM变量
-extern long int Target_Left,Target_Right; //电机目标值
+extern float Target_Left,Target_Right; //电机目标值
 extern int Voltage;//电池电压采样相关的变量                       
 extern u8 delay_50,delay_flag; //延时相关变量
 extern u8 Run_Flag;  //速度或者位置模式指示变量

@@ -86,12 +86,12 @@ void USART_TX(void)
 		*(Send_rasberry_ptr+25+send_cnt) = ((unsigned char *)&gyroZ)[send_cnt];
 
 	//send MAG X YZ
-	for(send_cnt=0; send_cnt<2; send_cnt++) //X ?????
-		*(Send_rasberry_ptr+27+send_cnt) = ((unsigned char *)&magX)[send_cnt];
-	for(send_cnt=0; send_cnt<2; send_cnt++) //Y ?????
-		*(Send_rasberry_ptr+29+send_cnt) = ((unsigned char *)&magY)[send_cnt];
-	for(send_cnt=0; send_cnt<2; send_cnt++) //z ?????
-		*(Send_rasberry_ptr+31+send_cnt) = ((unsigned char *)&magZ)[send_cnt];
+//	for(send_cnt=0; send_cnt<2; send_cnt++) //X ?????
+//		*(Send_rasberry_ptr+27+send_cnt) = ((unsigned char *)&magX)[send_cnt];
+//	for(send_cnt=0; send_cnt<2; send_cnt++) //Y ?????
+//		*(Send_rasberry_ptr+29+send_cnt) = ((unsigned char *)&magY)[send_cnt];
+//	for(send_cnt=0; send_cnt<2; send_cnt++) //z ?????
+//		*(Send_rasberry_ptr+31+send_cnt) = ((unsigned char *)&magZ)[send_cnt];
 	
 	//send ultrasonicABCD
 //	for(send_cnt=0; send_cnt<4;send_cnt++) // ??????A
@@ -131,7 +131,8 @@ void USART1_IRQHandler(void)
 		if(Usart_Flag==0)
 		{
 			if(last_data==0x5A && last_last_data==0xA5)
-			Usart_Flag=1,count=0;
+			Usart_Flag=1;
+			count=0;
 		}
 		if(Usart_Flag==1) 
 		{
@@ -146,10 +147,10 @@ void USART1_IRQHandler(void)
 		last_last_data=last_data;
 		last_data=temp;
 	}
-	while(USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET){
-        USART_ReceiveData(USART1);
-        USART_ClearFlag(USART1, USART_FLAG_ORE);
-    }   
+//	while(USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET){
+//        USART_ReceiveData(USART1);
+//        USART_ClearFlag(USART1, USART_FLAG_ORE);
+//    }   
     USART_ClearFlag(USART1, USART_IT_RXNE);
 }
 

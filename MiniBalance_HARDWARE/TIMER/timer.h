@@ -16,6 +16,7 @@ void TIM4_IRQHandler(void);
 //void TIM3_IRQHandler(void);
 //void TIM3_Cap_Init(u16 arr, u16 psc);
 //void TIM3_IRQHandler(void);
-//void TIM3_Int_Init(u16 arr,u16 psc);
+void TIM5_Int_Init(u16 arr,u16 psc);
 void TIM6_Int_Init(u16 arr,u16 psc); 
+extern uint32_t tick_count;
 #endif

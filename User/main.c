@@ -6,13 +6,14 @@ u8 operationMode;
 u8 Flag_Stop=1,Flag_Show;         
 int Encoder_Left,Encoder_Right;                   
 long int Motor_Left,Motor_Right;
-long int Target_Left,Target_Right;
+float Target_Left,Target_Right;
 float Velocity,Angle,Servo;
 u8 delay_50,delay_flag;
-float Velocity_KP=15,Velocity_KI=32.5;
+float Velocity_KP=1800,Velocity_KI=800;
 int PS2_LX,PS2_LY,PS2_RX,PS2_RY,PS2_KEY,lastPS3Key,Accel_Key;
 int Remoter_Ch1,Remoter_Ch2,Remoter_Ch3,Remoter_Ch4;
 float Tand;
+
 int main(void)
   { 
 		delay_init();	    	            
@@ -38,10 +39,10 @@ int main(void)
 		PS2_Init();											
 		PS2_SetInit();									
 		Target_Left = 0;
-		Target_Right = 0;\
-		
-		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化
-		TIM6_Int_Init(19999,71);      		//=====20ms定时中断初始化
+		Target_Right = 0;
+//		TIM5_Int_Init(999,71);
+		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化 #
+		TIM6_Int_Init(19999,71);      		//=====20ms定时中断初始化 #19999
 		Accel_Key = 4;
     while(1)
 	  {	
