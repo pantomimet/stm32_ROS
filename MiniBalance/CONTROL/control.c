@@ -15,7 +15,6 @@ u8 mode = 0; //手动或自动模式。手动为0，自动为1
 **************************************************************************/
 void Kinematic_Analysis(float velocity,float angle)
 {
-		PID_Servo(target_angle,last_angle);
 		Servo=SERVO_INIT+angle*K; //舵机转向   angle*
 		if(Servo > 2190){
 			Servo = 2190;
@@ -26,7 +25,7 @@ void Kinematic_Analysis(float velocity,float angle)
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
 		
-	Tand = tan(angle/57.3);;//(int)tan(angle);
+		Tand = tan(angle/57.3);;//(int)tan(angle);
 		Target_Left=velocity*(1-1.0*T*Tand/2/L); 
 		Target_Right=-velocity*(1+1.0*T*Tand/2/L);      //后轮差速
 //		Servo=SERVO_INIT+angle*K; //舵机转向   
