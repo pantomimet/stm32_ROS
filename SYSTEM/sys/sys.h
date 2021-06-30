@@ -86,7 +86,7 @@
 #define JTAG_SWD_DISABLE   0X02
 #define SWD_ENABLE         0X01
 #define JTAG_SWD_ENABLE    0X00	
-#define SERVO_INIT 1650
+#define SERVO_INIT 1630
 extern u8 Flag_Left,Flag_Right,Flag_Direction,Flag_Way,Flag_Next,operationMode;   //蓝牙遥控相关的变量
 extern u8 Flag_Stop,Flag_Show; //停止标志位和 显示标志位 默认停止 显示打开
 extern int Encoder_Left,Encoder_Right;  //编码器的脉冲计数                
@@ -95,7 +95,7 @@ extern float Target_Left,Target_Right; //电机目标值
 extern int Voltage;//电池电压采样相关的变量                       
 extern u8 delay_50,delay_flag; //延时相关变量
 extern u8 Run_Flag;  //速度或者位置模式指示变量
-extern float Velocity,Angle,Servo;
+extern float Velocity,Target_Angle,Servo;
 extern u8 rxbuf[8],Urxbuf[8],CAN_ON_Flag,Usart_ON_Flag,Usart_Flag,PID_Send;  //CAN和串口控制相关变量
 extern u8 txbuf[8],txbuf2[8];  //CAN发送相关变量
 extern float Pitch,Roll,Yaw,Gryo_Z;   //三轴角度 Z轴陀螺仪和XYZ轴目标速度

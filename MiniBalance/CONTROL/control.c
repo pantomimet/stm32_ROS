@@ -7,7 +7,7 @@ int j,sum;
 u8 mode = 0; //手动或自动模式。手动为0，自动为1
 #define T 0.245f
 #define L 0.29f
-#define K 14.00f
+#define K 20.00f
 /**************************************************************************
 函数功能：小车运动数学模型
 入口参数：速度和转角
@@ -15,9 +15,10 @@ u8 mode = 0; //手动或自动模式。手动为0，自动为1
 **************************************************************************/
 void Kinematic_Analysis(float velocity,float angle)
 {
+		PID_Servo(target_angle,last_angle);
 		Servo=SERVO_INIT+angle*K; //舵机转向   angle*
-		if(Servo > 2250){
-			Servo = 2250;
+		if(Servo > 2190){
+			Servo = 2190;
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
 		else if(Servo < 1050){
@@ -59,9 +60,10 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //			}
 //			else if(Flag_Target == 0)
 //			{   
-				Encoder_Right=Read_Encoder(3);  //===读取编码器的值
-				Encoder_Left=Read_Encoder(2);    //===读取编码器的值
-		
+		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
+		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
+		readimu();
+		USART_TX();
 		PS2_KEY=PS2_DataKey();
 		if(PS2_KEY == PSB_START)
 		{
@@ -69,14 +71,14 @@ void TIM6_IRQHandler(void)   //TIM6中断
 			if(PS2_DataKey() == PSB_START)
 				mode = !mode;
 		}
-		  if(mode == 0)
-		  {
-			
-//			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
-			PS2_LY=PS2_AnologData(PSS_LY);
-			PS2_RX=PS2_AnologData(PSS_RX);
-//			PS2_RY=PS2_AnologData(PSS_RY);
-		  }
+//		  if(mode == 0)
+//		  {
+//			
+////			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
+//			PS2_LY=PS2_AnologData(PSS_LY);
+//			PS2_RX=PS2_AnologData(PSS_RX);
+////			PS2_RY=PS2_AnologData(PSS_RY);
+//		  }
 					
 //				if(Encoder_Right < 210 && Encoder_Right > -210){
 //					Encoder_Right = 0;
@@ -110,9 +112,9 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				{
 //					Velocity_dream = Velocity_dream - 0.5;
 //				}
-				Kinematic_Analysis(Velocity_dream,-Angle); 	//小车运动学分析   
-				v_now_l = (float)Encoder_Left*100/biaoding_1m;
-				v_now_r = (float)Encoder_Right*100/biaoding_1m;
+				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析   
+				v_now_l = (float)Encoder_Left*50/biaoding_1m;
+				v_now_r = (float)Encoder_Right*50/biaoding_1m;
 				Incremental_PI_Left(v_now_l,Target_Left);  
 				Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
 //				Incremental_PI_Left(Encoder_Left,Target_Left);  
@@ -226,8 +228,7 @@ void Incremental_PI_Left (float Encoder,float Target)
 	 
 	 
 	 Bias_L=Encoder - Target;                //计算偏差
-	 result=Velocity_KP*(Bias_L-Last_bias_L)+Velocity_KI*Bias_L;   //增量式PI控制器
-	Pwm_L+=result;
+	 Pwm_L+=Velocity_KP*(Bias_L-Last_bias_L)+Velocity_KI*Bias_L;   //增量式PI控制器11288
 	 if(Pwm_L>7200)Pwm_L=7200;
 	 if(Pwm_L<-7200)Motor_Left=-7200;
 	 Motor_Left = Pwm_L;
@@ -256,14 +257,15 @@ void Get_RC(void)
 {
 		int Yuzhi=2;  		
 		float LY,RX;  
-
-				LY=PS2_LY - 128;
-				RX=PS2_RX - 128;
-				if( LY>-Yuzhi && LY<Yuzhi )LY=0;
-				if( RX>-Yuzhi && RX<Yuzhi )RX=0;
-				Velocity_dream=(float)LY/128;	
-//				Velocity_dream=-1 * X;
-				Angle=RX*0.25; 	
+		PS2_LY=PS2_AnologData(PSS_LY);
+		PS2_RX=PS2_AnologData(PSS_RX);
+		LY=PS2_LY - 128;
+		RX=PS2_RX - 128;
+		if( LY>-Yuzhi && LY<Yuzhi )LY=0;
+		if( RX>-Yuzhi && RX<Yuzhi )RX=0;
+		Velocity_dream=(float)LY/128;	
+//		Velocity_dream=-1 * X;
+		Target_Angle=RX*0.25; 	
 			
 }
 
@@ -288,11 +290,11 @@ void Get_commands(void)
 //			Angle = 0;
 //		else if(Direction == 0x10)//向左
 		if(Urxbuf[2] == 0 )
-			Angle = 0;
+			Target_Angle = 0;
 		else if(Urxbuf[0] == 150)
-			Angle = 0;
+			Target_Angle = 0;
 		else 
-			Angle = 60 - Urxbuf[2];
+			Target_Angle = 60 - Urxbuf[2];
 //		else if(Direction == 0x20)//向右
 //			Angle = Urxbuf[2];
 	

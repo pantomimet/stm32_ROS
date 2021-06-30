@@ -7,7 +7,7 @@ u8 Flag_Stop=1,Flag_Show;
 int Encoder_Left,Encoder_Right;                   
 long int Motor_Left,Motor_Right;
 float Target_Left,Target_Right;
-float Velocity,Angle,Servo;
+float Velocity,Target_Angle,Servo;
 u8 delay_50,delay_flag;
 float Velocity_KP=1800,Velocity_KI=800;
 int PS2_LX,PS2_LY,PS2_RX,PS2_RY,PS2_KEY,lastPS3Key,Accel_Key;
@@ -41,7 +41,7 @@ int main(void)
 		Target_Left = 0;
 		Target_Right = 0;
 //		TIM5_Int_Init(999,71);
-		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化 #
+//		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化 #
 		TIM6_Int_Init(19999,71);      		//=====20ms定时中断初始化 #19999
 		Accel_Key = 4;
     while(1)
@@ -61,7 +61,7 @@ int main(void)
 //			PS2_RY=PS2_AnologData(PSS_RY);
 //		  }
 			
-//				oled_show();          		 //显示屏打开
+				oled_show();          		 //显示屏打开
 //				delay_flag=1;	
 //			
 //				delay_50=0;

@@ -9,4 +9,5 @@ int Read_Encoder(u8 TIMX);
 void TIM4_IRQHandler(void);
 void TIM2_IRQHandler(void);
 void TIM3_IRQHandler(void);
+extern long encoder_left_cnt,encoder_right_cnt;
 #endif

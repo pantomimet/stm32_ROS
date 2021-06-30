@@ -1,6 +1,7 @@
 #include "encoder.h"
 #include "stm32f10x_gpio.h"
 
+long encoder_left_cnt = 0,encoder_right_cnt = 0;
 /**************************************************************************
 函数功能：把TIM2初始化为编码器接口模式
 入口参数：无
@@ -132,11 +133,15 @@ int Read_Encoder(u8 TIMX)
    switch(TIMX)
 	 {
 	   case 2:  
-			 Encoder_TIM= (short)TIM2 -> CNT; 
-			TIM2 -> CNT=0;break;
+			Encoder_TIM= (short)TIM2 -> CNT; 
+			encoder_left_cnt += Encoder_TIM;
+			TIM2 -> CNT=0;
+			break;
 		 case 3:  
-			 Encoder_TIM= (short)TIM3 -> CNT;  
-			TIM3 -> CNT=0;break;	
+			Encoder_TIM= (short)TIM3 -> CNT;  
+			encoder_right_cnt += Encoder_TIM;
+			TIM3 -> CNT=0;
+			break;	
 		 default:  Encoder_TIM=0;
 	 }
 //		Encoder_TIM=(Encoder_TIM*11/17);
