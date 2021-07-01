@@ -21,5 +21,6 @@ void Incremental_PI_Right (float Encoder,float Target);
 void Get_RC(void);
 void  Find_CCD_Zhongzhi(void);
 void Get_commands(void);
+void stm32_smooth(void);
 //void PID_Servo(float target_angle,float current_angle);
 #endif

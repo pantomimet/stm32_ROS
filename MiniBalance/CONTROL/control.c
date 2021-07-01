@@ -4,7 +4,7 @@
 u8 Flag_Target,Flag_Change;  //相关标志位
 float Voltage_Count,Voltage_All;  //电压采样相关变量
 int j,sum;
-u8 mode = 0; //手动或自动模式。手动为0，自动为1
+u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define T 0.245f
 #define L 0.29f
 #define K 20.00f
@@ -30,6 +30,28 @@ void Kinematic_Analysis(float velocity,float angle)
 		Target_Right=-velocity*(1+1.0*T*Tand/2/L);      //后轮差速
 //		Servo=SERVO_INIT+angle*K; //舵机转向   
 }
+float Target_Left_dream,Target_Right_dream;
+void stm32_smooth(void)
+{
+	if(Target_Left_dream < Target_Left)
+	{
+		Target_Left_dream = Target_Left_dream + 1.0;
+	}
+	else if(Target_Left_dream > Target_Left)
+	{
+		Target_Left_dream = Target_Left_dream - 1.0;
+	}
+	
+	if(Target_Right_dream < Target_Right)
+	{
+		Target_Right_dream = Target_Right_dream + 1.0;
+	}
+	else if(Target_Right_dream > Target_Right)
+	{
+		Target_Right_dream = Target_Right_dream - 1.0;
+	}
+}
+
 /**************************************************************************
 函数功能：所有的控制代码都在这里面
          定时中断触发
