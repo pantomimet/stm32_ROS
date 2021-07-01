@@ -136,8 +136,9 @@ void TIM6_IRQHandler(void)   //TIM6中断
 				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析   
 				v_now_l = (float)Encoder_Left*50/biaoding_1m;
 				v_now_r = (float)Encoder_Right*50/biaoding_1m;
-				Incremental_PI_Left(v_now_l,Target_Left);  
-				Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
+				stm32_smooth();
+				Incremental_PI_Left(v_now_l,Target_Left_dream);  
+				Incremental_PI_Right(v_now_r,Target_Right_dream);//    *11/17
 //				Incremental_PI_Left(Encoder_Left,Target_Left);  
 //				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 				Xianfu_Pwm(6900);                          //===PWM限幅
