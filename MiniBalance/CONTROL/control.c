@@ -1,13 +1,13 @@
 #include "filter.h"	
 #include "control.h"
-
+#define ZERO 1E-6
 u8 Flag_Target,Flag_Change;  //相关标志位
 float Voltage_Count,Voltage_All;  //电压采样相关变量
 int j,sum;
 u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define T 0.245f
 #define L 0.29f
-#define K 20.00f
+#define K 16.00f
 /**************************************************************************
 函数功能：小车运动数学模型
 入口参数：速度和转角
@@ -26,29 +26,38 @@ void Kinematic_Analysis(float velocity,float angle)
 		}
 		
 		Tand = tan(angle/57.3);;//(int)tan(angle);
-		Target_Left=velocity*(1-1.0*T*Tand/2/L); 
-		Target_Right=-velocity*(1+1.0*T*Tand/2/L);      //后轮差速
+//		if(abs(velocity) < ZERO)
+//		{
+//			Target_Left = 0;
+//			Target_Right = 0;
+//		}
+//		else
+//		{
+			Target_Left=velocity*(1-1.0*T*Tand/2/L); 
+			Target_Right=-velocity*(1+1.0*T*Tand/2/L);      //后轮差速
+//		}
 //		Servo=SERVO_INIT+angle*K; //舵机转向   
 }
 float Target_Left_dream,Target_Right_dream;
+
 void stm32_smooth(void)
 {
 	if(Target_Left_dream < Target_Left)
 	{
-		Target_Left_dream = Target_Left_dream + 1.0;
+		Target_Left_dream = Target_Left_dream + 0.02;
 	}
 	else if(Target_Left_dream > Target_Left)
 	{
-		Target_Left_dream = Target_Left_dream - 1.0;
+		Target_Left_dream = Target_Left_dream - 0.02;
 	}
 	
 	if(Target_Right_dream < Target_Right)
 	{
-		Target_Right_dream = Target_Right_dream + 1.0;
+		Target_Right_dream = Target_Right_dream + 0.02;
 	}
 	else if(Target_Right_dream > Target_Right)
 	{
-		Target_Right_dream = Target_Right_dream - 1.0;
+		Target_Right_dream = Target_Right_dream - 0.02;
 	}
 }
 
@@ -134,11 +143,20 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //					Velocity_dream = Velocity_dream - 0.5;
 //				}
 				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析   
-				v_now_l = (float)Encoder_Left*50/biaoding_1m;
-				v_now_r = (float)Encoder_Right*50/biaoding_1m;
-				stm32_smooth();
-				Incremental_PI_Left(v_now_l,Target_Left_dream);  
-				Incremental_PI_Right(v_now_r,Target_Right_dream);//    *11/17
+				v_now_l = (float)Encoder_Left*100/biaoding_1m;
+				v_now_r = (float)Encoder_Right*100/biaoding_1m;
+				if(mode == 0)
+				{
+					stm32_smooth();
+					Incremental_PI_Left(v_now_l,Target_Left_dream);  
+					Incremental_PI_Right(v_now_r,Target_Right_dream);//    *11/17
+				}
+//				stm32_smooth();
+				else if(mode == 1)
+				{
+					Incremental_PI_Left(v_now_l,Target_Left);  
+					Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
+				}
 //				Incremental_PI_Left(Encoder_Left,Target_Left);  
 //				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 				Xianfu_Pwm(6900);                          //===PWM限幅
@@ -285,7 +303,7 @@ void Get_RC(void)
 		RX=PS2_RX - 128;
 		if( LY>-Yuzhi && LY<Yuzhi )LY=0;
 		if( RX>-Yuzhi && RX<Yuzhi )RX=0;
-		Velocity_dream=(float)LY/128;	
+		Velocity_dream=(float)LY/256/2;	
 //		Velocity_dream=-1 * X;
 		Target_Angle=RX*0.25; 	
 			

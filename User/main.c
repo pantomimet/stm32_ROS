@@ -42,7 +42,7 @@ int main(void)
 		Target_Right = 0;
 //		TIM5_Int_Init(999,71);
 //		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化 #
-		TIM6_Int_Init(19999,71);      		//=====20ms定时中断初始化 #19999
+		TIM6_Int_Init(9999,71);      		//=====20ms定时中断初始化 #19999
 		Accel_Key = 4;
     while(1)
 	  {	
