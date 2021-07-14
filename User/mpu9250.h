@@ -51,6 +51,8 @@ void MPU9250_READ_GYRO(void);
 void MPU9250_READ_MAG(void);
 
 void readimu(void);
-
+extern short gyroX,gyroY,gyroZ;
+extern short accelX,accelY,accelZ; 
+extern short magX,magY,magZ; 
 
 #endif 

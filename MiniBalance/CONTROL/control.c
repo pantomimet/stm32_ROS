@@ -16,12 +16,12 @@ u8 mode = 1; //手动或自动模式。手动为0，自动为1
 void Kinematic_Analysis(float velocity,float angle)
 {
 		Servo=SERVO_INIT+angle*K; //舵机转向   angle*
-		if(Servo > 2190){
-			Servo = 2190;
+		if(Servo > 2000){
+			Servo = 2000;
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
-		else if(Servo < 1050){
-			Servo = 1050;
+		else if(Servo < 1280){
+			Servo = 1280;
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
 		
