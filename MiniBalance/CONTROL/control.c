@@ -42,7 +42,11 @@ float Target_Left_dream,Target_Right_dream;
 
 void stm32_smooth(void)
 {
-	if(Target_Left_dream < Target_Left)
+	if(Target_Left < 0.000001 && (-Target_Left) > 0.000001)
+	{
+		Target_Left_dream = 0;
+	}
+	else if(Target_Left_dream < Target_Left)
 	{
 		Target_Left_dream = Target_Left_dream + 0.02;
 	}
@@ -51,7 +55,11 @@ void stm32_smooth(void)
 		Target_Left_dream = Target_Left_dream - 0.02;
 	}
 	
-	if(Target_Right_dream < Target_Right)
+	if(Target_Right < 0.000001 && (-Target_Right) > 0.000001)
+	{
+		Target_Right_dream = 0;
+	}
+	else if(Target_Right_dream < Target_Right)
 	{
 		Target_Right_dream = Target_Right_dream + 0.02;
 	}
@@ -143,13 +151,13 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //					Velocity_dream = Velocity_dream - 0.5;
 //				}
 				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析   
-				v_now_l = (float)Encoder_Left*100/biaoding_1m;
-				v_now_r = (float)Encoder_Right*100/biaoding_1m;
+				v_now_l = (float)Encoder_Left*50/biaoding_1m;
+				v_now_r = (float)Encoder_Right*50/biaoding_1m;
 				if(mode == 0)
 				{
-					stm32_smooth();
-					Incremental_PI_Left(v_now_l,Target_Left_dream);  
-					Incremental_PI_Right(v_now_r,Target_Right_dream);//    *11/17
+//					stm32_smooth();
+					Incremental_PI_Left(v_now_l,Target_Left);  
+					Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
 				}
 //				stm32_smooth();
 				else if(mode == 1)
