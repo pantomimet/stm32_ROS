@@ -151,8 +151,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //					Velocity_dream = Velocity_dream - 0.5;
 //				}
 				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析   
-				v_now_l = (float)Encoder_Left*50/biaoding_1m;
-				v_now_r = (float)Encoder_Right*50/biaoding_1m;
+				v_now_l = (float)Encoder_Left*100/biaoding_1m;
+				v_now_r = (float)Encoder_Right*100/biaoding_1m;
 				if(mode == 0)
 				{
 //					stm32_smooth();
