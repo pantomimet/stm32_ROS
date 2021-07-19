@@ -9,7 +9,7 @@ long int Motor_Left,Motor_Right;
 float Target_Left,Target_Right;
 float Velocity,Target_Angle,Servo;
 u8 delay_50,delay_flag;
-float Velocity_KP=1800,Velocity_KI=800;
+float Velocity_KP=1800,Velocity_KI=1000;
 int PS2_LX,PS2_LY,PS2_RX,PS2_RY,PS2_KEY,lastPS3Key,Accel_Key;
 int Remoter_Ch1,Remoter_Ch2,Remoter_Ch3,Remoter_Ch4;
 float Tand;
