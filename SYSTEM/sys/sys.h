@@ -82,11 +82,12 @@
 #include "myiic.h"
 #include "mpu9250.h"
 #include "control.h"
+#include "dma.h"
 //JTAG模式设置定义
 #define JTAG_SWD_DISABLE   0X02
 #define SWD_ENABLE         0X01
 #define JTAG_SWD_ENABLE    0X00	
-#define SERVO_INIT 1640
+#define SERVO_INIT 1665
 extern u8 Flag_Left,Flag_Right,Flag_Direction,Flag_Way,Flag_Next,operationMode;   //蓝牙遥控相关的变量
 extern u8 Flag_Stop,Flag_Show; //停止标志位和 显示标志位 默认停止 显示打开
 extern int Encoder_Left,Encoder_Right;  //编码器的脉冲计数                
@@ -112,6 +113,7 @@ extern short accelX,accelY,accelZ;
 extern short magX,magY,magZ;	
 extern float Tand;
 extern short accont;
+extern u8 Send_rasberry[60];
 /////////////////////////////////////////////////////////////////  
 void Stm32_Clock_Init(u8 PLL);  //时钟初始化  
 void Sys_Soft_Reset(void);      //系统软复位

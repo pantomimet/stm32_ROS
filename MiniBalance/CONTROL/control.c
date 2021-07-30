@@ -16,8 +16,8 @@ u8 mode = 1; //手动或自动模式。手动为0，自动为1
 void Kinematic_Analysis(float velocity,float angle)
 {
 		Servo=SERVO_INIT+angle*K; //舵机转向   angle*
-		if(Servo > 2000){
-			Servo = 2000;
+		if(Servo > 2050){
+			Servo = 2050;
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
 		else if(Servo < 1280){
@@ -33,8 +33,8 @@ void Kinematic_Analysis(float velocity,float angle)
 //		}
 //		else
 //		{
-			Target_Left=velocity*(1-1.0*T*Tand/2/L); 
-			Target_Right=-velocity*(1+1.0*T*Tand/2/L);      //后轮差速
+			Target_Left=velocity*(1-0.8*T*Tand/2/L); 
+			Target_Right=-velocity*(1+0.8*T*Tand/2/L);      //后轮差速
 //		}
 //		Servo=SERVO_INIT+angle*K; //舵机转向   
 }

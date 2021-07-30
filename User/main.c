@@ -44,8 +44,15 @@ int main(void)
 //		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化 #
 		TIM6_Int_Init(19999,71);      		//=====20ms定时中断初始化 #19999
 		Accel_Key = 4;
+		UART_DMA_Config();
+//		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)Send_rasberry,DMA_DIR_PeripheralDST,60);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
+//		MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)Urxbuf,DMA_DIR_PeripheralSRC,10);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
     while(1)
 	  {	
+//		  if(DMA_GetFlagStatus(DMA1_FLAG_TC4)!=RESET)	//判断通道4传输完成
+//		  {
+//					DMA_ClearFlag(DMA1_FLAG_TC4);//清除通道4传输完成标志
+//		  }
 //			//Led_Flash(1000);	
 //		PS2_KEY=PS2_DataKey();
 //		if(PS2_KEY == PSB_START)

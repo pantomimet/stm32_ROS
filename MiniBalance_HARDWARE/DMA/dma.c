@@ -22,7 +22,7 @@ u16 DMA1_MEM_LEN;//保存DMA每次数据传送的长度
 //cpar:外设地址
 //cmar:存储器地址
 //cndtr:数据传输量 
-void MYDMA_Config(DMA_Channel_TypeDef* DMA_CHx,u32 cpar,u32 cmar,u16 cndtr)
+void MYDMA_Config(DMA_Channel_TypeDef* DMA_CHx,u32 cpar,u32 cmar,u32 dma_dir,u16 cndtr)
 {
  	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);	//使能DMA传输
 	
@@ -31,7 +31,7 @@ void MYDMA_Config(DMA_Channel_TypeDef* DMA_CHx,u32 cpar,u32 cmar,u16 cndtr)
 	DMA1_MEM_LEN=cndtr;
 	DMA_InitStructure.DMA_PeripheralBaseAddr = cpar;  //DMA外设基地址
 	DMA_InitStructure.DMA_MemoryBaseAddr = cmar;  //DMA内存基地址
-	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;  //数据传输方向，从内存读取发送到外设
+	DMA_InitStructure.DMA_DIR = dma_dir;  //数据传输方向，从内存读取发送到外设
 	DMA_InitStructure.DMA_BufferSize = cndtr;  //DMA通道的DMA缓存的大小
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;  //外设地址寄存器不变
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;  //内存地址寄存器递增
@@ -54,37 +54,58 @@ void MYDMA_Enable(DMA_Channel_TypeDef*DMA_CHx)
 
 #define SEND_BUF_SIZE 8200	//发送数据长度,最好等于sizeof(TEXT_TO_SEND)+2的整数倍.
 u8 SendBuff[SEND_BUF_SIZE];	//发送数据缓冲区
-void DMA_USART1_INIT(void)
+//void DMA_USART1_INIT(void)
+//{
+//	DMA_InitTypeDef DMA_InitStructure; 
+//    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE); 
+//    //NVIC_Config();                //??DMA??
+//    //NVIC_Configuration();
+//    DMA_InitStructure.DMA_PeripheralBaseAddr = (u32)&USART1->DR;    
+//    DMA_InitStructure.DMA_MemoryBaseAddr = (u32)SendBuff;      
+//    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;    
+//    DMA_InitStructure.DMA_BufferSize = SEND_BUF_SIZE;     
+//    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+//    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+//    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+//    //DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte; 
+//    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal ;
+//    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;     
+//    DMA_InitStructure.DMA_Priority = DMA_Priority_Medium; 
+//    DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;       
+//    DMA_Init(DMA1_Channel2, &DMA_InitStructure);      
+//        //DMA_ITConfig(DMA1_Channel2,DMA_IT_TC,ENABLE);  //??DMA?????????
+//    DMA_Cmd (DMA1_Channel2,ENABLE);
+//	
+//}
+
+
+void UART_DMA_Config(void)
 {
-	DMA_InitTypeDef DMA_InitStructure; 
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE); 
-    //NVIC_Config();                //??DMA??
-    //NVIC_Configuration();
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (u32)&USART1->DR;    
-    DMA_InitStructure.DMA_MemoryBaseAddr = (u32)SendBuff;      
-    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;    
-    DMA_InitStructure.DMA_BufferSize = SEND_BUF_SIZE;     
-    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-    //DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte; 
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal ;
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;     
-    DMA_InitStructure.DMA_Priority = DMA_Priority_Medium; 
-    DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;       
-    DMA_Init(DMA1_Channel2, &DMA_InitStructure);      
-        //DMA_ITConfig(DMA1_Channel2,DMA_IT_TC,ENABLE);  //??DMA?????????
-    DMA_Cmd (DMA1_Channel2,ENABLE);
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+	MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)Send_rasberry,DMA_DIR_PeripheralDST,60);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
+	MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)rxbuf,DMA_DIR_PeripheralSRC,60);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
+
+	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel4_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0 ;//?????3
+	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;		//????3
+	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ????
+	NVIC_Init(&NVIC_InitStructure);	//??????????VIC???
+
+	DMA_ITConfig(DMA1_Channel4,DMA_IT_TC,ENABLE);	//?USART1 Tx DMA??
 	
+	USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE);  	//????3?DMA??
+	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE);  	//????3?DMA??
 }
 
 
-
-
-
-
-
-
+void DMA1_Channel4_IRQHandler(void)
+{
+	if(DMA_GetFlagStatus(DMA1_FLAG_TC4)!=RESET)	//判断通道4传输完成
+	{
+		DMA_ClearFlag(DMA1_FLAG_TC4);//清除通道4传输完成标志
+	}
+}
 
 
 

@@ -43,7 +43,7 @@ void usart1_init(u32 bound)
 }
 
 int send_cnt= 0;
-static u8 Send_rasberry[60];
+u8 Send_rasberry[60];
 int re_Encoder_Left,re_Encoder_Right;
 
 void USART_TX(void)
@@ -103,14 +103,20 @@ void USART_TX(void)
 //	for(send_cnt=0; send_cnt<4; send_cnt++) // ??????D
 //	Send_rasberry[45+send_cnt] = ((unsigned char *)&Distance_D)[send_cnt];
 	
-	//send Send_rasberry
-	for(send_cnt = 0;send_cnt < 49;send_cnt++)
-	{
-		USART_SendData(USART1,*(Send_rasberry_ptr+send_cnt));
-		while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
-		//(Send_rasberry[send_cnt]);
-	}
-	memset(Send_rasberry_ptr, 0, sizeof(u8)*33);
+	//send Send_rasberry串口发送的方式
+//	for(send_cnt = 0;send_cnt < 49;send_cnt++)
+//	{
+//		USART_SendData(USART1,*(Send_rasberry_ptr+send_cnt));
+//		while(USART_GetFlagStatus(USART1,USART_FLAG_TC)!=SET);
+//		//(Send_rasberry[send_cnt]);
+//	}
+//	memset(Send_rasberry_ptr, 0, sizeof(u8)*33);
+	
+	
+	//DMA发送
+	USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE); //使能串口1的DMA发送      
+	MYDMA_Enable(DMA1_Channel4);//开始一次DMA传输！	
+
 }
 
 
