@@ -42,7 +42,7 @@ int main(void)
 		Target_Right = 0;
 //		TIM5_Int_Init(999,71);
 //		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化 #
-		TIM6_Int_Init(49999,71);      		//=====20ms定时中断初始化 #19999
+		TIM6_Int_Init(49999,71);      		//=====定时中断初始化 #20ms--19999	10ms--9999	50ms--49999
 		Accel_Key = 4;
 		UART_DMA_Config();
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)Send_rasberry,DMA_DIR_PeripheralDST,60);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.

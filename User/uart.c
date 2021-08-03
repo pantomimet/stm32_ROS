@@ -38,7 +38,8 @@ void usart1_init(u32 bound)
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx; 
 	USART_Init(USART1, &USART_InitStructure);
 
-	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE); 
+	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE); //使能串口接收中断
+	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE); //使能串口1的DMA接收   
 	USART_Cmd(USART1, ENABLE);
 }
 
