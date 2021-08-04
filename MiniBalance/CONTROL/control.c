@@ -33,8 +33,8 @@ void Kinematic_Analysis(float velocity,float angle)
 //		}
 //		else
 //		{
-			Target_Left=velocity*(1-0.8*T*Tand/2/L); 
-			Target_Right=-velocity*(1+0.8*T*Tand/2/L);      //后轮差速
+			Target_Left=velocity*(1-1.5*T*Tand/2/L); 
+			Target_Right=-velocity*(1+1.5*T*Tand/2/L);      //后轮差速
 //		}
 //		Servo=SERVO_INIT+angle*K; //舵机转向   
 }
@@ -276,8 +276,8 @@ void Incremental_PI_Left (float Encoder,float Target)
 	 
 	 
 	 Bias_L=Encoder - Target;                //计算偏差
-	if(Bias_L < 0.05 && Bias_L > -0.05)
-		Bias_L = 0;
+//	if(Bias_L < 0.05 && Bias_L > -0.05)
+//		Bias_L = 0;
 	 Pwm_L+=Velocity_KP*(Bias_L-Last_bias_L)+Velocity_KI*Bias_L;   //增量式PI控制器11288
 	 if(Pwm_L>7200)Pwm_L=7200;
 	 if(Pwm_L<-7200)Motor_Left=-7200;
@@ -290,8 +290,8 @@ void Incremental_PI_Right (float Encoder,float Target)
 { 	
 	 
 	 Bias_R=Encoder - Target;                //计算偏差
-	if(Bias_R < 0.05 && Bias_R > -0.05)
-		Bias_R = 0;
+//	if(Bias_R < 0.05 && Bias_R > -0.05)
+//		Bias_R = 0;
 	 Pwm_R+=Velocity_KP*(Bias_R-Last_bias_R)+Velocity_KI*Bias_R;   //增量式PI控制器
 	 if(Pwm_R>7200)Pwm_R=7200;
 	 if(Pwm_R<-7200)Pwm_R=-7200;
