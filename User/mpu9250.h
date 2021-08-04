@@ -49,7 +49,7 @@ u8 MPU9250_Init(void);
 void MPU9250_READ_ACCEL(void); 
 void MPU9250_READ_GYRO(void);
 void MPU9250_READ_MAG(void);
-
+void MPU6050_Init(void);
 void readimu(void);
 extern short gyroX,gyroY,gyroZ;
 extern short accelX,accelY,accelZ; 

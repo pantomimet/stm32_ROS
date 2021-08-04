@@ -32,7 +32,8 @@ int main(void)
 		Flag_Stop=1;	
 		delay_ms(500);                  //=====延时等待稳定
 
-		MPU9250_Init();
+		//MPU9250_Init();
+		MPU6050_Init();
 		usart1_init(115200);
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)SendBuff,SEND_BUF_SIZE);//DMA1通道4,外设为串口1的发送,存储器为SendBuff,长度SEND_BUF_SIZE.
 	  

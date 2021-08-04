@@ -60,6 +60,19 @@ u8 MPU9250_Init(void)
 	return 1;
 }
 
+void MPU6050_Init(void)
+{	
+	IIC_Init();
+	MPU9250_Write_Reg(GYRO_ADDRESS,PWR_MGMT_1,0x80);
+	delay_ms(100);
+	MPU9250_Write_Reg(GYRO_ADDRESS,PWR_MGMT_1,0x00); //? ?????
+	delay_ms(100);
+	MPU9250_Write_Reg(GYRO_ADDRESS,SMPLRT_DIV,0x07);//????125Hz
+	MPU9250_Write_Reg(GYRO_ADDRESS,CONFIG,0x06);//?????5Hz
+	MPU9250_Write_Reg(GYRO_ADDRESS,GYRO_CONFIG,0x18); //?????, ??2000?
+	MPU9250_Write_Reg(GYRO_ADDRESS,ACCEL_CONFIG,0x18); //?????,?? 16g
+	//MPU9250_Write_Reg(MPU_INT_EN_REG,0X00);
+} 
 
 void MPU9250_READ_ACCEL()
 {

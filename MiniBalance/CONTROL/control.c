@@ -314,7 +314,7 @@ void Get_RC(void)
 		RX=PS2_RX - 128;
 		if( LY>-Yuzhi && LY<Yuzhi )LY=0;
 		if( RX>-Yuzhi && RX<Yuzhi )RX=0;
-		Velocity_dream=(float)LY/256/2;	
+		Velocity_dream=(float)LY/256;	
 //		Velocity_dream=-1 * X;
 		Target_Angle=RX*0.25; 	
 			
