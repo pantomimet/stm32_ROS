@@ -13,6 +13,7 @@ float Velocity_KP=1800,Velocity_KI=1000;
 int PS2_LX,PS2_LY,PS2_RX,PS2_RY,PS2_KEY,lastPS3Key,Accel_Key;
 int Remoter_Ch1,Remoter_Ch2,Remoter_Ch3,Remoter_Ch4;
 float Tand;
+int flag_50ms = 0;
 
 int main(void)
   { 
@@ -69,7 +70,14 @@ int main(void)
 //			PS2_RY=PS2_AnologData(PSS_RY);
 //		  }
 			
-				oled_show();          		 //显示屏打开
+		if(flag_50ms == 1)
+		{
+			readimu();
+			USART_TX();
+			
+			flag_50ms = 0;
+		}
+			oled_show();          		 //显示屏打开
 //				delay_flag=1;	
 //			
 //				delay_50=0;

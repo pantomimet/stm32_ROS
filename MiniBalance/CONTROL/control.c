@@ -85,7 +85,11 @@ void TIM6_IRQHandler(void)   //TIM6中断
 {
 	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) 	
 	{     	
-			TIM_ClearITPendingBit(TIM6, TIM_IT_Update);          //清除中断标志位  	
+			TIM_ClearITPendingBit(TIM6, TIM_IT_Update);          //清除中断标志位 
+			if(flag_50ms == 0)
+			{
+				flag_50ms =1;
+			}
 //			Flag_Target=!Flag_Target; //分频标志位
 //			if(delay_flag==1)
 //			{
@@ -100,8 +104,6 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //			{   
 		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
 		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
-		readimu();
-		USART_TX();
 		PS2_KEY=PS2_DataKey();
 		if(PS2_KEY == PSB_START)
 		{
@@ -109,47 +111,16 @@ void TIM6_IRQHandler(void)   //TIM6中断
 			if(PS2_DataKey() == PSB_START)
 				mode = !mode;
 		}
-//		  if(mode == 0)
-//		  {
-//			
-////			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
-//			PS2_LY=PS2_AnologData(PSS_LY);
-//			PS2_RX=PS2_AnologData(PSS_RX);
-////			PS2_RY=PS2_AnologData(PSS_RY);
-//		  }
-					
-//				if(Encoder_Right < 210 && Encoder_Right > -210){
-//					Encoder_Right = 0;
-//					Velocity_R = 0;
-//				}
-//				else 
-//				{
-//					Velocity_R = (Encoder_Right + 200) / 0.6 / 26.9;
-//				}
-//				if(Encoder_Left < 210 && Encoder_Left > -210){
-//					Encoder_Left = 0;
-//					Velocity_L = 0;
-//				}
-//				else{
-//					
-//					Velocity_L = (Encoder_Left + 200) / 0.6 / 26.9;
-//				}
-//				if(mode == 0)
-//				{
-//				
-//					//Key();//扫描按键变化	
-//					Get_RC();   //===接收控制指令
-//				}
+//		readimu();
+//		USART_TX();
+//		PS2_KEY=PS2_DataKey();
+//		if(PS2_KEY == PSB_START)
+//		{
+////			delay_ms(200);
+//			if(PS2_DataKey() == PSB_START)
+//				mode = !mode;
+//		}
 				Get_commands();
-				/*缓慢加速，防抱死防打滑	6.14注释，仅PS2手柄通控制存在*/
-//				if(Velocity_dream < Velocity)
-//				{
-//					Velocity_dream = Velocity_dream + 0.5;
-//				}
-//				else if(Velocity_dream > Velocity)
-//				{
-//					Velocity_dream = Velocity_dream - 0.5;
-//				}
 				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析   
 				v_now_l = (float)Encoder_Left*20/biaoding_1m;
 				v_now_r = (float)Encoder_Right*20/biaoding_1m;
@@ -169,17 +140,7 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 				Xianfu_Pwm(6900);                          //===PWM限幅
 				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
-//				Set_Pwm(LEFT,-LEFT,1650);
-				
-				//accont += gyroX;
-				//oled_show();
-//				readimu();	
-//				USART_TX();
-//				if(time_flag == 0)
-//					oled_show(); 
-//				
-//				time_flag = !time_flag;
-//			}	
+	
 	}
 } 
 /**************************************************************************
@@ -304,10 +265,11 @@ void Incremental_PI_Right (float Encoder,float Target)
 入口参数：串口指令
 返回  值：无 
 **************************************************************************/
+float LY,RX; 
 void Get_RC(void)
 {
 		int Yuzhi=2;  		
-		float LY,RX;  
+		 
 		PS2_LY=PS2_AnologData(PSS_LY);
 		PS2_RX=PS2_AnologData(PSS_RX);
 		LY=PS2_LY - 128;

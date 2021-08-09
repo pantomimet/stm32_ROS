@@ -114,6 +114,7 @@ extern short magX,magY,magZ;
 extern float Tand;
 extern short accont;
 extern u8 Send_rasberry[60];
+extern int flag_50ms;
 /////////////////////////////////////////////////////////////////  
 void Stm32_Clock_Init(u8 PLL);  //时钟初始化  
 void Sys_Soft_Reset(void);      //系统软复位
