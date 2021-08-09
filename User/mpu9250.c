@@ -112,9 +112,9 @@ void MPU9250_READ_MAG()
 {
 	u8 BUF[6];
 	MPU9250_Write_Reg(GYRO_ADDRESS,INT_PIN_CFG,0x02); //turn on Bypass Mode
-	//delay_ms(10);
+	delay_ms(10);
 	MPU9250_Write_Reg(MAG_ADDRESS,0x0A,0x01); //?? ??????,????????????
-	//delay_ms(10); 
+	delay_ms(10); 
 	BUF[0]=MPU9250_Read_Reg(MAG_ADDRESS,MAG_XOUT_L); //? X??????
 	BUF[1]=MPU9250_Read_Reg(MAG_ADDRESS,MAG_XOUT_H); //? X??????
 	magX=(BUF[1]<<8) |BUF[0];
@@ -130,7 +130,7 @@ void readimu() //
 //	float Angle_AY;
 	MPU9250_READ_ACCEL(); 
 	MPU9250_READ_GYRO(); 
-	//MPU9250_READ_MAG();
+	MPU9250_READ_MAG();
 //	Angle_AY = atan2(accelY , sqrt(accelZ*accelZ + accelX*accelX)) * (180 / 3.14159);
 //	angle = Kalman_Filter(Angle_AY,gyroZ);
 }

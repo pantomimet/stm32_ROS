@@ -84,7 +84,7 @@ void UART_DMA_Config(void)
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)Send_rasberry,DMA_DIR_PeripheralDST,60);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度60.
-	MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)rxbuf,DMA_DIR_PeripheralSRC,60);//接收：DMA1通道5,外设为串口1,存储器为rxbuf,方DMA_DIR_PeripheralSRC,长度60.
+//	MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)rxbuf,DMA_DIR_PeripheralSRC,60);//接收：DMA1通道5,外设为串口1,存储器为rxbuf,方DMA_DIR_PeripheralSRC,长度60.
 
 	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel4_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0 ;//?????3
@@ -95,16 +95,16 @@ void UART_DMA_Config(void)
 	DMA_ITConfig(DMA1_Channel4,DMA_IT_TC,ENABLE);	//?USART1 Tx DMA??
 	
 	
-	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel5_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0 ;//?????3
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;		//????3
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ????
-	NVIC_Init(&NVIC_InitStructure);	//??????????VIC???
+//	NVIC_InitStructure.NVIC_IRQChannel = DMA1_Channel5_IRQn;
+//	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0 ;//?????3
+//	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;		//????3
+//	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ????
+//	NVIC_Init(&NVIC_InitStructure);	//??????????VIC???
 
-	DMA_ITConfig(DMA1_Channel5,DMA_IT_TC,ENABLE);	//?USART1 Tx DMA??
+//	DMA_ITConfig(DMA1_Channel5,DMA_IT_TC,ENABLE);	//?USART1 Tx DMA??
 	
 	USART_DMACmd(USART1,USART_DMAReq_Tx,ENABLE);  	//????3?DMA??
-	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE);  	//????3?DMA??
+//	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE);  	//????3?DMA??
 }
 
 
@@ -116,23 +116,23 @@ void DMA1_Channel4_IRQHandler(void)
 	}
 }
 
-void DMA1_Channel5_IRQHandler(void)
-{
-	u8 * Urxbuf_ptr = Urxbuf;
-	u8 * rxbuf_ptr = rxbuf;
-	int i = 0;
-	if(DMA_GetFlagStatus(DMA1_FLAG_TC5)==SET)
-    {
-		DMA_ClearFlag(DMA1_FLAG_TC5);//清除中断标志位
-		if(*(rxbuf_ptr+0) == 0xA5 && *(rxbuf_ptr+1) == 0x5A)
-		{
-			for(i = 0;i<8;i++)
-			{
-				*(Urxbuf_ptr + i) =  *(rxbuf_ptr+i);
-			}
-		}
-    }
-}
+//void DMA1_Channel5_IRQHandler(void)
+//{
+//	u8 * Urxbuf_ptr = Urxbuf;
+//	u8 * rxbuf_ptr = rxbuf;
+//	int i = 0;
+//	if(DMA_GetFlagStatus(DMA1_FLAG_TC5)==SET)
+//    {
+//		DMA_ClearFlag(DMA1_FLAG_TC5);//清除中断标志位
+//		if(*(rxbuf_ptr+0) == 0xA5 && *(rxbuf_ptr+1) == 0x5A)
+//		{
+//			for(i = 0;i<8;i++)
+//			{
+//				*(Urxbuf_ptr + i) =  *(rxbuf_ptr+i);
+//			}
+//		}
+//    }
+//}
 
 
 

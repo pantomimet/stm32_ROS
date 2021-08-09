@@ -87,12 +87,12 @@ void USART_TX(void)
 		*(Send_rasberry_ptr+25+send_cnt) = ((unsigned char *)&gyroZ)[send_cnt];
 
 	//send MAG X YZ
-//	for(send_cnt=0; send_cnt<2; send_cnt++) //X ?????
-//		*(Send_rasberry_ptr+27+send_cnt) = ((unsigned char *)&magX)[send_cnt];
-//	for(send_cnt=0; send_cnt<2; send_cnt++) //Y ?????
-//		*(Send_rasberry_ptr+29+send_cnt) = ((unsigned char *)&magY)[send_cnt];
-//	for(send_cnt=0; send_cnt<2; send_cnt++) //z ?????
-//		*(Send_rasberry_ptr+31+send_cnt) = ((unsigned char *)&magZ)[send_cnt];
+	for(send_cnt=0; send_cnt<2; send_cnt++) //X ?????
+		*(Send_rasberry_ptr+27+send_cnt) = ((unsigned char *)&magX)[send_cnt];
+	for(send_cnt=0; send_cnt<2; send_cnt++) //Y ?????
+		*(Send_rasberry_ptr+29+send_cnt) = ((unsigned char *)&magY)[send_cnt];
+	for(send_cnt=0; send_cnt<2; send_cnt++) //z ?????
+		*(Send_rasberry_ptr+31+send_cnt) = ((unsigned char *)&magZ)[send_cnt];
 	
 	//send ultrasonicABCD
 //	for(send_cnt=0; send_cnt<4;send_cnt++) // ??????A

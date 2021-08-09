@@ -33,8 +33,8 @@ void Kinematic_Analysis(float velocity,float angle)
 //		}
 //		else
 //		{
-			Target_Left=velocity*(1-1.5*T*Tand/2/L); 
-			Target_Right=-velocity*(1+1.5*T*Tand/2/L);      //后轮差速
+			Target_Left=velocity*(1-0.8*T*Tand/2/L); 
+			Target_Right=-velocity*(1+0.8*T*Tand/2/L);      //后轮差速
 //		}
 //		Servo=SERVO_INIT+angle*K; //舵机转向   
 }
