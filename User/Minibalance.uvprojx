@@ -610,6 +610,11 @@
               <FileType>5</FileType>
               <FilePath>..\MiniBalance_HARDWARE\DMA\dma.h</FilePath>
             </File>
+            <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\adc.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

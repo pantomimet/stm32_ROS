@@ -83,6 +83,7 @@
 #include "mpu9250.h"
 #include "control.h"
 #include "dma.h"
+#include "adc.h"
 //JTAG模式设置定义
 #define JTAG_SWD_DISABLE   0X02
 #define SWD_ENABLE         0X01
@@ -115,6 +116,8 @@ extern float Tand;
 extern short accont;
 extern u8 Send_rasberry[60];
 extern int flag_50ms;
+extern volatile uint16_t ADC_ConvertedValue;
+extern float ADC_ConvertedValueLocal;
 /////////////////////////////////////////////////////////////////  
 void Stm32_Clock_Init(u8 PLL);  //时钟初始化  
 void Sys_Soft_Reset(void);      //系统软复位

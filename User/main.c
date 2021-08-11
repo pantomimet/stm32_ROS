@@ -14,7 +14,7 @@ int PS2_LX,PS2_LY,PS2_RX,PS2_RY,PS2_KEY,lastPS3Key,Accel_Key;
 int Remoter_Ch1,Remoter_Ch2,Remoter_Ch3,Remoter_Ch4;
 float Tand;
 int flag_50ms = 0;
-
+float ADC_ConvertedValueLocal = 0;
 int main(void)
   { 
 		delay_init();	    	            
@@ -47,6 +47,7 @@ int main(void)
 		TIM6_Int_Init(59999,71);      		//=====定时中断初始化 #20ms--19999	10ms--9999	50ms--49999
 		Accel_Key = 4;
 		UART_DMA_Config();
+		adc_init();
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)Send_rasberry,DMA_DIR_PeripheralDST,60);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
 //		MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)Urxbuf,DMA_DIR_PeripheralSRC,10);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
     while(1)
@@ -77,7 +78,8 @@ int main(void)
 			
 			flag_50ms = 0;
 		}
-			oled_show();          		 //显示屏打开
+		ADC_ConvertedValueLocal =(float) ADC_ConvertedValue/4096*3.3*11;
+		oled_show();          		 //显示屏打开
 //				delay_flag=1;	
 //			
 //				delay_50=0;
