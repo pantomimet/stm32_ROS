@@ -102,17 +102,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //			}
 //			else if(Flag_Target == 0)
 //			{   
-		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
-		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
-		PS2_KEY=PS2_DataKey();
-		if(PS2_KEY == PSB_START)
-		{
-//			delay_ms(200);
-			if(PS2_DataKey() == PSB_START)
-				mode = !mode;
-		}
-//		readimu();
-//		USART_TX();
+//		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
+//		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
 //		PS2_KEY=PS2_DataKey();
 //		if(PS2_KEY == PSB_START)
 //		{
@@ -120,26 +111,38 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //			if(PS2_DataKey() == PSB_START)
 //				mode = !mode;
 //		}
-				Get_commands();
-				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析   
-				v_now_l = (float)Encoder_Left*20/biaoding_1m;
-				v_now_r = (float)Encoder_Right*20/biaoding_1m;
-				if(mode == 0)
-				{
-//					stm32_smooth();
-					Incremental_PI_Left(v_now_l,Target_Left);  
-					Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
-				}
-//				stm32_smooth();
-				else if(mode == 1)
-				{
-					Incremental_PI_Left(v_now_l,Target_Left);  
-					Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
-				}
-//				Incremental_PI_Left(Encoder_Left,Target_Left);  
-//				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
-				Xianfu_Pwm(6900);                          //===PWM限幅
-				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
+////		readimu();
+////		USART_TX();
+////		PS2_KEY=PS2_DataKey();
+//			USART_TX();
+			usart3_send(0);
+			USART2_TX();
+////		if(PS2_KEY == PSB_START)
+////		{
+//////			delay_ms(200);
+////			if(PS2_DataKey() == PSB_START)
+////				mode = !mode;
+////		}
+//				Get_commands();
+//				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析   
+//				v_now_l = (float)Encoder_Left*20/biaoding_1m;
+//				v_now_r = (float)Encoder_Right*20/biaoding_1m;
+//				if(mode == 0)
+//				{
+////					stm32_smooth();
+//					Incremental_PI_Left(v_now_l,Target_Left);  
+//					Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
+//				}
+////				stm32_smooth();
+//				else if(mode == 1)
+//				{
+//					Incremental_PI_Left(v_now_l,Target_Left);  
+//					Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
+//				}
+////				Incremental_PI_Left(Encoder_Left,Target_Left);  
+////				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
+//				Xianfu_Pwm(6900);                          //===PWM限幅
+//				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
 	
 	}
 } 

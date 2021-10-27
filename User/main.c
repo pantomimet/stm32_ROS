@@ -23,11 +23,11 @@ int main(void)
 			  
 		KEY_Init();                     
 		MY_NVIC_PriorityGroupConfig(2);	
-		MiniBalance_PWM_Init(7199,0);   
-		Servo_PWM_Init(9999,71);   		  
-		OLED_Init();                    
-		Encoder_Init_TIM2();            
-		Encoder_Init_TIM3();            
+//		MiniBalance_PWM_Init(7199,0);   
+//		Servo_PWM_Init(9999,71);   		  
+//		OLED_Init();                    
+//		Encoder_Init_TIM2();            
+//		Encoder_Init_TIM3();            
 		Flag_Way=1;
 		Flag_Show = 0;
 		Flag_Stop=1;	
@@ -35,7 +35,9 @@ int main(void)
 
 		MPU9250_Init();
 //		MPU6050_Init();
-		usart1_init(115200);
+//		usart1_init(115200);
+		usart2_init(921600);
+		usart3_init(115200);
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)SendBuff,SEND_BUF_SIZE);//DMA1通道4,外设为串口1的发送,存储器为SendBuff,长度SEND_BUF_SIZE.
 	  
 		PS2_Init();											
@@ -46,8 +48,8 @@ int main(void)
 //		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化 #
 		TIM6_Int_Init(59999,71);      		//=====定时中断初始化 #20ms--19999	10ms--9999	50ms--49999
 		Accel_Key = 4;
-		UART_DMA_Config();
-		adc_init();
+//		UART_DMA_Config();
+//		adc_init();
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)Send_rasberry,DMA_DIR_PeripheralDST,60);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
 //		MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)Urxbuf,DMA_DIR_PeripheralSRC,10);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
     while(1)
@@ -71,15 +73,15 @@ int main(void)
 //			PS2_RY=PS2_AnologData(PSS_RY);
 //		  }
 			
-		if(flag_50ms == 1)
-		{
-			readimu();
-			USART_TX();
-			
-			flag_50ms = 0;
-		}
-		ADC_ConvertedValueLocal =(float) ADC_ConvertedValue/4096*3.3*11;
-		oled_show();          		 //显示屏打开
+//		if(flag_50ms == 1)
+//		{
+//			readimu();
+//			USART_TX();
+//			
+//			flag_50ms = 0;
+//		}
+//		ADC_ConvertedValueLocal =(float) ADC_ConvertedValue/4096*3.3*11;
+//		oled_show();          		 //显示屏打开
 //				delay_flag=1;	
 //			
 //				delay_50=0;
