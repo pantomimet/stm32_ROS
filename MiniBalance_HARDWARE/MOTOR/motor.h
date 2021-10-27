@@ -5,7 +5,7 @@
 #define PWMA1   TIM8->CCR2  
 #define PWMA2   TIM8->CCR1 
 
-#define SERVO   TIM1->CCR1  //舵机引脚
+#define SERVO   TIM1->CCR4  //舵机引脚
 
 #define PWMB1   TIM8->CCR4  
 #define PWMB2   TIM8->CCR3

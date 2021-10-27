@@ -6,7 +6,7 @@ extern u8 mode;
 #define PI 3.14159265
 #define ZHONGZHI 0 
 #define DIFFERENCE 100
-#define biaoding_1m 5835
+#define biaoding_1m 2891
 extern	int Balance_Pwm,Velocity_Pwm,Turn_Pwm;
 void Kinematic_Analysis(float velocity,float angle);
 int EXTI15_10_IRQHandler(void);

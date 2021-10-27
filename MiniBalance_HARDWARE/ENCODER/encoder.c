@@ -134,11 +134,13 @@ int Read_Encoder(u8 TIMX)
 	 {
 	   case 2:  
 			Encoder_TIM= (short)TIM2 -> CNT; 
+			Encoder_TIM = Encoder_TIM/2;
 			encoder_left_cnt += Encoder_TIM;
 			TIM2 -> CNT=0;
 			break;
 		 case 3:  
 			Encoder_TIM= (short)TIM3 -> CNT;  
+			Encoder_TIM = Encoder_TIM/2;
 			encoder_right_cnt += Encoder_TIM;
 			TIM3 -> CNT=0;
 			break;	

@@ -20,8 +20,8 @@ void Kinematic_Analysis(float velocity,float angle)
 			Servo = 2050;
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
-		else if(Servo < 1280){
-			Servo = 1280;
+		else if(Servo < 1220){
+			Servo = 1220;
 			angle = (double)(Servo - SERVO_INIT)/K;
 		}
 		
@@ -33,8 +33,8 @@ void Kinematic_Analysis(float velocity,float angle)
 //		}
 //		else
 //		{
-			Target_Left=velocity*(1-0.8*T*Tand/2/L); 
-			Target_Right=-velocity*(1+0.8*T*Tand/2/L);      //后轮差速
+			Target_Left=velocity*(1-1.5*T*Tand/2/L); 
+			Target_Right=-velocity*(1+1.5*T*Tand/2/L);      //后轮差速
 //		}
 //		Servo=SERVO_INIT+angle*K; //舵机转向   
 }
@@ -276,7 +276,7 @@ void Get_RC(void)
 		RX=PS2_RX - 128;
 		if( LY>-Yuzhi && LY<Yuzhi )LY=0;
 		if( RX>-Yuzhi && RX<Yuzhi )RX=0;
-		Velocity_dream=(float)LY/256;	
+		Velocity_dream=(float)LY/128;	
 //		Velocity_dream=-1 * X;
 		Target_Angle=RX*0.25; 	
 			
