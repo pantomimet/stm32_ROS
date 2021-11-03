@@ -8,6 +8,7 @@ u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define T 0.245f
 #define L 0.29f
 #define K 16.00f
+#define Balance_angle 0.00
 /**************************************************************************
 函数功能：小车运动数学模型
 入口参数：速度和转角
@@ -38,8 +39,21 @@ void Kinematic_Analysis(float velocity,float angle)
 //		}
 //		Servo=SERVO_INIT+angle*K; //舵机转向   
 }
-float Target_Left_dream,Target_Right_dream;
 
+float b_kp=-70,b_ki=0,b_kd=-10;
+float angle_err_pre = 0;
+float Balance_PWM_output =0;
+void Balance_PID(float angle_set, float angle_real)
+{
+	float angle_err = 0;
+	angle_err = angle_set - angle_real;
+	Balance_PWM_output = b_kp * angle_err + b_ki * angle_err + b_kd * ( angle_err - angle_err_pre);
+	angle_err_pre = angle_err;
+}
+
+
+
+float Target_Left_dream,Target_Right_dream;
 void stm32_smooth(void)
 {
 	if(Target_Left < 0.000001 && (-Target_Left) > 0.000001)
@@ -81,15 +95,17 @@ float Velocity_L,Velocity_R;
 float Velocity_dream;
 int time_flag = 0;
 float v_now_l = 0,v_now_r = 0;
+float Balance_v = 0;
+float test = 
 void TIM6_IRQHandler(void)   //TIM6中断
 {
 	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) 	
 	{     	
 			TIM_ClearITPendingBit(TIM6, TIM_IT_Update);          //清除中断标志位 
-			if(flag_50ms == 0)
-			{
-				flag_50ms =1;
-			}
+//			if(flag_50ms == 0)
+//			{
+//				flag_50ms =1;
+//			}
 //			Flag_Target=!Flag_Target; //分频标志位
 //			if(delay_flag==1)
 //			{
@@ -102,8 +118,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //			}
 //			else if(Flag_Target == 0)
 //			{   
-//		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
-//		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
+		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
+		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
 //		PS2_KEY=PS2_DataKey();
 //		if(PS2_KEY == PSB_START)
 //		{
@@ -111,12 +127,15 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //			if(PS2_DataKey() == PSB_START)
 //				mode = !mode;
 //		}
-////		readimu();
+		readimu();
+		Balance_PID(Balance_angle,Pitch_g);
+		Balance_v = 1.756e-4 * (float)Balance_PWM_output - 0.04
+		
 ////		USART_TX();
 ////		PS2_KEY=PS2_DataKey();
 //			USART_TX();
-			usart3_send(0);
-			USART2_TX();
+			//usart3_send(0);
+			//USART2_TX();
 ////		if(PS2_KEY == PSB_START)
 ////		{
 //////			delay_ms(200);
@@ -125,8 +144,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 ////		}
 //				Get_commands();
 //				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析   
-//				v_now_l = (float)Encoder_Left*20/biaoding_1m;
-//				v_now_r = (float)Encoder_Right*20/biaoding_1m;
+//				v_now_l = (float)Encoder_Left*50/biaoding_1m;
+//				v_now_r = (float)Encoder_Right*50/biaoding_1m;
 //				if(mode == 0)
 //				{
 ////					stm32_smooth();
@@ -141,8 +160,14 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				}
 ////				Incremental_PI_Left(Encoder_Left,Target_Left);  
 ////				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
-//				Xianfu_Pwm(6900);                          //===PWM限幅
-//				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
+				
+//				Incremental_PI_Left(v_now_l,Target_Left);  
+//				Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
+//				Motor_Left = -Balance_PWM_output;
+//				Motor_Right = Balance_PWM_output;
+				Xianfu_Pwm(6900);                          //===PWM限幅
+				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
+				
 	
 	}
 } 

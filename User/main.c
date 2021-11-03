@@ -23,11 +23,11 @@ int main(void)
 			  
 		KEY_Init();                     
 		MY_NVIC_PriorityGroupConfig(2);	
-//		MiniBalance_PWM_Init(7199,0);   
+		MiniBalance_PWM_Init(7199,0);   
 //		Servo_PWM_Init(9999,71);   		  
-//		OLED_Init();                    
-//		Encoder_Init_TIM2();            
-//		Encoder_Init_TIM3();            
+		OLED_Init();                    
+		Encoder_Init_TIM2();            
+		Encoder_Init_TIM3();            
 		Flag_Way=1;
 		Flag_Show = 0;
 		Flag_Stop=1;	
@@ -46,7 +46,7 @@ int main(void)
 		Target_Right = 0;
 //		TIM5_Int_Init(999,71);
 //		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化 #
-		TIM6_Int_Init(59999,71);      		//=====定时中断初始化 #20ms--19999	10ms--9999	50ms--49999
+		TIM6_Int_Init(19999,71);      		//=====定时中断初始化 #20ms--19999	10ms--9999	50ms--49999	60ms--59999
 		Accel_Key = 4;
 //		UART_DMA_Config();
 //		adc_init();
@@ -81,7 +81,7 @@ int main(void)
 //			flag_50ms = 0;
 //		}
 //		ADC_ConvertedValueLocal =(float) ADC_ConvertedValue/4096*3.3*11;
-//		oled_show();          		 //显示屏打开
+		oled_show();          		 //显示屏打开
 //				delay_flag=1;	
 //			
 //				delay_50=0;

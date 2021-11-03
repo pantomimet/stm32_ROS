@@ -84,6 +84,7 @@
 #include "control.h"
 #include "dma.h"
 #include "adc.h"
+#include "filter.h"
 //JTAG模式设置定义
 #define JTAG_SWD_DISABLE   0X02
 #define SWD_ENABLE         0X01

@@ -326,7 +326,7 @@ void usart3_init(u32 bound)
   USART_Cmd(USART3, ENABLE);                    //????3 
 }
 
-void usart3_send(u8 data)
+void usart3_send(u8 data) 
 {
 	USART3->DR = data;
 	while((USART3->SR&0x40)==0);	

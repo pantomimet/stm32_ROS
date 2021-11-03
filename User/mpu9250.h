@@ -54,5 +54,7 @@ void readimu(void);
 extern short gyroX,gyroY,gyroZ;
 extern short accelX,accelY,accelZ; 
 extern short magX,magY,magZ; 
+extern float Angle_ax,Angle_ay,Angle_az;  	//由加速度计算的加速度(弧度制)
+extern float Angle_gy,Angle_gx,Angle_gz;  	//由角速度计算的角速率(角度制)
 
 #endif 
