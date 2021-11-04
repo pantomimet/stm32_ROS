@@ -9,6 +9,8 @@ short accelX,accelY,accelZ;
 short magX,magY,magZ; 
 float Angle_ax=0,Angle_ay=0,Angle_az=0;  	//由加速度计算的加速度(弧度制)
 float Angle_gy=0,Angle_gx=0,Angle_gz=0;  	//由角速度计算的角速率(角度制)
+u8 BUF[6];
+u8* BUF_ptr = &BUF[0];
 
 void MPU9250_Write_Reg(u8 Slave_add,u8 reg_add,u8 reg_dat)
 {
@@ -77,47 +79,63 @@ void MPU6050_Init(void)
 
 void MPU9250_READ_ACCEL()
 {
-	u8 BUF[6];
-	BUF[0]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_XOUT_L); //? X??????
-	BUF[1]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_XOUT_H); //? X??????
-	accelX=(BUF[1]<<8)| BUF[0]; 
+//	u8 BUF[6];
+//	BUF[0]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_XOUT_L); //? X??????
+//	BUF[1]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_XOUT_H); //? X??????
+//	accelX=(BUF[1]<<8)| BUF[0]; 
+////	accelX = accelX / 2048;
+//	Angle_ax = (accelX) / 2048.0;
+//	BUF[2]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_YOUT_L); //? Y??????
+//	BUF[3]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_YOUT_H); //? Y??????
+//	accelY=(BUF[3]<<8)|BUF[2];
+////	accelY = accelY / 2048;
+//	Angle_ay = (accelY) / 2048.0;	
+//	BUF[4]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_ZOUT_L); //? Z??????
+//	BUF[5]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_ZOUT_H); //? Z??????
+//	accelZ=(BUF[5]<<8)| BUF[4]; 
+////	accelZ = accelZ / 2048;
+//	Angle_az = (accelZ) / 2048.0;
+	*(BUF_ptr+0)=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_XOUT_L); //? X??????
+	*(BUF_ptr+1)=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_XOUT_H); //? X??????
+	accelX=(*(BUF_ptr+1)<<8)| *(BUF_ptr+0); 
 //	accelX = accelX / 2048;
 	Angle_ax = (accelX) / 2048.0;
-	BUF[2]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_YOUT_L); //? Y??????
-	BUF[3]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_YOUT_H); //? Y??????
-	accelY=(BUF[3]<<8)|BUF[2];
+	*(BUF_ptr+2)=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_YOUT_L); //? Y??????
+	*(BUF_ptr+3)=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_YOUT_H); //? Y??????
+	accelY=(*(BUF_ptr+3)<<8)|*(BUF_ptr+2);
 //	accelY = accelY / 2048;
 	Angle_ay = (accelY) / 2048.0;	
-	BUF[4]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_ZOUT_L); //? Z??????
-	BUF[5]=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_ZOUT_H); //? Z??????
-	accelZ=(BUF[5]<<8)| BUF[4]; 
+	*(BUF_ptr+4)=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_ZOUT_L); //? Z??????
+	*(BUF_ptr+5)=MPU9250_Read_Reg(ACCEL_ADDRESS,ACCEL_ZOUT_H); //? Z??????
+	accelZ=(*(BUF_ptr+5)<<8)| *(BUF_ptr+4); 
 //	accelZ = accelZ / 2048;
-	Angle_az = (accelZ) / 2048.0;	
+	Angle_az = (accelZ) / 2048.0;		
 }
 
 void MPU9250_READ_GYRO()
 {
-	u8 BUF[8];
+	//u8 BUF[8];
 	BUF[0]=MPU9250_Read_Reg(GYRO_ADDRESS,GYRO_XOUT_L);
 	BUF[1]=MPU9250_Read_Reg(GYRO_ADDRESS,GYRO_XOUT_H);
-	gyroX=(BUF[1]<<8)| BUF[0];
+	gyroX=(*(BUF_ptr+1)<<8)| *(BUF_ptr+0); 
 //	gyroX = gyroX / 16.4;
 	Angle_gx=(gyroX)/16.4;
 	BUF[2]=MPU9250_Read_Reg(GYRO_ADDRESS,GYRO_YOUT_L);
 	BUF[3]=MPU9250_Read_Reg(GYRO_ADDRESS,GYRO_YOUT_H);
-	gyroY=(BUF[3]<<8)| BUF[2];
+	gyroY=(*(BUF_ptr+3)<<8)| *(BUF_ptr+2); 
 //	gyroY = gyroY / 16.4;
 	Angle_gy=(gyroY)/16.4;
 	BUF[4]=MPU9250_Read_Reg(GYRO_ADDRESS,GYRO_ZOUT_L);
 	BUF[5]=MPU9250_Read_Reg(GYRO_ADDRESS,GYRO_ZOUT_H);
-	gyroZ=(BUF[5]<<8)| BUF[4];
+	gyroZ=(*(BUF_ptr+5)<<8)| *(BUF_ptr+4); 
 //	gyroZ = gyroZ / 16.4;
 	Angle_gz=(gyroZ)/16.4;
 }
 
 void MPU9250_READ_MAG()
 {
-	u8 BUF[6];
+	
+	
 	MPU9250_Write_Reg(GYRO_ADDRESS,INT_PIN_CFG,0x02); //turn on Bypass Mode
 	delay_ms(10);
 	MPU9250_Write_Reg(MAG_ADDRESS,0x0A,0x01); //?? ??????,????????????
@@ -138,7 +156,7 @@ void readimu() //
 	MPU9250_READ_ACCEL(); 
 	MPU9250_READ_GYRO(); 
 	//MPU9250_READ_MAG();
-	IMU_filter();
+	//IMU_filter();
 //	Angle_AY = atan2(accelY , sqrt(accelZ*accelZ + accelX*accelX)) * (180 / 3.14159);
 //	angle = Kalman_Filter(Angle_AY,gyroZ);
 }

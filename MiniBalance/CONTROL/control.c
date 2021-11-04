@@ -96,7 +96,6 @@ float Velocity_dream;
 int time_flag = 0;
 float v_now_l = 0,v_now_r = 0;
 float Balance_v = 0;
-float test = 
 void TIM6_IRQHandler(void)   //TIM6中断
 {
 	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) 	
@@ -129,13 +128,14 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //		}
 		readimu();
 		Balance_PID(Balance_angle,Pitch_g);
-		Balance_v = 1.756e-4 * (float)Balance_PWM_output - 0.04
+		
+		Balance_v = 1.756e-4 * (float)Balance_PWM_output - 0.04;
 		
 ////		USART_TX();
 ////		PS2_KEY=PS2_DataKey();
 //			USART_TX();
-			//usart3_send(0);
-			//USART2_TX();
+//			usart3_send(0);
+			USART2_TX();
 ////		if(PS2_KEY == PSB_START)
 ////		{
 //////			delay_ms(200);
@@ -171,6 +171,9 @@ void TIM6_IRQHandler(void)   //TIM6中断
 	
 	}
 } 
+
+
+
 /**************************************************************************
 函数功能：赋值给PWM寄存器
 入口参数：PWM

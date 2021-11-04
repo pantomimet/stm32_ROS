@@ -11,6 +11,7 @@ void USART2_IRQHandler(void);
 void USART2_TX(void);
 void usart3_init(u32 bound);
 void usart3_send(u8 data);
+void USART3_IRQHandler(void);
 
 
 #endif

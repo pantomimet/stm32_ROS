@@ -1,8 +1,8 @@
 #include "uart.h"
 
-u8 rxbuf[8],Urxbuf[8],CAN_ON_Flag,Usart_ON_Flag,Usart_Flag,PID_Send;  //CAN和串口控制相关变量
+u8 rxbuf[8],Urxbuf[8],CAN_ON_Flag,Usart_ON_Flag,Usart_Flag,Usart_End_Flag,PID_Send;  //CAN和串口控制相关变量
 u8 txbuf[8],txbuf2[8];  //CAN发送相关变量
-
+u8 RX_BUF[16] = {0};
 void usart1_init(u32 bound)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -139,13 +139,15 @@ void USART1_IRQHandler(void)
 		{
 			if(last_data==0x5A && last_last_data==0xA5)
 			Usart_Flag=1;
-			count=0;
+			Urxbuf[0] = 0xA5;
+			Urxbuf[1] = 0X5A;
+			count=2;
 		}
 		if(Usart_Flag==1) 
 		{
 			Urxbuf[count]=temp;
 			count++;
-			if(count==8) 
+			if(Urxbuf[count] == 0x55 && Urxbuf[count-1] == 0xAA)
 			{
 				Usart_Flag=0;
 //				Get_commands();
@@ -201,22 +203,49 @@ void usart2_init(u32 bound)
 
 void USART2_IRQHandler(void)
 {	
+	u8 temp;
 	if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) //?????
 	{
+		static u8 count,last_data,last_last_data,Usart_ON_Count;
+		if(Usart_ON_Flag==0)
+		{
+			if(++Usart_ON_Count>10) Usart_ON_Flag=1;
+		}
+		temp=USART2->DR;
+		if(Usart_Flag==0)
+		{
+			if(last_data==0x5A && last_last_data==0xA5)
+			{
+				Usart_Flag=1;
+				RX_BUF[0] = 0xA5;
+				RX_BUF[1] = 0X5A;
+			}
+			count=2;
+		}
+		if(Usart_Flag==1) 
+		{
+			RX_BUF[count]=temp;
 			
+			if(RX_BUF[count] == 0x55 && RX_BUF[count-1] == 0xAA)
+			{
+				Usart_Flag=0;
+//				Get_commands();
+			}
+			count++;
+		}
+		last_last_data=last_data;
+		last_data=temp;
 	}
 	USART_ClearFlag(USART2, USART_IT_RXNE);
 } 
 
 u8 usart2_Send_rasberry[10];
+int send_i=0;
 void USART2_TX(void)
 {
 	u8 * usart2_Send_rasberry_ptr = &usart2_Send_rasberry[0];
-	int i = 0;
-	for( i = 0;i<10;i++)
-	{
-		*(usart2_Send_rasberry_ptr+i) = 0xA5+i;
-	}
+	*(usart2_Send_rasberry_ptr) = 0xA5+send_i;
+	send_i++;
 //	*(usart2_Send_rasberry_ptr+0) = 0xA5; 
 
 //	*(usart2_Send_rasberry_ptr+1) = 0x5A;
@@ -272,13 +301,13 @@ void USART2_TX(void)
 //	Send_rasberry[45+send_cnt] = ((unsigned char *)&Distance_D)[send_cnt];
 	
 	//send Send_rasberry串口发送的方式
-	for(send_cnt = 0;send_cnt < 10;send_cnt++)
-	{
-		USART_SendData(USART2,*(usart2_Send_rasberry_ptr+send_cnt));
+//	for(send_cnt = 0;send_cnt < 10;send_cnt++)
+//	{
+		USART_SendData(USART2,*(usart2_Send_rasberry_ptr));
 		while(USART_GetFlagStatus(USART2,USART_FLAG_TC)!=SET);
 		//(Send_rasberry[send_cnt]);
-	}
-	memset(usart2_Send_rasberry_ptr, 0, sizeof(u8)*10);
+//	}
+//	memset(usart2_Send_rasberry_ptr, 0, sizeof(u8)*10);
 	
 	
 	//DMA发送
@@ -291,25 +320,25 @@ void USART2_TX(void)
 void usart3_init(u32 bound)
 {  	 
 	  //GPIO????
-  GPIO_InitTypeDef GPIO_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
 	USART_InitTypeDef USART_InitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);// ????AFIO??
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);	//??GPIO??
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);	//??USART??
-		GPIO_PinRemapConfig(GPIO_PartialRemap_USART3, ENABLE);//?????
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);	//??USART??
+	GPIO_PinRemapConfig(GPIO_PartialRemap_USART3, ENABLE);//?????
 	//USART_TX  
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; //C10
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//??????
-  GPIO_Init(GPIOC, &GPIO_InitStructure);   
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; //C10
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//??????
+	GPIO_Init(GPIOC, &GPIO_InitStructure);   
   //USART_RX	  
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;//PC11
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;//????
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;//PC11
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;//????
+	GPIO_Init(GPIOC, &GPIO_InitStructure);
   //UsartNVIC ??
-  NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;
+	NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0 ;//?????
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;		//????
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ????
@@ -321,9 +350,9 @@ void usart3_init(u32 bound)
 	USART_InitStructure.USART_Parity = USART_Parity_No;//??????
 	USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;//????????
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;	//????
-  USART_Init(USART3, &USART_InitStructure);     //?????3
-//  USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);//????????
-  USART_Cmd(USART3, ENABLE);                    //????3 
+	USART_Init(USART3, &USART_InitStructure);     //?????3
+	USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);//????????
+	USART_Cmd(USART3, ENABLE);                    //????3 
 }
 
 void usart3_send(u8 data) 
@@ -332,6 +361,47 @@ void usart3_send(u8 data)
 	while((USART3->SR&0x40)==0);	
 }
 
-
-
+void USART3_IRQHandler(void)
+{
+	u8 temp;
+	
+	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)
+	{
+		
+		static u8 count,last_data,last_last_data,Usart_ON_Count;
+		if(Usart_ON_Flag==0)
+		{
+			if(++Usart_ON_Count>10) Usart_ON_Flag=1;
+		}
+		temp=USART3->DR;
+		if(Usart_Flag==0)
+		{
+			if(last_data==0x5A && last_last_data==0xA5)
+			{
+				Usart_Flag=1;
+				RX_BUF[0] = 0xA5;
+				RX_BUF[1] = 0X5A;
+			}
+			count=2;
+		}
+		if(Usart_Flag==1) 
+		{
+			RX_BUF[count]=temp;
+			
+			if(RX_BUF[count] == 0x55 && RX_BUF[count-1] == 0xAA)
+			{
+				Usart_Flag=0;
+//				Get_commands();
+			}
+			count++;
+		}
+		last_last_data=last_data;
+		last_data=temp;
+	}
+//	while(USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET){
+//        USART_ReceiveData(USART1);
+//        USART_ClearFlag(USART1, USART_FLAG_ORE);
+//    }   
+    USART_ClearFlag(USART3, USART_IT_RXNE);
+}
 

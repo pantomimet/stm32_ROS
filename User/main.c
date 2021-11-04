@@ -25,9 +25,9 @@ int main(void)
 		MY_NVIC_PriorityGroupConfig(2);	
 		MiniBalance_PWM_Init(7199,0);   
 //		Servo_PWM_Init(9999,71);   		  
-		OLED_Init();                    
-		Encoder_Init_TIM2();            
-		Encoder_Init_TIM3();            
+//		OLED_Init();                    
+//		Encoder_Init_TIM2();            
+//		Encoder_Init_TIM3();            
 		Flag_Way=1;
 		Flag_Show = 0;
 		Flag_Stop=1;	
@@ -36,15 +36,15 @@ int main(void)
 		MPU9250_Init();
 //		MPU6050_Init();
 //		usart1_init(115200);
-		usart2_init(921600);
-		usart3_init(115200);
+		usart2_init(115200);
+//		usart3_init(115200);
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)SendBuff,SEND_BUF_SIZE);//DMA1通道4,外设为串口1的发送,存储器为SendBuff,长度SEND_BUF_SIZE.
 	  
 		PS2_Init();											
 		PS2_SetInit();									
 		Target_Left = 0;
 		Target_Right = 0;
-//		TIM5_Int_Init(999,71);
+//		TIM5_Int_Init(4999,71);
 //		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化 #
 		TIM6_Int_Init(19999,71);      		//=====定时中断初始化 #20ms--19999	10ms--9999	50ms--49999	60ms--59999
 		Accel_Key = 4;
@@ -81,10 +81,10 @@ int main(void)
 //			flag_50ms = 0;
 //		}
 //		ADC_ConvertedValueLocal =(float) ADC_ConvertedValue/4096*3.3*11;
-		oled_show();          		 //显示屏打开
-//				delay_flag=1;	
-//			
-//				delay_50=0;
+//		oled_show();          		 //显示屏打开
+				delay_flag=1;	
+			
+				delay_50=0;
 //				while(delay_flag);	       //通过定时中断实现的50ms精准延时	
 	  } 
 }
