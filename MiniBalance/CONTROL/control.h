@@ -6,7 +6,7 @@ extern u8 mode;
 #define PI 3.14159265
 #define ZHONGZHI 0 
 #define DIFFERENCE 100
-#define biaoding_1m 3735
+#define biaoding_1m 3686
 extern	int Balance_Pwm,Velocity_Pwm,Turn_Pwm;
 void Kinematic_Analysis(float velocity,float angle);
 int EXTI15_10_IRQHandler(void);
@@ -22,5 +22,6 @@ void Get_RC(void);
 void  Find_CCD_Zhongzhi(void);
 void Get_commands(void);
 void stm32_smooth(void);
+void Position_PID(float image_err);
 //void PID_Servo(float target_angle,float current_angle);
 #endif

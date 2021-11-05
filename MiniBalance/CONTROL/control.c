@@ -9,6 +9,11 @@ u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define L 0.29f
 #define K 16.00f
 #define Balance_angle 0.00
+
+float pos_err,pos_err_pre,pos_err_sum;
+float pos_kp = 0,pos_ki=0 ,pos_kd=0;
+float pos_pid_output;
+
 /**************************************************************************
 函数功能：小车运动数学模型
 入口参数：速度和转角
@@ -116,7 +121,9 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //   									                                        
 //			}
 //			else if(Flag_Target == 0)
-//			{   
+//			{  
+
+		/* 读取编码器的值*/
 		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
 		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
 //		PS2_KEY=PS2_DataKey();
@@ -146,8 +153,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析
 				
 				/* 通过编码器解算当前两轮速度*/
-				v_now_l = (float)Encoder_Left*50/calibration_left;
-				v_now_r = (float)Encoder_Right*50/calibration_right;
+				v_now_l = (float)-Encoder_Left*50/biaoding_1m;
+				v_now_r = (float)Encoder_Right*50/biaoding_1m;
 				
 				
 //				if(mode == 0)
@@ -164,17 +171,28 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				}
 ////				Incremental_PI_Left(Encoder_Left,Target_Left);  
 ////				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
-				
+				Position_PID(image_err);
+				v_now_l += pos_pid_output;
+				v_now_r -= pos_pid_output;
 				Incremental_PI_Left(v_now_l,Target_Left);  
 				Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
 //				Motor_Left = -Balance_PWM_output;
 //				Motor_Right = Balance_PWM_output;
 				Xianfu_Pwm(6900);                          //===PWM限幅
-				Set_Pwm(Motor_Left,Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
+				Set_Pwm(Motor_Left,-Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
 				
 	
 	}
 } 
+
+
+void Position_PID(float image_err)
+{
+	pos_err = image_err;
+	pos_err_sum += pos_err;
+	pos_pid_output = pos_kp * pos_err + pos_kd * pos_err_sum + pos_ki * (pos_err - pos_err_pre);
+	pos_err_pre = pos_err;
+}
 
 
 
@@ -271,7 +289,7 @@ void Incremental_PI_Left (float Encoder,float Target)
 { 	
 	 
 	 
-	 Bias_L=Encoder - Target;                //计算偏差
+	 Bias_L=Target - Encoder;                //计算偏差
 //	if(Bias_L < 0.05 && Bias_L > -0.05)
 //		Bias_L = 0;
 	 Pwm_L+=Velocity_KP*(Bias_L-Last_bias_L)+Velocity_KI*Bias_L;   //增量式PI控制器11288
@@ -285,7 +303,7 @@ void Incremental_PI_Left (float Encoder,float Target)
 void Incremental_PI_Right (float Encoder,float Target)
 { 	
 	 
-	 Bias_R=Encoder - Target;                //计算偏差
+	 Bias_R = Target - Encoder;                //计算偏差
 //	if(Bias_R < 0.05 && Bias_R > -0.05)
 //		Bias_R = 0;
 	 Pwm_R+=Velocity_KP*(Bias_R-Last_bias_R)+Velocity_KI*Bias_R;   //增量式PI控制器
