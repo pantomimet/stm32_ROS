@@ -25,9 +25,9 @@ int main(void)
 		MY_NVIC_PriorityGroupConfig(2);	
 		MiniBalance_PWM_Init(7199,0);   
 //		Servo_PWM_Init(9999,71);   		  
-//		OLED_Init();                    
-//		Encoder_Init_TIM2();            
-//		Encoder_Init_TIM3();            
+		OLED_Init();                    
+		Encoder_Init_TIM2();            
+		Encoder_Init_TIM3();            
 		Flag_Way=1;
 		Flag_Show = 0;
 		Flag_Stop=1;	
@@ -81,7 +81,7 @@ int main(void)
 //			flag_50ms = 0;
 //		}
 //		ADC_ConvertedValueLocal =(float) ADC_ConvertedValue/4096*3.3*11;
-//		oled_show();          		 //显示屏打开
+		oled_show();          		 //显示屏打开
 				delay_flag=1;	
 			
 				delay_50=0;

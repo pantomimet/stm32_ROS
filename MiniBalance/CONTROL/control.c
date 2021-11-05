@@ -126,16 +126,16 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //			if(PS2_DataKey() == PSB_START)
 //				mode = !mode;
 //		}
-		readimu();
-		Balance_PID(Balance_angle,Pitch_g);
-		
-		Balance_v = 1.756e-4 * (float)Balance_PWM_output - 0.04;
+//		readimu();
+//		Balance_PID(Balance_angle,Pitch_g);
+//		
+//		Balance_v = 1.756e-4 * (float)Balance_PWM_output - 0.04;
 		
 ////		USART_TX();
 ////		PS2_KEY=PS2_DataKey();
 //			USART_TX();
 //			usart3_send(0);
-			USART2_TX();
+//			USART2_TX();
 ////		if(PS2_KEY == PSB_START)
 ////		{
 //////			delay_ms(200);
@@ -143,9 +143,13 @@ void TIM6_IRQHandler(void)   //TIM6中断
 ////				mode = !mode;
 ////		}
 //				Get_commands();
-//				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析   
-//				v_now_l = (float)Encoder_Left*50/biaoding_1m;
-//				v_now_r = (float)Encoder_Right*50/biaoding_1m;
+//				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析
+				
+				/* 通过编码器解算当前两轮速度*/
+				v_now_l = (float)Encoder_Left*50/calibration_left;
+				v_now_r = (float)Encoder_Right*50/calibration_right;
+				
+				
 //				if(mode == 0)
 //				{
 ////					stm32_smooth();
@@ -161,8 +165,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 ////				Incremental_PI_Left(Encoder_Left,Target_Left);  
 ////				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 				
-//				Incremental_PI_Left(v_now_l,Target_Left);  
-//				Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
+				Incremental_PI_Left(v_now_l,Target_Left);  
+				Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
 //				Motor_Left = -Balance_PWM_output;
 //				Motor_Right = Balance_PWM_output;
 				Xianfu_Pwm(6900);                          //===PWM限幅
