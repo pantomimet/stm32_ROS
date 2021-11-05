@@ -58,7 +58,14 @@ int main(void)
 	/*装货阻塞，等待展示数字*/
 	wait_to_start();
 
+	/*前往十字*/
+	go_to_target();
+
+	/*等待回家*/
+	wait_to_return();
 	
+	/*回家*/
+	return_to_home();
 	
 	while(1)
 	  {	

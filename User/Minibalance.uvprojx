@@ -390,6 +390,11 @@
               <FileType>1</FileType>
               <FilePath>.\system_stm32f10x.c</FilePath>
             </File>
+            <File>
+              <FileName>transport.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\transport.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
