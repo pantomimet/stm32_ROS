@@ -16,6 +16,7 @@ int Remoter_Ch1,Remoter_Ch2,Remoter_Ch3,Remoter_Ch4;
 float Tand;
 int flag_50ms = 0;
 float ADC_ConvertedValueLocal = 0;
+int A0;
 int main(void)
   { 
 	delay_init();	    	            
@@ -23,6 +24,7 @@ int main(void)
 	LED_Init();   
 		  
 	KEY_Init();
+	Light_KEY_init();
 	Beep_init();	  
 	MY_NVIC_PriorityGroupConfig(2);	
 	MiniBalance_PWM_Init(7199,0);   
@@ -56,46 +58,48 @@ int main(void)
 //		MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)Urxbuf,DMA_DIR_PeripheralSRC,10);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
 	
 	/*测试用*/
-	while(1){
-		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
-		{
-			delay_ms(100);
-			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 )
-				go_forward(0.69);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
-			turn(left);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
-			go_forward(0.28);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
+//	while(1){
+//		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
+//		{
+//			delay_ms(100);
+//			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 )
+//			go_forward(0.69);
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
+//			turn(left);
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
+//			go_forward(0.28);
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
+////			turn(right);
+//			turn_round();
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+//			go_forward(0.28);
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
 //			turn(right);
-			turn_round();
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-			go_forward(0.28);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
-			turn(right);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
-			go_forward(0.69);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
-//			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
-//				Target_straight = 0;
-		}
-		
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
+//			go_forward(0.69);
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
+////			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
+////				Target_straight = 0;
+//		}
 //		
+////		
+////		
+//	A0=GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0);
 //		
-	}
+//	}
 
 	/*控制主函数*/
 	
@@ -107,10 +111,10 @@ int main(void)
 	go_to_target();
 
 	/*等待回家*/
-	wait_to_return();
+//	wait_to_return();
 	
 	/*回家*/
-	return_home();
+//	return_home();
 	
 	while(1)
 	  {	

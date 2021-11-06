@@ -44,6 +44,9 @@ void wait_to_return(void);
 void return_home(void);
 void turn_round(void);
 void go_home(float distance);
+void control_delay(void);
+void number_one(void);
+void number_two(void);
 
 
 #endif

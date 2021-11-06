@@ -26,24 +26,28 @@ void Light_KEY_Init(void) //IO初始化
 void wait_to_start(void)
 {
 //	while(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_2) != 0)
-	while(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) != 0)
+	while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) != 1)//有光，无物品，循环
 	{
-		while((openmv_number == 0 || openmv_state != 0x03) && start_number != 0)//等待openmv读取数字
+		while(start_number == 0)//等待openmv读取数字
 		{
 			TX_BUF[2] = state_1;	//未出发，且未接收到数字
+			if(openmv_state == 0x03)
+				start_number = openmv_number;
 		}
 //		
 		/*保存数字*/
 //		openmv_number = openmv_number_read;
-		start_number = openmv_number;
+//		if(start_number ==0)
+//			start_number = openmv_number;
 
 		TX_BUF[2] = state_2;		//收到数字
-		oled_show();
+//		oled_show();
 		
 		/*延迟消抖*/
 		delay_ms(100);
 		
 	}
+	delay_ms(1000);
 	
 }
 
@@ -52,72 +56,75 @@ void go_to_target(void)
 //	if(openmv_number == 1 || openmv_number == 2)//近十字
 //	{
 		/*直行至接近十字位置，然后识别*/
-		
-		go_forward(near_distance);
-		move_list[move_cnt] = straight_near;
-		move_cnt++;
-		near_cnt++;
-	
-		while(openmv_state != 0x01)//当openmv发来的状态不是虚线时
-		{
-			/*等待openmv判断后发出指令*/
-//			while(openmv_state != 0x00)
-//			{}			
-		
-			
-			
-			/*通过数字判断左右转*/
-			if(next_move == 0)//这里的数字待定
-			{
-				next_move = 255;
-				turn(left);
-				move_list[move_cnt] = right;
-				move_cnt++;
-				if(near_cnt != 3)
-				{
-					go_to_patient(patient_distance);
-					move_list[move_cnt] = straight_patient;
-					move_cnt++;
-					return;
-				}
-				else 
-				{
-					go_forward(near_distance);
-					move_list[move_cnt] = straight_near;
-					move_cnt++;
-					near_cnt++;
-				}
-			}
-			else if(next_move == 1)
-			{
-				next_move = 255;
-				turn(right);
-				move_list[move_cnt] = left;
-				move_cnt++;
-				if(near_cnt != 3)
-				{
-					go_to_patient(patient_distance);
-					move_list[move_cnt] = straight_patient;
-					move_cnt++;
-					return;
-				}
-				else 
-				{
-					go_forward(near_distance);
-					move_list[move_cnt] = straight_near;
-					move_cnt++;
-					near_cnt++;
-				}
-			}
-			else if(next_move == 2)
-			{
-				next_move = 255;
-				go_forward(near_distance);
-				move_list[move_cnt] = straight_near;
-				move_cnt++;
-				near_cnt++;
-			}
-		}
+		if(start_number == 1)
+			number_one();
+		else if(start_number ==2)
+			number_two();
+//		go_forward(near_distance);
+//		move_list[move_cnt] = straight_near;
+//		move_cnt++;
+//		near_cnt++;
+//	
+//		while(openmv_state != 0x01)//当openmv发来的状态不是虚线时
+//		{
+//			/*等待openmv判断后发出指令*/
+////			while(openmv_state != 0x00)
+////			{}			
+//		
+//			
+//			
+//			/*通过数字判断左右转*/
+//			if(next_move == 0)//这里的数字待定
+//			{
+//				next_move = 255;
+//				turn(left);
+//				move_list[move_cnt] = right;
+//				move_cnt++;
+//				if(near_cnt != 3)
+//				{
+//					go_to_patient(patient_distance);
+//					move_list[move_cnt] = straight_patient;
+//					move_cnt++;
+//					return;
+//				}
+//				else 
+//				{
+//					go_forward(near_distance);
+//					move_list[move_cnt] = straight_near;
+//					move_cnt++;
+//					near_cnt++;
+//				}
+//			}
+//			else if(next_move == 1)
+//			{
+//				next_move = 255;
+//				turn(right);
+//				move_list[move_cnt] = left;
+//				move_cnt++;
+//				if(near_cnt != 3)
+//				{
+//					go_to_patient(patient_distance);
+//					move_list[move_cnt] = straight_patient;
+//					move_cnt++;
+//					return;
+//				}
+//				else 
+//				{
+//					go_forward(near_distance);
+//					move_list[move_cnt] = straight_near;
+//					move_cnt++;
+//					near_cnt++;
+//				}
+//			}
+//			else if(next_move == 2)
+//			{
+//				next_move = 255;
+//				go_forward(near_distance);
+//				move_list[move_cnt] = straight_near;
+//				move_cnt++;
+//				near_cnt++;
+//			}
+//		}
 		/*前往病房的大致位置*/
 //		go_to_patient(patient_distance);
 ////	}
@@ -185,7 +192,7 @@ void go_to_target(void)
 ////	}
 	
 	/*亮红灯*/
-	Red_LED_on;
+//	Red_LED_on;
 }
 
 void go_forward(float distance)	
@@ -291,13 +298,13 @@ void go_to_patient(float distance)
 void wait_to_return(void)
 {
 	/*等待光电开关检测是否卸货*/
-	while(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) != 0)
+	while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) != 0)	//无光，有物品，循环
 	{
 		delay_ms(100);
 	}
-	
+	delay_ms(1000);
 	/*灭红灯*/
-	GPIO_SetBits(GPIOB,GPIO_Pin_13);
+	Red_LED_off;
 }
 
 void return_home(void)
@@ -481,6 +488,54 @@ void go_home(float distance)
 	
 }
 
+void number_one(void)
+{
+	go_forward(0.69);
+	control_delay();
+	turn(left);
+	control_delay();
+	go_forward(0.29);
+	control_delay();
+	Red_LED_on;
+	wait_to_return();
+	turn_round();
+	control_delay();
+	go_forward(0.29);
+	control_delay();
+	turn(right);
+	control_delay();
+	go_forward(0.69);
+	control_delay();
+
+}
+
+void number_two(void)
+{
+	go_forward(0.69);
+	control_delay();
+	turn(right);
+	control_delay();
+	go_forward(0.29);
+	control_delay();
+	Red_LED_on;
+	wait_to_return();
+	turn_round();
+	control_delay();
+	go_forward(0.29);
+	control_delay();
+	turn(left);
+	control_delay();
+	go_forward(0.69);
+	control_delay();
+
+}
+
+
+void control_delay(void)
+{
+	while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+	while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+}
 
 
 

@@ -38,10 +38,10 @@ void LED_Init(void)
 void Light_KEY_init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE); //使能端口时钟
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE); //使能端口时钟
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0; //端口配置
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;         //上拉输入
-	GPIO_Init(GPIOC, &GPIO_InitStructure);					      //根据设定参数初始化GPIO
+	GPIO_Init(GPIOA, &GPIO_InitStructure);					      //根据设定参数初始化GPIO
 }
 
 
