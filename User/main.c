@@ -26,7 +26,7 @@ int main(void)
 	MY_NVIC_PriorityGroupConfig(2);	
 	MiniBalance_PWM_Init(7199,0);   
 //		Servo_PWM_Init(9999,71);   		  
-//	OLED_Init();                    
+	OLED_Init();                    
 	Encoder_Init_TIM2();            
 	Encoder_Init_TIM3();            
 	Flag_Way=1;
@@ -56,14 +56,15 @@ int main(void)
 
 	/*¿ØÖÆÖ÷º¯Êý*/
 	while(1){
-		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
-		{
-			delay_ms(100);
-			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight == 0)
-				Target_straight = 0.5;
-			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
-				Target_straight = 0;
-		}
+//		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
+//		{
+//			delay_ms(100);
+//			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight == 0)
+//				Target_straight = 0.5;
+//			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
+//				Target_straight = 0;
+//		}
+		oled_show();
 		
 		
 	}
