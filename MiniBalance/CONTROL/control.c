@@ -178,48 +178,48 @@ void TIM6_IRQHandler(void)   //TIM6中断
 ////				Incremental_PI_Left(Encoder_Left,Target_Left);  
 ////				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 //				Position_PID(image_err);
-				Position_PID((float)image_err);
-				Target_Left = Target_straight +  turn_flag * pos_pid_output + turn_speed;
-				Target_Right = Target_straight - turn_flag * pos_pid_output - turn_speed;
-				
-				if(Target_Left > 1.5) Target_Left = 1.5;
-				else if(Target_Left < -1.5) Target_Left = -1.5;
-				if(Target_Right > 1.5) Target_Right = 1.5;
-				else if(Target_Right < -1.5) Target_Right = -1.5;
-				
-				
-				if(Final_Target_Left - Target_Left < 0.01 && Target_Left - Final_Target_Left  < 0.01 && Target_Left == 0)
-				{
-					Final_Target_Left = 0;
-				}
-				else if(Final_Target_Left < Target_Left)
-				{
-					Final_Target_Left = Target_Left + 0.01;
-				}
-				else if(Final_Target_Left > Target_Left)
-				{
-					Final_Target_Left = Target_Left - 0.01;
-				}
-				
-				if(Final_Target_Right - Target_Right < 0.01 && Target_Right - Final_Target_Right < 0.01 && Target_Right == 0)
-				{
-					Final_Target_Right = 0;
-				}
-				else if(Final_Target_Right < Target_Right)
-				{
-					Final_Target_Right = Target_Right + 0.01;
-				}
-				else if(Final_Target_Right > Target_Right)
-				{
-					Final_Target_Right = Target_Right - 0.01;
-				}
-				
-				Incremental_PI_Left(v_now_l,Final_Target_Left);  
-				Incremental_PI_Right(v_now_r,Final_Target_Right);//    *11/17
+//				Position_PID((float)image_err);
+//				Target_Left = Target_straight +  turn_flag * pos_pid_output + turn_speed;
+//				Target_Right = Target_straight - turn_flag * pos_pid_output - turn_speed;
+//				
+//				if(Target_Left > 1.5) Target_Left = 1.5;
+//				else if(Target_Left < -1.5) Target_Left = -1.5;
+//				if(Target_Right > 1.5) Target_Right = 1.5;
+//				else if(Target_Right < -1.5) Target_Right = -1.5;
+//				
+//				
+//				if(Final_Target_Left - Target_Left < 0.01 && Target_Left - Final_Target_Left  < 0.01 && Target_Left == 0)
+//				{
+//					Final_Target_Left = 0;
+//				}
+//				else if(Final_Target_Left < Target_Left)
+//				{
+//					Final_Target_Left = Target_Left + 0.01;
+//				}
+//				else if(Final_Target_Left > Target_Left)
+//				{
+//					Final_Target_Left = Target_Left - 0.01;
+//				}
+//				
+//				if(Final_Target_Right - Target_Right < 0.01 && Target_Right - Final_Target_Right < 0.01 && Target_Right == 0)
+//				{
+//					Final_Target_Right = 0;
+//				}
+//				else if(Final_Target_Right < Target_Right)
+//				{
+//					Final_Target_Right = Target_Right + 0.01;
+//				}
+//				else if(Final_Target_Right > Target_Right)
+//				{
+//					Final_Target_Right = Target_Right - 0.01;
+//				}
+//				
+//				Incremental_PI_Left(v_now_l,Final_Target_Left);  
+//				Incremental_PI_Right(v_now_r,Final_Target_Right);//    *11/17
 //				Motor_Left = -Balance_PWM_output;
 //				Motor_Right = Balance_PWM_output;
-				Xianfu_Pwm(6900);                          //===PWM限幅
-				Set_Pwm(Motor_Left,-Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
+//				Xianfu_Pwm(6900);                          //===PWM限幅
+//				Set_Pwm(Motor_Left,-Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
 				
 	
 	}
