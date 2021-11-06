@@ -61,8 +61,34 @@ int main(void)
 		{
 			delay_ms(100);
 			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 )
-//				go_forward(0.69);
+				go_forward(0.69);
+			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+//			delay_ms(1000);
+			turn(left);
+			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+//			delay_ms(1000);
+			go_forward(0.28);
+			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+//			delay_ms(1000);
+//			turn(right);
+			turn_round();
+			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+			go_forward(0.28);
+			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+//			delay_ms(1000);
 			turn(right);
+			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+//			delay_ms(1000);
+			go_forward(0.69);
+			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+//			delay_ms(1000);
 //			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
 //				Target_straight = 0;
 		}

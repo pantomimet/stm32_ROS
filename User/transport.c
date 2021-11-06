@@ -246,7 +246,7 @@ void turn(int direction)
 	{
 //		Target_straight = 0.5;
 		turn_speed = 0.2;
-		while(abs(encoder_left_cnt) - abs(encoder_right_cnt)<= right_90)
+		while(-encoder_left_cnt - encoder_right_cnt<= right_90)
 		{}
 	}
 	Target_straight = 0;
@@ -445,12 +445,12 @@ void return_home(void)
 void turn_round(void)
 {
 	/*转向开始时将编码器转向计数清零，记得写在定时器里累加*/
-	encoder_right_turn_cnt = 0;
-	encoder_left_turn_cnt = 0;
+	encoder_left_cnt = 0;
+	encoder_right_cnt = 0;
 	
 	/*开始转向*/
 	turn_speed = 0.2;
-	while(abs(encoder_left_cnt) - abs(encoder_right_cnt)<= 2*right_90)
+	while(-encoder_left_cnt - encoder_right_cnt<= 1700)
 	{}
 		
 	turn_speed = 0;
