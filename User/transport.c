@@ -235,15 +235,15 @@ void turn(int direction)
 	/*判断转向*/
 	if(direction == left)
 	{
-		Target_straight = 0.5;
-		turn_speed = -0.1;
+//		Target_straight = 0.5;
+		turn_speed = -0.2;
 		while(abs(encoder_right_cnt) - abs(encoder_left_cnt) <= left_90)
 		{}
 	}
 	else 
 	{
-		Target_straight = 0.5;
-		turn_speed = 0.1;
+//		Target_straight = 0.5;
+		turn_speed = 0.2;
 		while(abs(encoder_left_cnt) - abs(encoder_right_cnt)<= right_90)
 		{}
 	}
@@ -268,9 +268,9 @@ void go_to_patient(float distance)
 	/*距离不够，死循环*/
 	while(total_distance <= distance)
 	{
-		if(total_distance > distance -0.3)
-		/*通过串口发送的状态变为到达病房*/
-		TX_BUF[2] = state_7;//检测虚线
+//		if(total_distance > distance )
+//		/*通过串口发送的状态变为到达病房*/
+//		TX_BUF[2] = state_7;//检测虚线
 	}
 	
 	/*停止*/

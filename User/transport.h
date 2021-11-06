@@ -3,11 +3,11 @@
 
 #include "sys.h"
 
-#define near_distance 0.7
+#define near_distance 0.8
 #define mid_distance 1.6
 #define far_distance 2.5
-#define far_distance_2 0.7
-#define patient_distance 0.35
+#define far_distance_2 0.9
+#define patient_distance 0.15
 
 #define left 0
 #define right 1

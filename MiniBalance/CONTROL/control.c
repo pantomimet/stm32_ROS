@@ -160,8 +160,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析
 				
 				/* 通过编码器解算当前两轮速度*/
-				v_now_l = (float)-Encoder_Left*50/biaoding_1m;
-				v_now_r = (float)Encoder_Right*50/biaoding_1m;
+				v_now_l = (float)Encoder_Left*50/biaoding_1m;
+				v_now_r = (float)-Encoder_Right*50/biaoding_1m;
 				total_distance = (encoder_right_cnt - encoder_left_cnt)/biaoding_1m;
 				
 //				if(mode == 0)
@@ -192,34 +192,34 @@ void TIM6_IRQHandler(void)   //TIM6中断
 				else if(Target_Right < -1.5) Target_Right = -1.5;
 				
 				
-				if(Final_Target_Left - Target_Left < 0.01 && Target_Left - Final_Target_Left  < 0.01 && Target_Left == 0)
-				{
-					Final_Target_Left = 0;
-				}
-				else if(Final_Target_Left < Target_Left)
-				{
-					Final_Target_Left = Target_Left + 0.01;
-				}
-				else if(Final_Target_Left > Target_Left)
-				{
-					Final_Target_Left = Target_Left - 0.01;
-				}
+//				if(Final_Target_Left - Target_Left < 0.005 && Target_Left - Final_Target_Left  < 0.005 && Target_Left == 0)
+//				{
+//					Final_Target_Left = 0;
+//				}
+//				else if(Final_Target_Left < Target_Left)
+//				{
+//					Final_Target_Left = Target_Left + 0.005;
+//				}
+//				else if(Final_Target_Left > Target_Left)
+//				{
+//					Final_Target_Left = Target_Left - 0.005;
+//				}
+//				
+//				if(Final_Target_Right - Target_Right < 0.005 && Target_Right - Final_Target_Right < 0.005 && Target_Right == 0)
+//				{
+//					Final_Target_Right = 0;
+//				}
+//				else if(Final_Target_Right < Target_Right)
+//				{
+//					Final_Target_Right = Target_Right + 0.005;
+//				}
+//				else if(Final_Target_Right > Target_Right)
+//				{
+//					Final_Target_Right = Target_Right - 0.005;
+//				}
 				
-				if(Final_Target_Right - Target_Right < 0.01 && Target_Right - Final_Target_Right < 0.01 && Target_Right == 0)
-				{
-					Final_Target_Right = 0;
-				}
-				else if(Final_Target_Right < Target_Right)
-				{
-					Final_Target_Right = Target_Right + 0.01;
-				}
-				else if(Final_Target_Right > Target_Right)
-				{
-					Final_Target_Right = Target_Right - 0.01;
-				}
-				
-				Incremental_PI_Left(v_now_l,Final_Target_Left);  
-				Incremental_PI_Right(v_now_r,Final_Target_Right);//    *11/17
+				Incremental_PI_Left(v_now_l,Target_Left);  
+				Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
 //				Motor_Left = -Balance_PWM_output;
 //				Motor_Right = Balance_PWM_output;
 				Xianfu_Pwm(6900);                          //===PWM限幅
