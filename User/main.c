@@ -27,7 +27,7 @@ int main(void)
 	MY_NVIC_PriorityGroupConfig(2);	
 	MiniBalance_PWM_Init(7199,0);   
 //		Servo_PWM_Init(9999,71);   		  
-//	OLED_Init();                    
+	OLED_Init();                    
 	Encoder_Init_TIM2();            
 	Encoder_Init_TIM3();            
 	Flag_Way=1;
@@ -48,7 +48,7 @@ int main(void)
 	Target_Right = 0;
 //		TIM5_Int_Init(4999,71);
 //		TIM4_Int_Init(19999,71);			//=====20ms定时中断初始化 #
-	TIM6_Int_Init(9999,719);      		//=====定时中断初始化 #20ms--19999	10ms--9999	50ms--49999	60ms--59999
+	TIM6_Int_Init(19999,71);      		//=====定时中断初始化 #20ms--19999	10ms--9999	50ms--49999	60ms--59999
 	Accel_Key = 4;
 //		UART_DMA_Config();
 //		adc_init();
@@ -56,18 +56,18 @@ int main(void)
 //		MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)Urxbuf,DMA_DIR_PeripheralSRC,10);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
 	
 	/*测试用*/
-//	while(1){
-//		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
-//		{
-//			delay_ms(100);
-//			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight == 0)
-//				Target_straight = 0.5;
+	while(1){
+		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
+		{
+			delay_ms(100);
+			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 )
+				go_forward(near_distance);
 //			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
 //				Target_straight = 0;
-//		}
+		}
 //		
 //		
-//	}
+	}
 
 	/*控制主函数*/
 	

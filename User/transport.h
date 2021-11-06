@@ -3,7 +3,7 @@
 
 #include "sys.h"
 
-#define near_distance 0.8
+#define near_distance 0.95
 #define mid_distance 1.6
 #define far_distance 2.5
 #define far_distance_2 0.9

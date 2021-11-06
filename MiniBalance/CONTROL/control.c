@@ -149,7 +149,7 @@ void TIM6_IRQHandler(void)   //TIM6中断
 ////		PS2_KEY=PS2_DataKey();
 //			USART_TX();
 //			usart3_send(0);
-			USART2_TX();
+//			USART2_TX();
 ////		if(PS2_KEY == PSB_START)
 ////		{
 //////			delay_ms(200);
@@ -192,38 +192,39 @@ void TIM6_IRQHandler(void)   //TIM6中断
 				else if(Target_Right < -1.5) Target_Right = -1.5;
 				
 				
-//				if(Final_Target_Left - Target_Left < 0.005 && Target_Left - Final_Target_Left  < 0.005 && Target_Left == 0)
-//				{
-//					Final_Target_Left = 0;
-//				}
-//				else if(Final_Target_Left < Target_Left)
-//				{
-//					Final_Target_Left = Target_Left + 0.005;
-//				}
-//				else if(Final_Target_Left > Target_Left)
-//				{
-//					Final_Target_Left = Target_Left - 0.005;
-//				}
-//				
-//				if(Final_Target_Right - Target_Right < 0.005 && Target_Right - Final_Target_Right < 0.005 && Target_Right == 0)
-//				{
-//					Final_Target_Right = 0;
-//				}
-//				else if(Final_Target_Right < Target_Right)
-//				{
-//					Final_Target_Right = Target_Right + 0.005;
-//				}
-//				else if(Final_Target_Right > Target_Right)
-//				{
-//					Final_Target_Right = Target_Right - 0.005;
-//				}
+				if(Final_Target_Left - Target_Left < 0.021 && Target_Left - Final_Target_Left  < 0.021 && Target_Left == 0)
+				{
+					Final_Target_Left = 0;
+				}
+				else if(Final_Target_Left < Target_Left)
+				{
+					Final_Target_Left = Final_Target_Left + 0.02;
+				}
+				else if(Final_Target_Left > Target_Left)
+				{
+					Final_Target_Left = Final_Target_Left - 0.02;
+				}
 				
-				Incremental_PI_Left(v_now_l,Target_Left);  
-				Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
+				if(Final_Target_Right - Target_Right < 0.021 && Target_Right - Final_Target_Right < 0.021 && Target_Right == 0)
+				{
+					Final_Target_Right = 0;
+				}
+				else if(Final_Target_Right < Target_Right)
+				{
+					Final_Target_Right = Final_Target_Right + 0.02;
+				}
+				else if(Final_Target_Right > Target_Right)
+				{
+					Final_Target_Right = Final_Target_Right - 0.02;
+				}
+				
+				Incremental_PI_Left(v_now_l,Final_Target_Left);  
+				Incremental_PI_Right(v_now_r,Final_Target_Right);//    *11/17
 //				Motor_Left = -Balance_PWM_output;
 //				Motor_Right = Balance_PWM_output;
 				Xianfu_Pwm(6900);                          //===PWM限幅
 				Set_Pwm(Motor_Left,-Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
+//				oled_show();
 				
 	
 	}

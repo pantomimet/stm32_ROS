@@ -28,7 +28,7 @@ void wait_to_start(void)
 //	while(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_2) != 0)
 	while(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) != 0)
 	{
-		while(openmv_number == 0 || openmv_state != 0x03)//等待openmv读取数字
+		while((openmv_number == 0 || openmv_state != 0x03) && start_number != 0)//等待openmv读取数字
 		{
 			TX_BUF[2] = state_1;	//未出发，且未接收到数字
 		}
@@ -36,11 +36,13 @@ void wait_to_start(void)
 		/*保存数字*/
 //		openmv_number = openmv_number_read;
 		start_number = openmv_number;
+
 		TX_BUF[2] = state_2;		//收到数字
+		oled_show();
 		
 		/*延迟消抖*/
 		delay_ms(100);
-		oled_show();
+		
 	}
 	
 }

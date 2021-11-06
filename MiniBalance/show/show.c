@@ -36,7 +36,7 @@ void oled_show(void)
 	
 	
 //					//=============第3行显示左电机的状态=======================//	
-					OLED_ShowNumber(15,20,start_number,5,12);
+					OLED_ShowNumber(15,20,(u32)start_number,5,12);
 //						if( encoder_left_cnt<0)		  OLED_ShowString(00,20,"-"),
 //																OLED_ShowNumber(15,20,-encoder_left_cnt,5,12);
 //					else                 	OLED_ShowString(0,20,"+"),
