@@ -3,7 +3,7 @@
 
 #include "sys.h"
 
-#define near_distance 0.95
+#define near_distance 0.5
 #define mid_distance 1.6
 #define far_distance 2.5
 #define far_distance_2 0.9
@@ -14,8 +14,8 @@
 #define straight_near 2
 #define straight_patient 3
 
-#define left_90 980
-#define right_90 880
+#define left_90 700
+#define right_90 700
 
 
 #define state_1 0		//未接收到数字但未出发

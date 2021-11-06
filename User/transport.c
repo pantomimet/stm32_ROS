@@ -201,9 +201,9 @@ void go_forward(float distance)
 	/*距离不够，死循环*/
 	while(total_distance <= distance)
 	{
-		if(total_distance >  distance - 0.3)
-		/*通过串口发送的状态变为识别数字*/
-		TX_BUF[2]=state_3;	//即将抵达十字，识别数字
+//		if(total_distance >  distance - 0.3)
+//		/*通过串口发送的状态变为识别数字*/
+//		TX_BUF[2]=state_3;	//即将抵达十字，识别数字
 	}
 	
 	/*停止*/
@@ -212,7 +212,7 @@ void go_forward(float distance)
 		Target_straight = 0;
 		Target_Right = 0;
 		Target_Left = 0;
-		Set_Pwm(0,-0,0);
+		//Set_Pwm(0,-0,0);
 //	}
 	
 	
@@ -239,7 +239,7 @@ void turn(int direction)
 	{
 //		Target_straight = 0.5;
 		turn_speed = -0.2;
-		while(abs(encoder_right_cnt) - abs(encoder_left_cnt) <= left_90)
+		while(encoder_right_cnt + encoder_left_cnt <= left_90)
 		{}
 	}
 	else 

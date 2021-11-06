@@ -61,10 +61,12 @@ int main(void)
 		{
 			delay_ms(100);
 			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 )
-				go_forward(near_distance);
+//				go_forward(0.69);
+			turn(right);
 //			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
 //				Target_straight = 0;
 		}
+		
 //		
 //		
 	}
