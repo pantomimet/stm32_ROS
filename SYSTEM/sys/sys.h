@@ -85,6 +85,7 @@
 #include "dma.h"
 #include "adc.h"
 #include "filter.h"
+#include "transport.h"
 //JTAG模式设置定义
 #define JTAG_SWD_DISABLE   0X02
 #define SWD_ENABLE         0X01
@@ -119,6 +120,7 @@ extern u8 Send_rasberry[60];
 extern int flag_50ms;
 extern volatile uint16_t ADC_ConvertedValue;
 extern float ADC_ConvertedValueLocal;
+extern float Final_Target_Left,Final_Target_Right;
 /////////////////////////////////////////////////////////////////  
 void Stm32_Clock_Init(u8 PLL);  //时钟初始化  
 void Sys_Soft_Reset(void);      //系统软复位

@@ -7,6 +7,7 @@ u8 Flag_Stop=1,Flag_Show;
 int Encoder_Left,Encoder_Right;                   
 long int Motor_Left,Motor_Right;
 float Target_Left,Target_Right;
+float Final_Target_Left,Final_Target_Right;
 float Velocity,Target_Angle,Servo;
 u8 delay_50,delay_flag;
 float Velocity_KP=-11500,Velocity_KI=-2500;
@@ -25,7 +26,7 @@ int main(void)
 	MY_NVIC_PriorityGroupConfig(2);	
 	MiniBalance_PWM_Init(7199,0);   
 //		Servo_PWM_Init(9999,71);   		  
-	OLED_Init();                    
+//	OLED_Init();                    
 	Encoder_Init_TIM2();            
 	Encoder_Init_TIM3();            
 	Flag_Way=1;
@@ -33,13 +34,13 @@ int main(void)
 	Flag_Stop=1;	
 	delay_ms(500);                  //=====延时等待稳定
 
-	MPU9250_Init();
+//	MPU9250_Init();
 //		MPU6050_Init();
 //		usart1_init(115200);
-//		usart2_init(115200);
+		usart2_init(115200);
 //		usart3_init(115200);
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)SendBuff,SEND_BUF_SIZE);//DMA1通道4,外设为串口1的发送,存储器为SendBuff,长度SEND_BUF_SIZE.
-  
+	KEY_Init();
 	PS2_Init();											
 	PS2_SetInit();									
 	Target_Left = 0;
@@ -54,7 +55,18 @@ int main(void)
 //		MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)Urxbuf,DMA_DIR_PeripheralSRC,10);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
 
 	/*控制主函数*/
-	
+	while(1){
+		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
+		{
+			delay_ms(100);
+			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight == 0)
+				Target_straight = 0.5;
+			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
+				Target_straight = 0;
+		}
+		
+		
+	}
 	/*装货阻塞，等待展示数字*/
 	wait_to_start();
 
@@ -65,7 +77,7 @@ int main(void)
 	wait_to_return();
 	
 	/*回家*/
-	return_to_home();
+	return_home();
 	
 	while(1)
 	  {	
@@ -96,7 +108,7 @@ int main(void)
 //			flag_50ms = 0;
 //		}
 //		ADC_ConvertedValueLocal =(float) ADC_ConvertedValue/4096*3.3*11;
-		oled_show();          		 //显示屏打开
+//		oled_show();          		 //显示屏打开
 				delay_flag=1;	
 			
 				delay_50=0;

@@ -13,5 +13,6 @@ void usart3_init(u32 bound);
 void usart3_send(u8 data);
 void USART3_IRQHandler(void);
 
-
+extern u8 TX_BUF[16];
+extern u8 RX_BUF[16];
 #endif

@@ -3,6 +3,7 @@
 u8 rxbuf[8],Urxbuf[8],CAN_ON_Flag,Usart_ON_Flag,Usart_Flag,Usart_End_Flag,PID_Send;  //CAN和串口控制相关变量
 u8 txbuf[8],txbuf2[8];  //CAN发送相关变量
 u8 RX_BUF[16] = {0};
+u8 TX_BUF[16] = {0};
 void usart1_init(u32 bound)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -230,6 +231,7 @@ void USART2_IRQHandler(void)
 			{
 				Usart_Flag=0;
 //				Get_commands();
+				Get_openmv();
 			}
 			count++;
 		}

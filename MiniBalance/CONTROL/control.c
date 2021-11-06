@@ -11,8 +11,10 @@ u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define Balance_angle 0.00
 
 float pos_err,pos_err_pre,pos_err_sum;
-float pos_kp = 0,pos_ki=0 ,pos_kd=0;
+float pos_kp = 0.0020,pos_ki=0,pos_kd=0.0035;
 float pos_pid_output;
+float Target_straight = 0;
+float total_distance = 0;
 
 /**************************************************************************
 函数功能：小车运动数学模型
@@ -126,6 +128,10 @@ void TIM6_IRQHandler(void)   //TIM6中断
 		/* 读取编码器的值*/
 		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
 		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
+		
+		encoder_right_turn_cnt += Encoder_Right;
+		encoder_left_turn_cnt += Encoder_Left;
+		
 //		PS2_KEY=PS2_DataKey();
 //		if(PS2_KEY == PSB_START)
 //		{
@@ -155,7 +161,7 @@ void TIM6_IRQHandler(void)   //TIM6中断
 				/* 通过编码器解算当前两轮速度*/
 				v_now_l = (float)-Encoder_Left*50/biaoding_1m;
 				v_now_r = (float)Encoder_Right*50/biaoding_1m;
-				
+				total_distance = (encoder_right_cnt - encoder_left_cnt)/biaoding_1m;
 				
 //				if(mode == 0)
 //				{
@@ -171,11 +177,45 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				}
 ////				Incremental_PI_Left(Encoder_Left,Target_Left);  
 ////				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
-				Position_PID(image_err);
-				v_now_l += pos_pid_output;
-				v_now_r -= pos_pid_output;
-				Incremental_PI_Left(v_now_l,Target_Left);  
-				Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
+//				Position_PID(image_err);
+				Position_PID((float)image_err);
+				Target_Left = Target_straight + pos_pid_output + turn_speed;
+				Target_Right = Target_straight - pos_pid_output - turn_speed;
+				
+				if(Target_Left > 1.5) Target_Left = 1.5;
+				else if(Target_Left < -1.5) Target_Left = -1.5;
+				if(Target_Right > 1.5) Target_Right = 1.5;
+				else if(Target_Right < -1.5) Target_Right = -1.5;
+				
+				
+				if(Final_Target_Left - Target_Left < 0.01 && Target_Left - Final_Target_Left  < 0.01 && Target_Left == 0)
+				{
+					Final_Target_Left = 0;
+				}
+				else if(Final_Target_Left < Target_Left)
+				{
+					Final_Target_Left = Target_Left + 0.01;
+				}
+				else if(Final_Target_Left > Target_Left)
+				{
+					Final_Target_Left = Target_Left - 0.01;
+				}
+				
+				if(Final_Target_Right - Target_Right < 0.01 && Target_Right - Final_Target_Right < 0.01 && Target_Right == 0)
+				{
+					Final_Target_Right = 0;
+				}
+				else if(Final_Target_Right < Target_Right)
+				{
+					Final_Target_Right = Target_Right + 0.01;
+				}
+				else if(Final_Target_Right > Target_Right)
+				{
+					Final_Target_Right = Target_Right - 0.01;
+				}
+				
+				Incremental_PI_Left(v_now_l,Final_Target_Left);  
+				Incremental_PI_Right(v_now_r,Final_Target_Right);//    *11/17
 //				Motor_Left = -Balance_PWM_output;
 //				Motor_Right = Balance_PWM_output;
 				Xianfu_Pwm(6900);                          //===PWM限幅
@@ -186,11 +226,11 @@ void TIM6_IRQHandler(void)   //TIM6中断
 } 
 
 
-void Position_PID(float image_err)
+void Position_PID(float err)
 {
-	pos_err = image_err;
+	pos_err = err;
 	pos_err_sum += pos_err;
-	pos_pid_output = pos_kp * pos_err + pos_kd * pos_err_sum + pos_ki * (pos_err - pos_err_pre);
+	pos_pid_output = pos_kp * pos_err + pos_ki * pos_err_sum + pos_ki * (pos_err - pos_err_pre);
 	pos_err_pre = pos_err;
 }
 
@@ -294,7 +334,7 @@ void Incremental_PI_Left (float Encoder,float Target)
 //		Bias_L = 0;
 	 Pwm_L+=Velocity_KP*(Bias_L-Last_bias_L)+Velocity_KI*Bias_L;   //增量式PI控制器11288
 	 if(Pwm_L>7200)Pwm_L=7200;
-	 if(Pwm_L<-7200)Motor_Left=-7200;
+	 if(Pwm_L<-7200)Pwm_L=-7200;
 	 Motor_Left = Pwm_L;
 	 Last_bias_L=Bias_L;	                   //保存上一次偏差 
 //	 return Motor_Left;                         //增量输出
@@ -396,3 +436,31 @@ void Get_commands(void)
 	
 	
 }
+
+void Get_openmv(void)
+{
+ 	openmv_state = RX_BUF[2];
+	if(openmv_state == 0x00)//十字
+	{
+		openmv_number = (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
+		image_err = 0;
+	}
+	else if(openmv_state == 0x01)//虚线
+	{
+		openmv_number = (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
+		image_err = 0;
+	}
+	else if(openmv_state == 0x02)//寻线
+	{
+		image_err =  (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
+		image_err = image_err - 80;
+		openmv_number = 0;
+	}
+	else if(openmv_state == 0x03)//数字
+	{
+		openmv_number = (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
+		image_err = 0;
+	}
+}
+
+

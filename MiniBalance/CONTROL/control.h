@@ -8,6 +8,10 @@ extern u8 mode;
 #define DIFFERENCE 100
 #define biaoding_1m 3686
 extern	int Balance_Pwm,Velocity_Pwm,Turn_Pwm;
+extern float total_distance;
+extern float Target_straight;
+
+void Get_openmv(void);
 void Kinematic_Analysis(float velocity,float angle);
 int EXTI15_10_IRQHandler(void);
 void Set_Pwm(int motor_a,int motor_b,int servo);
