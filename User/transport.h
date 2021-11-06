@@ -18,9 +18,10 @@
 #define right_90 880
 
 
-#define recognize_number 7
-#define reach_patient 8
-#define reach_DottedLine 9
+#define state_1 7
+#define state_2 8
+#define state_3 9
+#define state_4 0x0a
 
 extern float turn_speed;
 extern long encoder_right_turn_cnt,encoder_left_turn_cnt;
@@ -28,6 +29,7 @@ extern int openmv_number;
 extern int openmv_state;
 extern int image_err;
 extern u32 start_number;
+extern int turn_flag;
 
 void Light_KEY_Init(void);
 void wait_to_start(void);

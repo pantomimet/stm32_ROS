@@ -5,6 +5,7 @@ int move_list[10],move_cnt,near_cnt;
 int openmv_state = 0;
 u32 start_number;
 int image_err;
+int turn_flag = 1;
 void Light_KEY_Init(void) //IO初始化
 { 
  	GPIO_InitTypeDef GPIO_InitStructure;
@@ -29,12 +30,14 @@ void wait_to_start(void)
 	{
 		while(openmv_number == 0 || openmv_state != 0x03)//等待openmv读取数字
 		{
-			
+			TX_BUF[2] = state_1;	//未出发，且未接收到数字
 		}
 //		
 		/*保存数字*/
 //		openmv_number = openmv_number_read;
 		start_number = openmv_number;
+		TX_BUF[2] = state_2;		//收到数字
+		
 		/*延迟消抖*/
 		delay_ms(100);
 		oled_show();
@@ -47,6 +50,7 @@ void go_to_target(void)
 //	if(openmv_number == 1 || openmv_number == 2)//近十字
 //	{
 		/*直行至接近十字位置，然后识别*/
+		
 		go_forward(near_distance);
 		move_list[move_cnt] = straight_near;
 		move_cnt++;
@@ -59,7 +63,7 @@ void go_to_target(void)
 			{}			
 		
 			/*通过数字判断左右转*/
-			if(openmv_number == 1)//这里的数字待定
+			if(openmv_number == 0)//这里的数字待定
 			{
 				turn(left);
 				move_list[move_cnt] = right;
@@ -79,7 +83,7 @@ void go_to_target(void)
 					near_cnt++;
 				}
 			}
-			else if(openmv_number == 2)
+			else if(openmv_number == 1)
 			{
 				turn(right);
 				move_list[move_cnt] = left;
@@ -99,7 +103,7 @@ void go_to_target(void)
 					near_cnt++;
 				}
 			}
-			else if(openmv_number == 0)
+			else if(openmv_number == 3)
 			{
 				go_forward(near_distance);
 				move_list[move_cnt] = straight_near;
@@ -201,13 +205,13 @@ void go_forward(float distance)
 //	}
 	
 	/*通过串口发送的状态变为识别数字*/
-	TX_BUF[3]=recognize_number;
+	TX_BUF[2]=state_3;	//即将抵达十字，识别数字
 	
 	/*等待数字识别*/
-	if(openmv_number != 1 && openmv_number != 2)
-	{
-		delay_ms(1000);
-	}
+//	if(openmv_number != 1 && openmv_number != 2)
+//	{
+//		delay_ms(1000);
+//	}
 	
 }
 
@@ -216,6 +220,7 @@ float turn_speed = 0;
 void turn(int direction)
 {
 	/*转向开始时将编码器转向计数清零，记得写在定时器里累加*/
+	turn_flag = 0;
 	encoder_left_cnt = 0;
 	encoder_right_cnt = 0;
 	total_distance = 0;
@@ -239,6 +244,7 @@ void turn(int direction)
 	Target_Right = 0;
 	Target_Left = 0;
 	turn_speed =0;
+	turn_flag = 1;
 }
 
 void go_to_patient(float distance)
@@ -262,7 +268,7 @@ void go_to_patient(float distance)
 	//Set_Pwm(0,-0,0);
 	
 	/*通过串口发送的状态变为到达病房*/
-	TX_BUF[3]=reach_patient;
+	TX_BUF[2] = state_3;
 	
 	/*等待数字识别*/
 	//delay_ms(1000);
@@ -291,20 +297,78 @@ void return_home(void)
 //	turn(right);
 //	turn(right);
 //	
+	TX_BUF[2] = state_4;//回家标志位
 	/*回程*/
 //	if(openmv_number == 1 || openmv_number == 2)
 //	{
-	for(move_cnt = move_cnt;move_cnt >0;move_cnt --)
-	{
-		if(move_list[move_cnt] == straight_near || move_list[move_cnt] == straight_patient)
+//	for(move_cnt = move_cnt;move_cnt >0;move_cnt --)
+//	{
+//		if(move_list[move_cnt] == straight_near || move_list[move_cnt] == straight_patient)
+//		{
+//			go_home(move_list[move_cnt]);
+//		}
+//		else if(move_list[move_cnt] == left || move_list[move_cnt] == right)
+//		{
+//			turn(move_list[move_cnt]);
+//		}
+//	}	
+		go_home(move_list[move_cnt]);
+		move_cnt--;
+		while(openmv_state != 0x01)//当openmv发来的状态不是虚线时
 		{
-			go_home(move_list[move_cnt]);
+			/*等待openmv判断后发出指令*/
+			while(openmv_state != 0x00)
+			{}			
+		
+			/*通过数字判断左右转*/
+			if(openmv_number == 0)//这里的数字待定
+			{
+				turn(left);
+				move_list[move_cnt] = right;
+				move_cnt++;
+				if(near_cnt != 3)
+				{
+					go_to_patient(patient_distance);
+					move_list[move_cnt] = straight_patient;
+					move_cnt++;
+					return;
+				}
+				else 
+				{
+					go_forward(near_distance);
+					move_list[move_cnt] = straight_near;
+					move_cnt++;
+					near_cnt++;
+				}
+			}
+			else if(openmv_number == 1)
+			{
+				turn(right);
+				move_list[move_cnt] = left;
+				move_cnt++;
+				if(near_cnt != 3)
+				{
+					go_to_patient(patient_distance);
+					move_list[move_cnt] = straight_patient;
+					move_cnt++;
+					return;
+				}
+				else 
+				{
+					go_forward(near_distance);
+					move_list[move_cnt] = straight_near;
+					move_cnt++;
+					near_cnt++;
+				}
+			}
+			else if(openmv_number == 3)
+			{
+				go_forward(near_distance);
+				move_list[move_cnt] = straight_near;
+				move_cnt++;
+				near_cnt++;
+			}
 		}
-		else if(move_list[move_cnt] == left || move_list[move_cnt] == right)
-		{
-			turn(move_list[move_cnt]);
-		}
-	}	
 		/*回家，先离开病房*/
 //		go_home(move_list[move_cnt]);
 //		move_cnt--;
