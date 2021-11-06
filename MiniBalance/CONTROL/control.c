@@ -149,7 +149,7 @@ void TIM6_IRQHandler(void)   //TIM6ÖÐ¶Ï
 ////		PS2_KEY=PS2_DataKey();
 //			USART_TX();
 //			usart3_send(0);
-//			USART2_TX();
+			USART2_TX();
 ////		if(PS2_KEY == PSB_START)
 ////		{
 //////			delay_ms(200);
@@ -179,7 +179,10 @@ void TIM6_IRQHandler(void)   //TIM6ÖÐ¶Ï
 ////				Incremental_PI_Left(Encoder_Left,Target_Left);  
 ////				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 //				Position_PID(image_err);
+				if(TX_BUF[2] == state_1 || TX_BUF[2] == state_2)
+					image_err =0;
 				Position_PID((float)image_err);
+				
 				Target_Left = Target_straight +  turn_flag * pos_pid_output + turn_speed;
 				Target_Right = Target_straight - turn_flag * pos_pid_output - turn_speed;
 				

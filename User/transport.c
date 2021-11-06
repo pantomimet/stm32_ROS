@@ -183,7 +183,7 @@ void go_to_target(void)
 ////	}
 	
 	/*亮红灯*/
-	
+	Red_LED_on;
 }
 
 void go_forward(float distance)	
@@ -270,7 +270,7 @@ void go_to_patient(float distance)
 	{
 		if(total_distance > distance -0.3)
 		/*通过串口发送的状态变为到达病房*/
-		TX_BUF[2] = state_3;
+		TX_BUF[2] = state_7;//检测虚线
 	}
 	
 	/*停止*/
@@ -312,7 +312,7 @@ void return_home(void)
 	/*回程*/
 //	if(openmv_number == 1 || openmv_number == 2)
 //	{
-	for(move_cnt = move_cnt;move_cnt >0;move_cnt --)
+	for(move_cnt = move_cnt;move_cnt >=0;move_cnt --)
 	{
 		if(move_list[move_cnt] == straight_near || move_list[move_cnt] == straight_patient)
 		{

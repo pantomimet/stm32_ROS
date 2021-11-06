@@ -243,75 +243,22 @@ void USART2_IRQHandler(void)
 
 u8 usart2_Send_rasberry[10];
 int send_i=0;
+int u2_cnt;
 void USART2_TX(void)
 {
 	u8 * TX_BUF_ptr = &TX_BUF[0];
 
 	*(TX_BUF_ptr + 0) = 0XA5;
 	*(TX_BUF_ptr + 1) = 0X5A;
-	
+	*(TX_BUF_ptr + 2) = state_7;
 	*(TX_BUF_ptr + 3) = 0XAA;
-	*(TX_BUF_ptr + 4) = 0X55;
-//	*(usart2_Send_rasberry_ptr+0) = 0xA5; 
+	*(TX_BUF_ptr + 4) = 0X00;
 
-//	*(usart2_Send_rasberry_ptr+1) = 0x5A;
-
-//	*(usart2_Send_rasberry_ptr+2) = 0x2E;
-
-//	re_Encoder_Left = -Encoder_Left;
-//	re_Encoder_Right = -Encoder_Right;
-	
-//	//左编码器
-//	for(send_cnt=0; send_cnt<4; send_cnt++)	
-//		*(usart2_Send_rasberry_ptr+3+send_cnt) = ((unsigned char *)&re_Encoder_Left)[send_cnt];
-//	//右编码器
-//	for(send_cnt=0; send_cnt<4; send_cnt++)
-//		*(usart2_Send_rasberry_ptr+7+send_cnt) = ((unsigned char *)&re_Encoder_Right)[send_cnt];
-//	
-//	
-////	for(send_cnt=0; send_cnt<4; send_cnt++) //电池采样
-////		Send_rasberry[11+send_cnt] = ((unsigned char *)&Voltage)[send_cnt]; 
-//	//没有电压采集，暂时取消电压
-//	
-//	for(send_cnt=0; send_cnt<2; send_cnt++) // X轴加速度计
-//		*(Send_rasberry_ptr+15+send_cnt) = ((unsigned char *)&accelX)[send_cnt];
-//	for(send_cnt=0; send_cnt<2; send_cnt++) // Y轴加速度计
-//		*(Send_rasberry_ptr+17+send_cnt) = ((unsigned char *)&accelY)[send_cnt];
-//	for(send_cnt=0; send_cnt<2; send_cnt++) // Z轴加速度计
-//		*(Send_rasberry_ptr+19+send_cnt) = ((unsigned char *)&accelZ)[send_cnt];
-//	
-//	//send gyroXYZ
-//	for(send_cnt=0; send_cnt<2; send_cnt++) //x轴角速度计
-//		*(Send_rasberry_ptr+21+send_cnt) = ((unsigned char *)&gyroX)[send_cnt];
-//	for(send_cnt=0; send_cnt<2; send_cnt++) //Y轴角速度计
-//		*(Send_rasberry_ptr+23+send_cnt) = ((unsigned char *)&gyroY)[send_cnt];
-//	for(send_cnt=0; send_cnt<2; send_cnt++) //z轴角速度计
-//		*(Send_rasberry_ptr+25+send_cnt) = ((unsigned char *)&gyroZ)[send_cnt];
-
-//	//send MAG X YZ
-//	for(send_cnt=0; send_cnt<2; send_cnt++) //X ?????
-//		*(Send_rasberry_ptr+27+send_cnt) = ((unsigned char *)&magX)[send_cnt];
-//	for(send_cnt=0; send_cnt<2; send_cnt++) //Y ?????
-//		*(Send_rasberry_ptr+29+send_cnt) = ((unsigned char *)&magY)[send_cnt];
-//	for(send_cnt=0; send_cnt<2; send_cnt++) //z ?????
-//		*(Send_rasberry_ptr+31+send_cnt) = ((unsigned char *)&magZ)[send_cnt];
-	
-	//send ultrasonicABCD
-//	for(send_cnt=0; send_cnt<4;send_cnt++) // ??????A
-//	Send_rasberry[33+send_cnt] = ((unsigned char *)&Distance_A)[send_cnt];
-//	for(send_cnt=0; send_cnt<4; send_cnt++) // ??????B
-//	Send_rasberry[37+send_cnt] = ((unsigned char *)&Distance_B)[send_cnt];
-//	for(send_cnt=0; send_cnt<4;send_cnt++) // ??????C
-//	Send_rasberry[41+send_cnt] = ((unsigned char *)&Distance_C)[send_cnt];
-//	for(send_cnt=0; send_cnt<4; send_cnt++) // ??????D
-//	Send_rasberry[45+send_cnt] = ((unsigned char *)&Distance_D)[send_cnt];
-	
-	//send Send_rasberry串口发送的方式
-//	for(send_cnt = 0;send_cnt < 10;send_cnt++)
-//	{
-		for(int cnt = 0;cnt<5;cnt++){
-			USART_SendData(USART2,*(TX_BUF_ptr+cnt));}
-		while(USART_GetFlagStatus(USART2,USART_FLAG_TC)!=SET);
+	for(u2_cnt = 0;u2_cnt<5;u2_cnt++)
+	{
+		USART_SendData(USART2,*(TX_BUF_ptr+u2_cnt));
+	}
+	while(USART_GetFlagStatus(USART2,USART_FLAG_TC)!=SET);
 		//(Send_rasberry[send_cnt]);
 //	}
 //	memset(usart2_Send_rasberry_ptr, 0, sizeof(u8)*10);
@@ -361,10 +308,14 @@ void usart3_init(u32 bound)
 	USART_ITConfig(USART3, USART_IT_RXNE, ENABLE);//????????
 	USART_Cmd(USART3, ENABLE);                    //????3 
 }
-
+u8 USART3_TX[16] ;
 void usart3_send(u8 data) 
 {
-	USART3->DR = data;
+	int u3_cnt;
+	for(u3_cnt=0;u3_cnt < 6;u3_cnt++)
+	{
+		USART3->DR = data;
+	}
 	while((USART3->SR&0x40)==0);	
 }
 
