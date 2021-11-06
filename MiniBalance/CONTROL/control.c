@@ -179,8 +179,8 @@ void TIM6_IRQHandler(void)   //TIM6ÖĞ¶Ï
 ////				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 //				Position_PID(image_err);
 				Position_PID((float)image_err);
-				Target_Left = Target_straight + pos_pid_output + turn_speed;
-				Target_Right = Target_straight - pos_pid_output - turn_speed;
+				Target_Left = Target_straight +  turn_flag * pos_pid_output + turn_speed;
+				Target_Right = Target_straight - turn_flag * pos_pid_output - turn_speed;
 				
 				if(Target_Left > 1.5) Target_Left = 1.5;
 				else if(Target_Left < -1.5) Target_Left = -1.5;
