@@ -54,19 +54,23 @@ int main(void)
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)Send_rasberry,DMA_DIR_PeripheralDST,60);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
 //		MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)Urxbuf,DMA_DIR_PeripheralSRC,10);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
 
+	/*测试用*/
+//	while(1){
+//		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
+//		{
+//			delay_ms(100);
+//			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight == 0)
+//				Target_straight = 0.5;
+//			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
+//				Target_straight = 0;
+//		}
+//		
+//		
+//	}
+
 	/*控制主函数*/
-	while(1){
-		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
-		{
-			delay_ms(100);
-			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight == 0)
-				Target_straight = 0.5;
-			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
-				Target_straight = 0;
-		}
-		
-		
-	}
+
+
 	/*装货阻塞，等待展示数字*/
 	wait_to_start();
 

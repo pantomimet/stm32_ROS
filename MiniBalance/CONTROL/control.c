@@ -4,6 +4,7 @@
 u8 Flag_Target,Flag_Change;  //相关标志位
 float Voltage_Count,Voltage_All;  //电压采样相关变量
 int j,sum;
+int next_move = 255;
 u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define T 0.245f
 #define L 0.29f
@@ -444,6 +445,8 @@ void Get_openmv(void)
 	{
 		openmv_number = (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
 		image_err = 0;
+		if(next_move == 255)
+			next_move = openmv_number;
 	}
 	else if(openmv_state == 0x01)//虚线
 	{

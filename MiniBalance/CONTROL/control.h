@@ -10,6 +10,7 @@ extern u8 mode;
 extern	int Balance_Pwm,Velocity_Pwm,Turn_Pwm;
 extern float total_distance;
 extern float Target_straight;
+extern int next_move;
 
 void Get_openmv(void);
 void Kinematic_Analysis(float velocity,float angle);

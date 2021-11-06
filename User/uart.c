@@ -245,9 +245,13 @@ u8 usart2_Send_rasberry[10];
 int send_i=0;
 void USART2_TX(void)
 {
-	u8 * usart2_Send_rasberry_ptr = &usart2_Send_rasberry[0];
-	*(usart2_Send_rasberry_ptr) = 0xA5+send_i;
-	send_i++;
+	u8 * TX_BUF_ptr = &TX_BUF[0];
+
+	*(TX_BUF_ptr + 0) = 0XA5;
+	*(TX_BUF_ptr + 1) = 0X5A;
+	
+	*(TX_BUF_ptr + 3) = 0XAA;
+	*(TX_BUF_ptr + 4) = 0X55;
 //	*(usart2_Send_rasberry_ptr+0) = 0xA5; 
 
 //	*(usart2_Send_rasberry_ptr+1) = 0x5A;
@@ -305,7 +309,8 @@ void USART2_TX(void)
 	//send Send_rasberry串口发送的方式
 //	for(send_cnt = 0;send_cnt < 10;send_cnt++)
 //	{
-		USART_SendData(USART2,*(usart2_Send_rasberry_ptr));
+		for(int cnt = 0;cnt<5;cnt++){
+			USART_SendData(USART2,*(TX_BUF_ptr+cnt));}
 		while(USART_GetFlagStatus(USART2,USART_FLAG_TC)!=SET);
 		//(Send_rasberry[send_cnt]);
 //	}

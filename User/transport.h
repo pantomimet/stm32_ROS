@@ -18,10 +18,12 @@
 #define right_90 880
 
 
-#define state_1 7
-#define state_2 8
-#define state_3 9
-#define state_4 0x0a
+#define state_1 7		//接收到数字但未出发
+#define state_2 8		//接收到数字
+#define state_3 9		//检测虚线
+#define state_4 0x0a	//回家
+#define state_5 0x0b  	//转弯结束
+#define state_6 0x0c	//回家巡线
 
 extern float turn_speed;
 extern long encoder_right_turn_cnt,encoder_left_turn_cnt;

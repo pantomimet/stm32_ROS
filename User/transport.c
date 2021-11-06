@@ -59,12 +59,15 @@ void go_to_target(void)
 		while(openmv_state != 0x01)//当openmv发来的状态不是虚线时
 		{
 			/*等待openmv判断后发出指令*/
-			while(openmv_state != 0x00)
-			{}			
+//			while(openmv_state != 0x00)
+//			{}			
 		
+			
+			
 			/*通过数字判断左右转*/
-			if(openmv_number == 0)//这里的数字待定
+			if(next_move == 0)//这里的数字待定
 			{
+				next_move = 255;
 				turn(left);
 				move_list[move_cnt] = right;
 				move_cnt++;
@@ -83,8 +86,9 @@ void go_to_target(void)
 					near_cnt++;
 				}
 			}
-			else if(openmv_number == 1)
+			else if(next_move == 1)
 			{
+				next_move = 255;
 				turn(right);
 				move_list[move_cnt] = left;
 				move_cnt++;
@@ -103,8 +107,9 @@ void go_to_target(void)
 					near_cnt++;
 				}
 			}
-			else if(openmv_number == 3)
+			else if(next_move == 2)
 			{
+				next_move = 255;
 				go_forward(near_distance);
 				move_list[move_cnt] = straight_near;
 				move_cnt++;
@@ -193,7 +198,11 @@ void go_forward(float distance)
 	
 	/*距离不够，死循环*/
 	while(total_distance <= distance)
-	{}
+	{
+		if(total_distance >  distance - 0.3)
+		/*通过串口发送的状态变为识别数字*/
+		TX_BUF[2]=state_3;	//即将抵达十字，识别数字
+	}
 	
 	/*停止*/
 //	if(openmv_number != 1 && openmv_number != 2)
@@ -204,8 +213,6 @@ void go_forward(float distance)
 		Set_Pwm(0,-0,0);
 //	}
 	
-	/*通过串口发送的状态变为识别数字*/
-	TX_BUF[2]=state_3;	//即将抵达十字，识别数字
 	
 	/*等待数字识别*/
 //	if(openmv_number != 1 && openmv_number != 2)
@@ -245,6 +252,7 @@ void turn(int direction)
 	Target_Left = 0;
 	turn_speed =0;
 	turn_flag = 1;
+	TX_BUF[2] = state_5;//转弯结束
 }
 
 void go_to_patient(float distance)
@@ -259,7 +267,11 @@ void go_to_patient(float distance)
 	
 	/*距离不够，死循环*/
 	while(total_distance <= distance)
-	{}
+	{
+		if(total_distance > distance -0.3)
+		/*通过串口发送的状态变为到达病房*/
+		TX_BUF[2] = state_3;
+	}
 	
 	/*停止*/
 	Target_straight = 0;
@@ -267,8 +279,7 @@ void go_to_patient(float distance)
 	Target_Left = 0;
 	//Set_Pwm(0,-0,0);
 	
-	/*通过串口发送的状态变为到达病房*/
-	TX_BUF[2] = state_3;
+	
 	
 	/*等待数字识别*/
 	//delay_ms(1000);
@@ -301,74 +312,81 @@ void return_home(void)
 	/*回程*/
 //	if(openmv_number == 1 || openmv_number == 2)
 //	{
-//	for(move_cnt = move_cnt;move_cnt >0;move_cnt --)
-//	{
-//		if(move_list[move_cnt] == straight_near || move_list[move_cnt] == straight_patient)
-//		{
-//			go_home(move_list[move_cnt]);
-//		}
-//		else if(move_list[move_cnt] == left || move_list[move_cnt] == right)
-//		{
-//			turn(move_list[move_cnt]);
-//		}
-//	}	
-		go_home(move_list[move_cnt]);
-		move_cnt--;
-		while(openmv_state != 0x01)//当openmv发来的状态不是虚线时
+	for(move_cnt = move_cnt;move_cnt >0;move_cnt --)
+	{
+		if(move_list[move_cnt] == straight_near || move_list[move_cnt] == straight_patient)
 		{
-			/*等待openmv判断后发出指令*/
-			while(openmv_state != 0x00)
-			{}			
-		
-			/*通过数字判断左右转*/
-			if(openmv_number == 0)//这里的数字待定
-			{
-				turn(left);
-				move_list[move_cnt] = right;
-				move_cnt++;
-				if(near_cnt != 3)
-				{
-					go_to_patient(patient_distance);
-					move_list[move_cnt] = straight_patient;
-					move_cnt++;
-					return;
-				}
-				else 
-				{
-					go_forward(near_distance);
-					move_list[move_cnt] = straight_near;
-					move_cnt++;
-					near_cnt++;
-				}
-			}
-			else if(openmv_number == 1)
-			{
-				turn(right);
-				move_list[move_cnt] = left;
-				move_cnt++;
-				if(near_cnt != 3)
-				{
-					go_to_patient(patient_distance);
-					move_list[move_cnt] = straight_patient;
-					move_cnt++;
-					return;
-				}
-				else 
-				{
-					go_forward(near_distance);
-					move_list[move_cnt] = straight_near;
-					move_cnt++;
-					near_cnt++;
-				}
-			}
-			else if(openmv_number == 3)
-			{
-				go_forward(near_distance);
-				move_list[move_cnt] = straight_near;
-				move_cnt++;
-				near_cnt++;
-			}
+			go_home(move_list[move_cnt]);
 		}
+		else if(move_list[move_cnt] == left || move_list[move_cnt] == right)
+		{
+			turn(move_list[move_cnt]);
+		}
+	}	
+//		go_home(move_list[move_cnt]);
+//		move_cnt--;
+//		while(openmv_state != 0x01)//当openmv发来的状态不是虚线时
+//		{
+//			/*等待openmv判断后发出指令*/
+//			while(openmv_state != 0x00)
+//			{}			
+//		
+//			/*通过数字判断左右转*/
+//			if(openmv_number == 0)//这里的数字待定
+//			{
+//				turn(left);
+//				move_cnt--;
+////				if(near_cnt != 3)
+////				{
+////					go_to_patient(patient_distance);
+////					move_list[move_cnt] = straight_patient;
+////					move_cnt++;
+////					return;
+////				}
+////				else 
+////				{
+////					go_forward(near_distance);
+////					move_list[move_cnt] = straight_near;
+////					move_cnt++;
+////					near_cnt++;
+////				}
+//			}
+//			else if(openmv_number == 1)
+//			{
+//				turn(right);
+//				move_cnt--;
+////				if(near_cnt != 3)
+////				{
+////					go_to_patient(patient_distance);
+////					move_list[move_cnt] = straight_patient;
+////					move_cnt++;
+////					return;
+////				}
+////				else 
+////				{
+////					go_forward(near_distance);
+////					move_list[move_cnt] = straight_near;
+////					move_cnt++;
+////					near_cnt++;
+////				}
+//			}
+//			else if(openmv_number == 3)
+//			{
+//				go_home(near_distance);
+//				move_cnt--;
+//				near_cnt--;
+//			}
+//			if(near_cnt <= 3)
+//			{
+//				go_home( near_cnt * near_distance + (near_cnt - 1) * 0.6);
+//				break;
+//			}
+//		}
+//		do
+//		{
+//			Target_straight = 0.5;
+//			turn_speed = 0;
+//		}while(openmv_state != 0x01);
 		/*回家，先离开病房*/
 //		go_home(move_list[move_cnt]);
 //		move_cnt--;
@@ -442,6 +460,7 @@ void go_home(float distance)
 	encoder_left_cnt = 0;
 	encoder_right_cnt = 0;
 	total_distance = 0;
+	TX_BUF[2] = state_6;//回家巡线
 	
 	/*给速度赋初值*/
 	Target_straight = 0.5;
@@ -451,10 +470,11 @@ void go_home(float distance)
 	while(total_distance <= distance)
 	{}
 	
+	
+	
 	Target_straight = 0;
 	Target_Right = 0;
 	Target_Left = 0;
-	Set_Pwm(0,-0,0);
 	
 	
 }
