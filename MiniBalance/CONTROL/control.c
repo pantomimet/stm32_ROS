@@ -160,8 +160,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析
 				
 				/* 通过编码器解算当前两轮速度*/
-				v_now_l = (float)Encoder_Left*50/biaoding_1m;
-				v_now_r = (float)-Encoder_Right*50/biaoding_1m;
+				v_now_l = (float)-Encoder_Left*50/biaoding_1m;
+				v_now_r = (float)Encoder_Right*50/biaoding_1m;
 				total_distance = (encoder_right_cnt - encoder_left_cnt)/biaoding_1m;
 				
 //				if(mode == 0)
