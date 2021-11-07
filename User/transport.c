@@ -68,9 +68,6 @@ void car2_mode1_go_to_suspend(void)
 	control_delay();
 	
 	//1左转，2右转
-	//小车1也发吧要不
-	//或者加视觉判断同车1
-	car1_cmd = 1;
 	turn(car1_cmd);
 	control_delay();
 	
@@ -145,7 +142,7 @@ void car2_mode2_go_to_target(void)
 	control_delay();
 	
 	//直行到远端路口前，接下来和模式1一样
-	go_forward(0.29);
+	go_forward(0.50);
 	control_delay();
 	
 	//todo:加图像
