@@ -12,7 +12,7 @@ u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define Balance_angle 0.00
 
 float pos_err,pos_err_pre,pos_err_sum;
-float pos_kp = 0.0020,pos_ki=0,pos_kd=0.0035;
+float pos_kp = 0.0040,pos_ki=0,pos_kd=0.0065;
 float pos_pid_output;
 float Target_straight = 0;
 float total_distance = 0;
@@ -179,8 +179,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 ////				Incremental_PI_Left(Encoder_Left,Target_Left);  
 ////				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
 //				Position_PID(image_err);
-				if(TX_BUF[2] == state_1 || TX_BUF[2] == state_2)
-					image_err =0;
+//				if(TX_BUF[2] == state_1 || TX_BUF[2] == state_2)
+//					image_err =0;
 				Position_PID((float)image_err);
 				
 				Target_Left = Target_straight +  turn_flag * pos_pid_output + turn_speed;
@@ -449,7 +449,7 @@ void Get_openmv(void)
 	{
 		openmv_number = (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
 		image_err = 0;
-		if(next_move == 255 && next_move == 2)
+		if(next_move == 255  || next_move == 2)
 			next_move = openmv_number;
 	}
 	else if(openmv_state == 0x01)//虚线

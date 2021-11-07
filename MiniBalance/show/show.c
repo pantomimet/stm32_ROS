@@ -37,6 +37,7 @@ void oled_show(void)
 	
 //					//=============第3行显示左电机的状态=======================//	
 					OLED_ShowNumber(15,10,(u32)start_number,5,12);
+					
 //						if( encoder_left_cnt<0)		  OLED_ShowString(00,20,"-"),
 //																OLED_ShowNumber(15,20,-encoder_left_cnt,5,12);
 //					else                 	OLED_ShowString(0,20,"+"),
@@ -57,7 +58,7 @@ void oled_show(void)
 //					
 //					//=============第5行显示舵机的状态=======================//	
 //				 	OLED_ShowString(20,40,"Voltage:");	//舵机状态
-//					OLED_ShowNumber(80,40, (u32)ADC_ConvertedValueLocal,2,12);	
+					OLED_ShowNumber(15,40, (u32)next_move,3,12);	
 //					OLED_ShowString(92,40,".");
 //					OLED_ShowNumber(98,40, (u32)(ADC_ConvertedValueLocal*100)%100,2,12);
 //					OLED_ShowString(110,40,"V");

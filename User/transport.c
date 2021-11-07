@@ -26,15 +26,15 @@ void Light_KEY_Init(void) //IO初始化
 void wait_to_start(void)
 {
 //	while(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_2) != 0)
-	while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) != 1)//有光，无物品，循环
+	while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) != 1 || start_number == 0)//有光，无物品，循环
 	{
-		while(start_number == 0)//等待openmv读取数字
-		{
-			TX_BUF[2] = state_1;	//未出发，且未接收到数字
+//		while(start_number == 0)//等待openmv读取数字
+//		{
+//			TX_BUF[2] = state_1;	//未出发，且未接收到数字
 			if(openmv_state == 0x03)
 				start_number = openmv_number;
-		}
-//		
+//		}
+////		
 		/*保存数字*/
 //		openmv_number = openmv_number_read;
 //		if(start_number ==0)
