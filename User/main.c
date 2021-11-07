@@ -62,7 +62,7 @@ int main(void)
 //		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
 //		{
 //			delay_ms(100);
-//			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 )
+////			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 )
 //			go_forward(0.69);
 //			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
 //			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
@@ -155,4 +155,4 @@ int main(void)
 
 
 
-
+//}

@@ -50,7 +50,7 @@ void wait_to_start(void)
 	delay_ms(1000);
 	
 }
-
+int temp,next_move_temp;
 void go_to_target(void)
 {
 //	if(openmv_number == 1 || openmv_number == 2)//近十字
@@ -62,72 +62,87 @@ void go_to_target(void)
 			number_two();
 		else
 		{
-			go_forward(1.59);
-			control_delay();
+			go_forward(1.25);
+//			control_delay();
+			delay_ms(1000);
+			turn_flag = 0;
+			go_forward(0.15);
+			turn_flag = 1;
+//			control_delay();
 			if(next_move == 0)		//最终停在中间左侧
 			{
 				next_move = 255;
 				turn(left);
-				control_delay();
+//				control_delay();
 				go_forward(0.29);
-				control_delay();
+//				control_delay();
 				Red_LED_on;
 				wait_to_return();
 				turn_round();
-				control_delay();
+//				control_delay();
 				mid_back_to_home(0);
-				control_delay();
+//				control_delay();
 			}
 			else if(next_move == 1)	//最终停在中间右侧
 			{
 				next_move = 255;
 				turn (right);
-				control_delay();
+//				control_delay();
 				go_forward(0.29);
-				control_delay();
+//				control_delay();
 				Red_LED_on;
 				wait_to_return();
 				turn_round();
-				control_delay();
+//				control_delay();
 				mid_back_to_home(1);
-				control_delay();
+//				control_delay();
 			}
 			else if(next_move == 2)	//进入远端
 			{
 				next_move = 255;
-				go_forward(0.69);	
-				control_delay();
+				go_forward(0.50);	
+//				control_delay();
+				delay_ms(1000);
+				turn_flag = 0;
+				go_forward(0.13);
+				turn_flag = 1;
+//				control_delay();
 				if(next_move == 0)	//远十字左转
 				{
 					next_move = 255;
 					turn(left);
-					control_delay();
-					go_forward(0.69);
-					control_delay();
+//					control_delay();
+					go_forward(0.50);
+//					control_delay();
+					delay_ms(1000);
+					turn_flag = 0;
+					go_forward(0.13);
+					turn_flag = 1;
+//					control_delay();
 					if(next_move == 0)	//远端左下角
 					{
 						next_move = 255;
 						turn(left);
-						control_delay();
+//						control_delay();
 						go_forward(0.29);
-						control_delay();
+//						control_delay();
 						Red_LED_on;
 						wait_to_return();
 						turn_round();
-						control_delay();
+//						control_delay();
 						far_back_to_home(1);
 					}
 					else if(next_move == 1)	//远端左上角
 					{
 						next_move = 255;
 						turn(right);
-						control_delay();
+//						control_delay();
 						go_forward(0.29);
-						control_delay();
+//						control_delay();
 						Red_LED_on;
 						wait_to_return();
 						turn_round();
-						control_delay();
+//						control_delay();
 						far_back_to_home(2);
 					}
 				}
@@ -135,34 +150,110 @@ void go_to_target(void)
 				{
 					next_move = 255;
 					turn(right);
-					control_delay();
-					go_forward(0.69);
-					control_delay();
+//					control_delay();
+					go_forward(0.50);
+//					control_delay();
+					delay_ms(1000);
+					turn_flag = 0;
+					go_forward(0.13);
+					turn_flag = 1;
+//					control_delay();
 					if(next_move == 0)	//远端右上角
 					{
 						next_move = 255;
 						turn(left);
-						control_delay();
+//						control_delay();
 						go_forward(0.29);
-						control_delay();
+//						control_delay();
 						Red_LED_on;
 						wait_to_return();
 						turn_round();
-						control_delay();
+						
 						far_back_to_home(3);
 					}
 					else if(next_move == 1)	//远端右下角
 					{
 						next_move = 255;
 						turn(right);
-						control_delay();
+//						control_delay();
 						go_forward(0.29);
-						control_delay();
+//						control_delay();
 						Red_LED_on;
 						wait_to_return();
 						turn_round();
-						control_delay();
+//						control_delay();
 						far_back_to_home(4);
+					}
+				}
+				else 
+				{
+					next_move =255;
+					temp = abs(rand()*100);
+					temp = temp % 2;
+					turn(temp);
+					go_forward(0.50);
+//					control_delay();
+					delay_ms(1000);
+					turn_flag = 0;
+					go_forward(0.13);
+					turn_flag = 1;
+					if(next_move == 0)	
+					{
+						next_move_temp = next_move;
+						next_move = 255;
+						turn(left);
+//						control_delay();
+						go_forward(0.29);
+//						control_delay();
+						Red_LED_on;
+						wait_to_return();
+						turn_round();
+						if( temp == 0 && next_move_temp == 0)	//左下角
+						{
+							far_back_to_home(1);
+						}
+//						else if( temp == 0 && next_move_temp == 1)	//左上角
+//						{
+//							far_back_to_home(2);
+//						}
+						else if( temp == 1 && next_move_temp == 0)	//右上角
+						{
+							far_back_to_home(3);
+						}
+//						else if( temp == 1 && next_move_temp == 1)	//右下角
+//						{
+//							far_back_to_home(4);
+//						}
+						
+					}
+					else if(next_move == 1)	
+					{
+						next_move_temp = next_move;
+						next_move = 255;
+						turn(right);
+//						control_delay();
+						go_forward(0.29);
+//						control_delay();
+						Red_LED_on;
+						wait_to_return();
+						turn_round();
+//						control_delay();
+//						if( temp == 0 && next_move_temp == 0)	//左下角
+//						{
+//							far_back_to_home(1);
+//						}
+						if( temp == 0 && next_move_temp == 1)	//左上角
+						{
+							far_back_to_home(2);
+						}
+//						else if( temp == 1 && next_move_temp == 0)	//右上角
+//						{
+//							far_back_to_home(3);
+//						}
+						else if( temp == 1 && next_move_temp == 1)	//右下角
+						{
+							far_back_to_home(4);
+						}
 					}
 				}
 			}
@@ -305,6 +396,8 @@ void go_to_target(void)
 void go_forward(float distance)	
 {
 	/*将总距离计数清零*/
+	if(distance < 0.3)
+		turn_flag = 0;
 	encoder_left_cnt = 0;
 	encoder_right_cnt = 0;
 	total_distance = 0;
@@ -326,6 +419,8 @@ void go_forward(float distance)
 		Target_straight = 0;
 		Target_Right = 0;
 		Target_Left = 0;
+		control_delay();
+	turn_flag = 1;
 		//Set_Pwm(0,-0,0);
 //	}
 	
@@ -367,6 +462,7 @@ void turn(int direction)
 	Target_Right = 0;
 	Target_Left = 0;
 	turn_speed =0;
+	control_delay();
 	turn_flag = 1;
 	TX_BUF[2] = state_5;//转弯结束
 }
@@ -559,6 +655,7 @@ void return_home(void)
 void turn_round(void)
 {
 	/*转向开始时将编码器转向计数清零，记得写在定时器里累加*/
+	turn_flag = 0;
 	encoder_left_cnt = 0;
 	encoder_right_cnt = 0;
 	
@@ -568,6 +665,8 @@ void turn_round(void)
 	{}
 		
 	turn_speed = 0;
+		control_delay();
+		turn_flag = 1;
 }
 
 void go_home(float distance)
@@ -598,42 +697,42 @@ void go_home(float distance)
 void number_one(void)
 {
 	go_forward(0.69);
-	control_delay();
+//	control_delay();
 	turn(left);
-	control_delay();
+//	control_delay();
 	go_forward(0.29);
-	control_delay();
+//	control_delay();
 	Red_LED_on;
 	wait_to_return();
 	turn_round();
-	control_delay();
+//	control_delay();
 	go_forward(0.29);
-	control_delay();
+//	control_delay();
 	turn(right);
-	control_delay();
+//	control_delay();
 	go_forward(0.69);
-	control_delay();
+//	control_delay();
 
 }
 
 void number_two(void)
 {
 	go_forward(0.69);
-	control_delay();
+//	control_delay();
 	turn(right);
-	control_delay();
+//	control_delay();
 	go_forward(0.29);
-	control_delay();
+//	control_delay();
 	Red_LED_on;
 	wait_to_return();
 	turn_round();
-	control_delay();
+//	control_delay();
 	go_forward(0.29);
-	control_delay();
+//	control_delay();
 	turn(left);
-	control_delay();
+//	control_delay();
 	go_forward(0.69);
-	control_delay();
+//	control_delay();
 
 }
 
@@ -646,50 +745,54 @@ void control_delay(void)
 
 void far_back_to_home(int pos)
 {
+	turn_flag = 0;
 	go_forward(0.29);
-	control_delay();
+//	control_delay();
 	if(pos == 1 || pos == 3)
 	{
 		turn(right);
-		control_delay();
+//		control_delay();
 	}
 	else if(pos ==2 || pos == 4)
 	{
 		turn(left);
-		control_delay();
+//		control_delay();
 	}
 	go_forward(0.69);
-	control_delay();
+	turn_flag = 1;
+//	control_delay();
 	if(pos == 1 || pos == 2)
 	{
 		turn(right);
-		control_delay();
+//		control_delay();
 	}
 	else if(pos ==3 || pos == 4)
 	{
 		turn(left);
-		control_delay();
+//		control_delay();
 	}
-	go_forward(2.49);
-	control_delay();
+	go_forward(2.30);
+	Green_LED_on;
+//	control_delay();
 }
 
 void mid_back_to_home(int pos)
 {
 	go_forward(0.29);
-	control_delay();
+//	control_delay();
 	if(pos == 0)
 	{
 		turn(right);
-		control_delay();
+//		control_delay();
 	}
 	else if(pos == 1)
 	{
 		turn(left);
-		control_delay();		
+//		control_delay();		
 	}
-	go_forward(1.59);
-	control_delay();
+	go_forward(1.49);
+	Green_LED_on;
+//	control_delay();
 }
 
 
