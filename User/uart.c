@@ -318,14 +318,12 @@ void usart3_send(void)
 	USART3_TX[0] = 0X5A;
 	USART3_TX[1] = car1_cmd;
 	USART3_TX[2] = 0X55;
-	for(u3_cnt = 0;u3_cnt < 3;u3_cnt++)
+	for(u3_cnt=0;u3_cnt < 6;u3_cnt++)
 	{
-		while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET)
-		USART_SendData(USART3,USART3_TX[u3_cnt]);
-
-		//(Send_rasberry[send_cnt]);
-	}	
-			while(USART_GetFlagStatus(USART3,USART_FLAG_TC)!=SET);
+		USART3->DR = USART3_TX[u3_cnt];
+		while((USART3->SR&0x40)==0);
+	}
+	
 }
 
 void USART3_IRQHandler(void)
