@@ -6,7 +6,8 @@ extern u8 mode;
 #define PI 3.14159265
 #define ZHONGZHI 0 
 #define DIFFERENCE 100
-#define biaoding_1m 3928
+#define biaoding_1m_l 3808
+#define biaoding_1m_r 3498
 extern	int Balance_Pwm,Velocity_Pwm,Turn_Pwm;
 extern float total_distance;
 extern float Target_straight;

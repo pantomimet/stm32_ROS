@@ -120,9 +120,9 @@ void TIM6_IRQHandler(void)   //TIM6中断
 		
 				
 		/* 通过编码器解算当前两轮速度*/
-		v_now_l = -(float)Encoder_Left*50/biaoding_1m;
-		v_now_r = +(float)Encoder_Right*50/biaoding_1m;
-		total_distance = 0.5 * (encoder_right_cnt - encoder_left_cnt)/biaoding_1m;
+		v_now_l = -(float)Encoder_Left*50/biaoding_1m_l;
+		v_now_r = +(float)Encoder_Right*50/biaoding_1m_r;
+		total_distance = 0.5 * (encoder_right_cnt - encoder_left_cnt)/( (biaoding_1m_l + biaoding_1m_r) *0.5 );
 
 		if(TX_BUF[2] == state_1 || TX_BUF[2] == state_2)
 			image_err =0;
