@@ -15,7 +15,7 @@
 #define straight_patient 3
 
 #define left_90 700
-#define right_90 700
+#define right_90 770
 
 
 #define state_1 0		//未接收到数字但未出发

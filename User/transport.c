@@ -72,7 +72,7 @@ void go_to_target(void)
 			if(next_move == 0)		//最终停在中间左侧
 			{
 				next_move = 255;
-				car1_cmd = 2; //给车2右转
+//				car1_cmd = 2; //给车2右转
 				turn(left);
 //				control_delay();
 				go_forward(0.29);
@@ -87,7 +87,7 @@ void go_to_target(void)
 			else if(next_move == 1)	//最终停在中间右侧
 			{
 				next_move = 255;
-				car1_cmd = 1;	//给车2左转
+//				car1_cmd = 1;	//给车2左转
 				turn (right);
 //				control_delay();
 				go_forward(0.29);
@@ -124,7 +124,7 @@ void go_to_target(void)
 					if(next_move == 0)	//远端左下角
 					{
 						next_move = 255;
-						turn(left);
+						turn(left); 
 //						control_delay();
 						go_forward(0.29);
 //						control_delay();
@@ -664,7 +664,7 @@ void turn_round(void)
 	
 	/*开始转向*/
 	turn_speed = 0.2;
-	while(-encoder_left_cnt - encoder_right_cnt<= 1700)
+	while(-encoder_left_cnt - encoder_right_cnt<= 1750)
 	{}
 		
 	turn_speed = 0;
@@ -713,7 +713,7 @@ void number_one(void)
 //	control_delay();
 	turn(right);
 //	control_delay();
-	go_forward(0.69);
+	go_forward(0.5);
 //	control_delay();
 
 }
@@ -734,7 +734,7 @@ void number_two(void)
 //	control_delay();
 	turn(left);
 //	control_delay();
-	go_forward(0.69);
+	go_forward(0.5);
 //	control_delay();
 
 }
@@ -783,19 +783,22 @@ void far_back_to_home(int pos)
 void mid_back_to_home(int pos)
 {
 	go_forward(0.29);
-	car1_cmd = 6; //回到中端十字，给车2发6
+	Beep_on();
+	
 //	control_delay();
-	if(pos == 0)
+	if(pos == 0)	
 	{
+		car1_cmd = 6; //
 		turn(right);
 //		control_delay();
 	}
-	else if(pos == 1)
+	else if(pos == 1)	
 	{
+		car1_cmd = 5;
 		turn(left);
 //		control_delay();		
 	}
-	go_forward(1.45);
+	go_forward(1.40);
 	Green_LED_on;
 //	control_delay();
 }

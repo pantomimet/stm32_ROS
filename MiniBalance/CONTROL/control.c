@@ -12,7 +12,8 @@ u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define Balance_angle 0.00
 
 float pos_err,pos_err_pre,pos_err_sum;
-float pos_kp = 0.0015,pos_ki=0,pos_kd=0.0185;
+float pos_kp = 0.0030,pos_ki=0,pos_kd=0.060;
+//float pos_kp = 0.0065,pos_ki=0,pos_kd=0.024;
 float pos_pid_output;
 float Target_straight = 0;
 float total_distance = 0;
@@ -225,6 +226,7 @@ void TIM6_IRQHandler(void)   //TIM6中断
 //				Motor_Right = Balance_PWM_output;
 				Xianfu_Pwm(6900);                          //===PWM限幅
 				Set_Pwm(Motor_Left,-Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
+				Beep_off();
 				oled_show();
 				
 	
@@ -236,7 +238,7 @@ void Position_PID(float err)
 {
 	pos_err = err;
 	pos_err_sum += pos_err;
-	pos_pid_output = pos_kp * pos_err + pos_ki * pos_err_sum + pos_ki * (pos_err - pos_err_pre);
+	pos_pid_output = pos_kp * pos_err + pos_ki * pos_err_sum + pos_kd * (pos_err - pos_err_pre);
 	pos_err_pre = pos_err;
 }
 
