@@ -12,7 +12,7 @@ u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define Balance_angle 0.00
 
 float pos_err,pos_err_pre,pos_err_sum;
-float pos_kp = 0.0040,pos_ki=0,pos_kd=0.0065;
+float pos_kp = 0.0060,pos_ki=0,pos_kd=0.0135;
 float pos_pid_output;
 float Target_straight = 0;
 float total_distance = 0;
