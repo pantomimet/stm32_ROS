@@ -148,7 +148,7 @@ void TIM6_IRQHandler(void)   //TIM6ÖÐ¶Ï
 ////		USART_TX();
 ////		PS2_KEY=PS2_DataKey();
 //			USART_TX();
-//			usart3_send(0);
+			usart3_send();
 //			USART2_TX();
 ////		if(PS2_KEY == PSB_START)
 ////		{

@@ -4,6 +4,7 @@ u8 rxbuf[8],Urxbuf[8],CAN_ON_Flag,Usart_ON_Flag,Usart_Flag,Usart_End_Flag,PID_Se
 u8 txbuf[8],txbuf2[8];  //CAN发送相关变量
 u8 RX_BUF[16] = {0};
 u8 TX_BUF[16] = {0};
+u8 car1_cmd = 0;
 void usart1_init(u32 bound)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
@@ -40,7 +41,7 @@ void usart1_init(u32 bound)
 	USART_Init(USART1, &USART_InitStructure);
 
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE); //使能串口接收中断
-	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE); //使能串口1的DMA接收   
+//	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE); //使能串口1的DMA接收   
 	USART_Cmd(USART1, ENABLE);
 }
 
@@ -257,8 +258,9 @@ void USART2_TX(void)
 	for(u2_cnt = 0;u2_cnt<5;u2_cnt++)
 	{
 		USART_SendData(USART2,*(TX_BUF_ptr+u2_cnt));
+		while(USART_GetFlagStatus(USART2,USART_FLAG_TC)!=SET);
 	}
-	while(USART_GetFlagStatus(USART2,USART_FLAG_TC)!=SET);
+	
 		//(Send_rasberry[send_cnt]);
 //	}
 //	memset(usart2_Send_rasberry_ptr, 0, sizeof(u8)*10);
@@ -280,15 +282,16 @@ void usart3_init(u32 bound)
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);// ????AFIO??
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);	//??GPIO??
+//	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);	//??USART??
 	GPIO_PinRemapConfig(GPIO_PartialRemap_USART3, ENABLE);//?????
 	//USART_TX  
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; //C10
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; //C10 O_Pin_4
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//??????
 	GPIO_Init(GPIOC, &GPIO_InitStructure);   
   //USART_RX	  
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;//PC11
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;//PC11  GPIO_Pin_3
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;//????
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
   //UsartNVIC ??
@@ -309,14 +312,20 @@ void usart3_init(u32 bound)
 	USART_Cmd(USART3, ENABLE);                    //????3 
 }
 u8 USART3_TX[16] ;
-void usart3_send(u8 data) 
+void usart3_send(void) 
 {
 	int u3_cnt;
-	for(u3_cnt=0;u3_cnt < 6;u3_cnt++)
+	USART3_TX[0] = 0X5A;
+	USART3_TX[1] = car1_cmd;
+	USART3_TX[2] = 0X55;
+	for(u3_cnt = 0;u3_cnt < 3;u3_cnt++)
 	{
-		USART3->DR = data;
-	}
-	while((USART3->SR&0x40)==0);	
+		while(USART_GetFlagStatus(USART3,USART_FLAG_TC)==RESET)
+		USART_SendData(USART3,USART3_TX[u3_cnt]);
+
+		//(Send_rasberry[send_cnt]);
+	}	
+			while(USART_GetFlagStatus(USART3,USART_FLAG_TC)!=SET);
 }
 
 void USART3_IRQHandler(void)
