@@ -58,48 +58,44 @@ int main(void)
 //		MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)Urxbuf,DMA_DIR_PeripheralSRC,10);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
 	
 	/*测试用*/
-	while(1){
-		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
-		{
-			delay_ms(100);
-			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 )
-			go_forward(0.69);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
-			turn(left);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
-			go_forward(0.28);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
+//	while(1){
+//		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
+//		{
+//			delay_ms(100);
+//			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 )
+//			go_forward(0.69);
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
+//			turn(left);
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
+//			go_forward(0.28);
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
+////			turn(right);
+//			turn_round();
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+//			go_forward(0.28);
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
 //			turn(right);
-			turn_round();
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-			go_forward(0.28);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
-			turn(right);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
-			go_forward(0.69);
-			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			delay_ms(1000);
-//			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
-//				Target_straight = 0;
-		}
-		
-//		
-//		
-	A0=GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0);
-		
-	}
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
+//			go_forward(0.69);
+//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
+//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
+////			delay_ms(1000);
+////			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
+////				Target_straight = 0;
+//		}
+//	A0=GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0);
+//	}
 
 	/*控制主函数*/
 	
@@ -117,40 +113,8 @@ int main(void)
 //	return_home();
 	
 	while(1)
-	  {	
-//		  if(DMA_GetFlagStatus(DMA1_FLAG_TC4)!=RESET)	//判断通道4传输完成
-//		  {
-//					DMA_ClearFlag(DMA1_FLAG_TC4);//清除通道4传输完成标志
-//		  }
-//			//Led_Flash(1000);	
-//		PS2_KEY=PS2_DataKey();
-//		if(PS2_KEY == PSB_START)
-//		{
-//			mode = !mode;
-//		}
-//		  if(mode == 0)
-//		  {
-//			
-//			PS2_LX=PS2_AnologData(PSS_LX);    //PS2数据采集    
-//			PS2_LY=PS2_AnologData(PSS_LY);
-//			PS2_RX=PS2_AnologData(PSS_RX);
-//			PS2_RY=PS2_AnologData(PSS_RY);
-//		  }
-			
-//		if(flag_50ms == 1)
-//		{
-//			readimu();
-//			USART_TX();
-//			
-//			flag_50ms = 0;
-//		}
-//		ADC_ConvertedValueLocal =(float) ADC_ConvertedValue/4096*3.3*11;
-//		oled_show();          		 //显示屏打开
-				delay_flag=1;	
-			
-				delay_50=0;
-//				while(delay_flag);	       //通过定时中断实现的50ms精准延时	
-	  } 
+    {	
+    } 
 }
 
 

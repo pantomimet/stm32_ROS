@@ -485,7 +485,6 @@ void go_home(float distance)
 	Target_Right = 0;
 	Target_Left = 0;
 	
-	
 }
 
 void number_one(void)
