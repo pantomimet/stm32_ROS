@@ -25,21 +25,37 @@ void Light_KEY_Init(void) //IO???
 }
 
 int car1_cmd = 0;//小车1控制标志位
+int game_mode = 0;//第几问
 void car2_wait_to_start(void)
 {
-	//装货 或 车1给发指令 任意一种都跳出
-	while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) == 0 && car1_cmd == 0)
+	//识别手持房间号
+	while(start_number == 0)
 	{
-		//识别手持房间号
-		while(start_number == 0)
+		if(openmv_state == 0x03)
 		{
-			if(openmv_state == 0x03)
-			{
-				start_number = openmv_number;
-			}
+			start_number = openmv_number;
 		}
-		delay_ms(100);
 	}
+	
+	//车1给发指令 任意一种都跳出
+	while(car1_cmd == 0);
+	
+	//判断是发挥部分第几问
+	if(car1_cmd == 1 || car1_cmd == 2)
+	{
+		game_mode = 1;
+		//等待装货
+		while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) == 0);
+	}
+	else if(car1_cmd == 3)
+	{
+		game_mode = 2;
+	}
+	else
+	{
+		//警报
+	}
+	
 	delay_ms(1000);
 }
 
@@ -72,14 +88,9 @@ void car2_mode1_go_to_suspend(void)
 }
 void car2_mode1_wait_to_continue(void)
 {
-	//todo:判断标志位,小车1过了十字路口就发
-//	while(car1_cmd == 6);
-	
-	//等车1 ，目前就硬延
-	delay_ms(1000);
-	delay_ms(1000);
-	delay_ms(1000);
-	delay_ms(1000);
+	//判断标志位,小车1过了十字路口就发
+	while(car1_cmd != 6);
+	delay_ms(3000);
 	
 	Yellow_LED_off;
 	
@@ -117,20 +128,9 @@ void car2_mode2_go_to_suspend(void)
 }
 void car2_mode2_wait_to_continue(void)
 {
-	//todo:判断标志位,小车1过了十字路口就发
-//	while(car1_cmd == 6);
-	
-	//等车1 ，目前就硬延
-	delay_ms(1000);
-	delay_ms(1000);
-	delay_ms(1000);
-	delay_ms(1000);
-	delay_ms(1000);
-	delay_ms(1000);
-	delay_ms(1000);
-	delay_ms(1000);
-	delay_ms(1000);
-	
+	//判断标志位,小车1过了十字路口就发
+	while(car1_cmd != 7);
+	delay_ms(5000);
 	
 	Yellow_LED_off;
 }

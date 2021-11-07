@@ -19,8 +19,6 @@ int flag_50ms = 0;
 float ADC_ConvertedValueLocal = 0;
 int A0;
 
-int game_mode = 0;
-
 int main(void)
   { 
 	delay_init();	    	            
@@ -65,22 +63,15 @@ int main(void)
 	/*控制主函数*/
 	car2_wait_to_start();
 	
-	car1_cmd = 3;
 	//判断是发挥第一问还是发挥第二问
-	if(car1_cmd == 0)
+	if(game_mode == 1)
     {
-		//没指令，说明是第一小问
-		//显示在oled上
-		game_mode = 1;
 		car2_mode1_go_to_suspend();
 		car2_mode1_wait_to_continue();
 		car2_mode1_go_to_target();
 	}
-	else if(car1_cmd == 3)
+	else if(game_mode == 2)
 	{
-		//有指令，说明是第二小问
-		//显示在oled上
-		game_mode = 2;
 		car2_mode2_go_to_suspend();
 		car2_mode2_wait_to_continue();
 		car2_mode2_go_to_target();

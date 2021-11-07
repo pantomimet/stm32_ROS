@@ -35,6 +35,7 @@ extern u32 start_number;
 extern int turn_flag;
 
 extern int car1_cmd;//小车1控制标志位
+extern int game_mode;//发挥部分第几问
 
 void Light_KEY_Init(void);
 
