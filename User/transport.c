@@ -148,29 +148,11 @@ void car2_mode2_go_to_target(void)
 	go_forward(0.29);
 	control_delay();
 	
-	//todo:¼Ó
+	//todo:¼ÓÍ¼Ïñ
 	
 	Green_LED_on;
 }
 
-
-void go_to_target(void)
-{
-	go_forward(1.59);
-	control_delay();
-	if(next_move == 0)
-	{
-		next_move = 255;
-		turn(left);
-		control_delay();
-		go_forward(0.29);
-		control_delay();
-		Red_LED_on;
-		turn_round();
-		control_delay();
-	}
-
-}
 
 void go_forward(float distance)	
 {
