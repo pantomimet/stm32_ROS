@@ -449,7 +449,7 @@ void Get_openmv(void)
 	{
 		openmv_number = (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
 		image_err = 0;
-		if(next_move == 255)
+		if(next_move == 255 && next_move == 2)
 			next_move = openmv_number;
 	}
 	else if(openmv_state == 0x01)//ÐéÏß

@@ -60,6 +60,113 @@ void go_to_target(void)
 			number_one();
 		else if(start_number ==2)
 			number_two();
+		else
+		{
+			go_forward(1.59);
+			control_delay();
+			if(next_move == 0)		//×îÖÕÍ£ÔÚÖÐ¼ä×ó²à
+			{
+				next_move = 255;
+				turn(left);
+				control_delay();
+				go_forward(0.29);
+				control_delay();
+				Red_LED_on;
+				wait_to_return();
+				turn_round();
+				control_delay();
+				mid_back_to_home(0);
+				control_delay();
+			}
+			else if(next_move == 1)	//×îÖÕÍ£ÔÚÖÐ¼äÓÒ²à
+			{
+				next_move = 255;
+				turn (right);
+				control_delay();
+				go_forward(0.29);
+				control_delay();
+				Red_LED_on;
+				wait_to_return();
+				turn_round();
+				control_delay();
+				mid_back_to_home(1);
+				control_delay();
+			}
+			else if(next_move == 2)	//½øÈëÔ¶¶Ë
+			{
+				next_move = 255;
+				go_forward(0.69);	
+				control_delay();
+				if(next_move == 0)	//Ô¶Ê®×Ö×ó×ª
+				{
+					next_move = 255;
+					turn(left);
+					control_delay();
+					go_forward(0.69);
+					control_delay();
+					if(next_move == 0)	//Ô¶¶Ë×óÏÂ½Ç
+					{
+						next_move = 255;
+						turn(left);
+						control_delay();
+						go_forward(0.29);
+						control_delay();
+						Red_LED_on;
+						wait_to_return();
+						turn_round();
+						control_delay();
+						far_back_to_home(1);
+					}
+					else if(next_move == 1)	//Ô¶¶Ë×óÉÏ½Ç
+					{
+						next_move = 255;
+						turn(right);
+						control_delay();
+						go_forward(0.29);
+						control_delay();
+						Red_LED_on;
+						wait_to_return();
+						turn_round();
+						control_delay();
+						far_back_to_home(2);
+					}
+				}
+				else if(next_move == 1)	//Ô¶Ê®×ÖÓÒ×ª
+				{
+					next_move = 255;
+					turn(right);
+					control_delay();
+					go_forward(0.69);
+					control_delay();
+					if(next_move == 0)	//Ô¶¶ËÓÒÉÏ½Ç
+					{
+						next_move = 255;
+						turn(left);
+						control_delay();
+						go_forward(0.29);
+						control_delay();
+						Red_LED_on;
+						wait_to_return();
+						turn_round();
+						control_delay();
+						far_back_to_home(3);
+					}
+					else if(next_move == 1)	//Ô¶¶ËÓÒÏÂ½Ç
+					{
+						next_move = 255;
+						turn(right);
+						control_delay();
+						go_forward(0.29);
+						control_delay();
+						Red_LED_on;
+						wait_to_return();
+						turn_round();
+						control_delay();
+						far_back_to_home(4);
+					}
+				}
+			}
+		}
 //		go_forward(near_distance);
 //		move_list[move_cnt] = straight_near;
 //		move_cnt++;
@@ -536,6 +643,56 @@ void control_delay(void)
 	while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
 	while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
 }
+
+void far_back_to_home(int pos)
+{
+	go_forward(0.29);
+	control_delay();
+	if(pos == 1 || pos == 3)
+	{
+		turn(right);
+		control_delay();
+	}
+	else if(pos ==2 || pos == 4)
+	{
+		turn(left);
+		control_delay();
+	}
+	go_forward(0.69);
+	control_delay();
+	if(pos == 1 || pos == 2)
+	{
+		turn(right);
+		control_delay();
+	}
+	else if(pos ==3 || pos == 4)
+	{
+		turn(left);
+		control_delay();
+	}
+	go_forward(2.49);
+	control_delay();
+}
+
+void mid_back_to_home(int pos)
+{
+	go_forward(0.29);
+	control_delay();
+	if(pos == 0)
+	{
+		turn(right);
+		control_delay();
+	}
+	else if(pos == 1)
+	{
+		turn(left);
+		control_delay();		
+	}
+	go_forward(1.59);
+	control_delay();
+}
+
+
 
 
 

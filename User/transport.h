@@ -47,6 +47,8 @@ void go_home(float distance);
 void control_delay(void);
 void number_one(void);
 void number_two(void);
+void far_back_to_home(int pos);
+void mid_back_to_home(int pos);
 
 
 #endif
