@@ -12,7 +12,7 @@ int accz;
 void oled_show(void)
 {
 	OLED_ShowNumber(15,00, (u32)start_number,3,12);
-	OLED_ShowNumber(15,10, (u32)next_move,3,12);
+	OLED_ShowNumber(15,10, (u32)car1_cmd,3,12);
 	//=============第3行显示左电机的状态=======================//	
 	OLED_ShowNumber(15,10,(u32)start_number,5,12);
 	if( encoder_left_cnt<0)		  OLED_ShowString(00,20,"-"),

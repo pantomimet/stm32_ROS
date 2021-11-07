@@ -43,7 +43,7 @@ int main(void)
 //		MPU6050_Init();
 //		usart1_init(115200);
 		usart2_init(115200);
-//		usart3_init(115200);
+		usart3_init(115200);
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)SendBuff,SEND_BUF_SIZE);//DMA1通道4,外设为串口1的发送,存储器为SendBuff,长度SEND_BUF_SIZE.
 	KEY_Init();
 //	PS2_Init();											

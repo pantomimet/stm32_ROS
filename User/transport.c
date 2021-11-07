@@ -38,14 +38,12 @@ void car2_wait_to_start(void)
 	}
 	
 	//车1给发指令 任意一种都跳出
-	while(car1_cmd == 0);
+	while(car1_cmd != 3 && GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) == 0);
 	
 	//判断是发挥部分第几问
-	if(car1_cmd == 1 || car1_cmd == 2)
+	if(car1_cmd != 3)
 	{
 		game_mode = 1;
-		//等待装货
-		while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) == 0);
 	}
 	else if(car1_cmd == 3)
 	{
@@ -64,20 +62,29 @@ void car2_wait_to_start(void)
 void car2_mode1_go_to_suspend(void)
 {
 	//直行到中端路口
-	go_forward(1.59);
+	go_forward(1.30);
 	control_delay();
 	
-	//1左转，2右转
-	turn(car1_cmd);
+	delay_ms(1000);
+	
+	go_forward(0.17);
+	
+	if(next_move == 0)
+	{
+		 next_move = 255;
+		turn(right);
+		
+		go_forward(0.15);
+	}
+	else
+	{
+		next_move = 255;
+		turn(left);
+		
+		go_forward(0.15);
+	}
 	control_delay();
 	
-	//走个小豁口
-	go_forward(0.15);
-	control_delay();
-	
-	//掉头
-	turn_round();
-	control_delay();
 	
 	//停车，亮黄灯
 	Yellow_LED_on;
@@ -90,6 +97,10 @@ void car2_mode1_wait_to_continue(void)
 	delay_ms(3000);
 	
 	Yellow_LED_off;
+	
+	//掉头
+	turn_round();
+	control_delay();
 	
 }
 void car2_mode1_go_to_target(void)
