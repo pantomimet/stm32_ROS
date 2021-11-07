@@ -11,56 +11,34 @@ unsigned char Send_Count; //串口需要发送的数据个数
 int accz;
 void oled_show(void)
 {
-//					OLED_ShowString(0,0,"accelX");
-//					OLED_ShowNumber(80,0,accelX/2048,5,12);
-//					OLED_ShowString(0,7,"accelY");
-//					OLED_ShowNumber(80,7,accelY/2048,5,12);
-//					OLED_ShowString(0,20,"accelZ");
-//					OLED_ShowNumber(80,20,accelZ/2048,5,12);	Roll=Angle;
-	//Pitch=Angley;
-//					OLED_ShowString(00,0,"Roll");
-//					if(Roll_g < 0)	OLED_ShowString(44,0,"-");
-//					else 	OLED_ShowString(44,0,"+");
-//					OLED_ShowNumber(50,0, (u32)Roll_g,2,12);	
-//					OLED_ShowString(62,0,".");
-//					OLED_ShowNumber(68,0, (u32)(Roll_g*100)%100,2,12);
-//					OLED_ShowString(110,0,"V");
-	
-//					OLED_ShowString(00,10,"Pitch");
-//					if(Pitch_g < 0)	OLED_ShowString(44,10,"-");
-//					else OLED_ShowString(44,10,"+");
-//					OLED_ShowNumber(50,10, (u32)Pitch_g,2,12);	
-//					OLED_ShowString(62,10,".");
-//					OLED_ShowNumber(68,10, (u32)(Pitch_g*100)%100,2,12);
-//					OLED_ShowString(110,10,"V");
-	
-	
 //					//=============第3行显示左电机的状态=======================//	
 					OLED_ShowNumber(15,10,(u32)start_number,5,12);
-//						if( encoder_left_cnt<0)		  OLED_ShowString(00,20,"-"),
-//																OLED_ShowNumber(15,20,-encoder_left_cnt,5,12);
-//					else                 	OLED_ShowString(0,20,"+"),
-//																OLED_ShowNumber(15,20, encoder_left_cnt,5,12); 			
-//					if( Encoder_Left<0)		  OLED_ShowString(80,20,"-"),
-//																OLED_ShowNumber(95,20,-Encoder_Left,4,12);
-//					else                 	OLED_ShowString(80,20,"+"),
-//																OLED_ShowNumber(95,20, Encoder_Left,4,12);
-//					//=============第4行显示右电机的状态=======================//	
-//						if( encoder_right_cnt<0)		  OLED_ShowString(00,30,"-"),
-//																OLED_ShowNumber(15,30,-encoder_right_cnt,5,12);
-//					else                 	OLED_ShowString(0,30,"+"),
-//																OLED_ShowNumber(15,30, encoder_right_cnt,5,12); 					
-//					if( Encoder_Right<0)		  OLED_ShowString(80,30,"-"),
-//																OLED_ShowNumber(95,30,-Encoder_Right,4,12);
-//					else                 	OLED_ShowString(80,30,"+"),
-//																OLED_ShowNumber(95,30, Encoder_Right,4,12);	
-//					
-//					//=============第5行显示舵机的状态=======================//	
-//				 	OLED_ShowString(20,40,"Voltage:");	//舵机状态
-//					OLED_ShowNumber(80,40, (u32)ADC_ConvertedValueLocal,2,12);	
-//					OLED_ShowString(92,40,".");
-//					OLED_ShowNumber(98,40, (u32)(ADC_ConvertedValueLocal*100)%100,2,12);
-//					OLED_ShowString(110,40,"V");
+					if( encoder_left_cnt<0)		  OLED_ShowString(00,20,"-"),
+																OLED_ShowNumber(15,20,-encoder_left_cnt,5,12);
+					else                 	OLED_ShowString(0,20,"+"),
+																OLED_ShowNumber(15,20, encoder_left_cnt,5,12); 			
+					if( Encoder_Left<0)		  OLED_ShowString(80,20,"-"),
+																OLED_ShowNumber(95,20,-Encoder_Left,4,12);
+					else                 	OLED_ShowString(80,20,"+"),
+																OLED_ShowNumber(95,20, Encoder_Left,4,12);
+					//=============第4行显示右电机的状态=======================//	
+						if( encoder_right_cnt<0)		  OLED_ShowString(00,30,"-"),
+																OLED_ShowNumber(15,30,-encoder_right_cnt,5,12);
+					else                 	OLED_ShowString(0,30,"+"),
+																OLED_ShowNumber(15,30, encoder_right_cnt,5,12); 					
+					if( Encoder_Right<0)		  OLED_ShowString(80,30,"-"),
+																OLED_ShowNumber(95,30,-Encoder_Right,4,12);
+					else                 	OLED_ShowString(80,30,"+"),
+																OLED_ShowNumber(95,30, Encoder_Right,4,12);	
+					
+					
+					//=============第5行显示舵机的状态=======================//	
+					if( Encoder_Right<0)		  OLED_ShowString(80,40,"-"),
+																OLED_ShowNumber(95,40,-(u32)(total_distance*1000),4,12);
+					else                 	OLED_ShowString(80,40,"+"),
+																OLED_ShowNumber(95,40, (u32)(total_distance*1000),4,12);	
+					
+
 //					//=============第6行显示电压模式等=======================//	
 //                       //  电机使能/使能显示
 //											if(Flag_Stop==0)//根据Flag_Stop标志位显示电机的状态
