@@ -40,7 +40,7 @@ void usart1_init(u32 bound)
 	USART_Init(USART1, &USART_InitStructure);
 
 	USART_ITConfig(USART1, USART_IT_RXNE, ENABLE); //使能串口接收中断
-	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE); //使能串口1的DMA接收   
+//	USART_DMACmd(USART1,USART_DMAReq_Rx,ENABLE); //使能串口1的DMA接收   
 	USART_Cmd(USART1, ENABLE);
 }
 
@@ -257,8 +257,9 @@ void USART2_TX(void)
 	for(u2_cnt = 0;u2_cnt<5;u2_cnt++)
 	{
 		USART_SendData(USART2,*(TX_BUF_ptr+u2_cnt));
+		while(USART_GetFlagStatus(USART2,USART_FLAG_TC)!=SET);
 	}
-	while(USART_GetFlagStatus(USART2,USART_FLAG_TC)!=SET);
+	
 		//(Send_rasberry[send_cnt]);
 //	}
 //	memset(usart2_Send_rasberry_ptr, 0, sizeof(u8)*10);
@@ -280,20 +281,21 @@ void usart3_init(u32 bound)
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO,ENABLE);// ????AFIO??
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);	//??GPIO??
+//	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_USART3, ENABLE);	//??USART??
 	GPIO_PinRemapConfig(GPIO_PartialRemap_USART3, ENABLE);//?????
 	//USART_TX  
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; //C10
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10; //C10 O_Pin_4
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;	//??????
 	GPIO_Init(GPIOC, &GPIO_InitStructure);   
   //USART_RX	  
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;//PC11
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_11;//PC11  GPIO_Pin_3
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;//????
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
   //UsartNVIC ??
 	NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=0 ;//?????
+	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority=1;//?????
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;		//????
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;			//IRQ????
 	NVIC_Init(&NVIC_InitStructure);	//??????????VIC???
@@ -312,11 +314,15 @@ u8 USART3_TX[16] ;
 void usart3_send(u8 data) 
 {
 	int u3_cnt;
+	USART3_TX[0] = 0X5A;
+	USART3_TX[1] = car1_cmd;
+	USART3_TX[2] = 0X55;
 	for(u3_cnt=0;u3_cnt < 6;u3_cnt++)
 	{
-		USART3->DR = data;
+		USART3->DR = USART3_TX[u3_cnt];
+		while((USART3->SR&0x40)==0);
 	}
-	while((USART3->SR&0x40)==0);	
+	
 }
 
 void USART3_IRQHandler(void)
@@ -327,33 +333,32 @@ void USART3_IRQHandler(void)
 	{
 		
 		static u8 count,last_data,last_last_data,Usart_ON_Count;
-		if(Usart_ON_Flag==0)
-		{
-			if(++Usart_ON_Count>10) Usart_ON_Flag=1;
-		}
+//		if(Usart_ON_Flag==0)
+//		{
+//			if(++Usart_ON_Count>10) Usart_ON_Flag=1;
+//		}
 		temp=USART3->DR;
 		if(Usart_Flag==0)
 		{
-			if(last_data==0x5A && last_last_data==0xA5)
+			if(last_data==0x5A)
 			{
 				Usart_Flag=1;
-				RX_BUF[0] = 0xA5;
-				RX_BUF[1] = 0X5A;
+				RX_BUF[0] = 0x5A;
 			}
-			count=2;
+			count=1;
 		}
-		if(Usart_Flag==1) 
+		else if(Usart_Flag==1) 
 		{
 			RX_BUF[count]=temp;
 			
-			if(RX_BUF[count] == 0x55 && RX_BUF[count-1] == 0xAA)
+			if(count == 2 && RX_BUF[count] == 0x55 && RX_BUF[count-2] == 0x5A)
 			{
 				Usart_Flag=0;
 //				Get_commands();
+				car1_cmd = RX_BUF[1];
 			}
 			count++;
 		}
-		last_last_data=last_data;
 		last_data=temp;
 	}
 //	while(USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET){
@@ -362,4 +367,5 @@ void USART3_IRQHandler(void)
 //    }   
     USART_ClearFlag(USART3, USART_IT_RXNE);
 }
+
 
