@@ -108,123 +108,68 @@ void TIM6_IRQHandler(void)   //TIM6中断
 {
 	if (TIM_GetITStatus(TIM6, TIM_IT_Update) != RESET) 	
 	{     	
-			TIM_ClearITPendingBit(TIM6, TIM_IT_Update);          //清除中断标志位 
-//			if(flag_50ms == 0)
-//			{
-//				flag_50ms =1;
-//			}
-//			Flag_Target=!Flag_Target; //分频标志位
-//			if(delay_flag==1)
-//			{
-//					if(++delay_50==2)	 delay_50=0,delay_flag=0; //给主函数提供50ms的精准延时
-//			}
-//			if(Flag_Target==1)
-//			{
-//			  	Key();//扫描按键变化	
-//   									                                        
-//			}
-//			else if(Flag_Target == 0)
-//			{  
+		TIM_ClearITPendingBit(TIM6, TIM_IT_Update);          //清除中断标志位 
+
 
 		/* 读取编码器的值*/
-		Encoder_Right=Read_Encoder(3);  //===读取编码器的值
-		Encoder_Left=Read_Encoder(2);    //===读取编码器的值
+		Encoder_Right= - Read_Encoder(3);  //===读取编码器的值
+		Encoder_Left= - Read_Encoder(2);    //===读取编码器的值
 		
 		encoder_right_turn_cnt += Encoder_Right;
 		encoder_left_turn_cnt += Encoder_Left;
 		
-//		PS2_KEY=PS2_DataKey();
-//		if(PS2_KEY == PSB_START)
-//		{
-////			delay_ms(200);
-//			if(PS2_DataKey() == PSB_START)
-//				mode = !mode;
-//		}
-//		readimu();
-//		Balance_PID(Balance_angle,Pitch_g);
-//		
-//		Balance_v = 1.756e-4 * (float)Balance_PWM_output - 0.04;
+				
+		/* 通过编码器解算当前两轮速度*/
+		v_now_l = +(float)Encoder_Left*50/biaoding_1m;
+		v_now_r = -(float)Encoder_Right*50/biaoding_1m;
+		total_distance = 0.5 * (encoder_right_cnt - encoder_left_cnt)/biaoding_1m;
+
+		if(TX_BUF[2] == state_1 || TX_BUF[2] == state_2)
+			image_err =0;
+		Position_PID((float)image_err);
 		
-////		USART_TX();
-////		PS2_KEY=PS2_DataKey();
-//			USART_TX();
-//			usart3_send(0);
-//			USART2_TX();
-////		if(PS2_KEY == PSB_START)
-////		{
-//////			delay_ms(200);
-////			if(PS2_DataKey() == PSB_START)
-////				mode = !mode;
-////		}
-//				Get_commands();
-//				Kinematic_Analysis(Velocity_dream,-Target_Angle); 	//小车运动学分析
-				
-				/* 通过编码器解算当前两轮速度*/
-				v_now_l = (float)-Encoder_Left*50/biaoding_1m;
-				v_now_r = (float)Encoder_Right*50/biaoding_1m;
-				total_distance = 0.5 * (encoder_right_cnt - encoder_left_cnt)/biaoding_1m;
-				
-//				if(mode == 0)
-//				{
-////					stm32_smooth();
-//					Incremental_PI_Left(v_now_l,Target_Left);  
-//					Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
-//				}
-////				stm32_smooth();
-//				else if(mode == 1)
-//				{
-//					Incremental_PI_Left(v_now_l,Target_Left);  
-//					Incremental_PI_Right(v_now_r,Target_Right);//    *11/17
-//				}
-////				Incremental_PI_Left(Encoder_Left,Target_Left);  
-////				Incremental_PI_Right(Encoder_Right,Target_Right);//    *11/17
-//				Position_PID(image_err);
-				if(TX_BUF[2] == state_1 || TX_BUF[2] == state_2)
-					image_err =0;
-				Position_PID((float)image_err);
-				
-				Target_Left = Target_straight +  turn_flag * pos_pid_output + turn_speed;
-				Target_Right = Target_straight - turn_flag * pos_pid_output - turn_speed;
-				
-				if(Target_Left > 1.5) Target_Left = 1.5;
-				else if(Target_Left < -1.5) Target_Left = -1.5;
-				if(Target_Right > 1.5) Target_Right = 1.5;
-				else if(Target_Right < -1.5) Target_Right = -1.5;
-				
-				
-				if(Final_Target_Left - Target_Left < 0.021 && Target_Left - Final_Target_Left  < 0.021 && Target_Left == 0)
-				{
-					Final_Target_Left = 0;
-				}
-				else if(Final_Target_Left < Target_Left)
-				{
-					Final_Target_Left = Final_Target_Left + 0.02;
-				}
-				else if(Final_Target_Left > Target_Left)
-				{
-					Final_Target_Left = Final_Target_Left - 0.02;
-				}
-				
-				if(Final_Target_Right - Target_Right < 0.021 && Target_Right - Final_Target_Right < 0.021 && Target_Right == 0)
-				{
-					Final_Target_Right = 0;
-				}
-				else if(Final_Target_Right < Target_Right)
-				{
-					Final_Target_Right = Final_Target_Right + 0.02;
-				}
-				else if(Final_Target_Right > Target_Right)
-				{
-					Final_Target_Right = Final_Target_Right - 0.02;
-				}
-				
-				Incremental_PI_Left(v_now_l,Final_Target_Left);  
-				Incremental_PI_Right(v_now_r,Final_Target_Right);//    *11/17
+		Target_Left = Target_straight +  turn_flag * pos_pid_output + turn_speed;
+		Target_Right = Target_straight - turn_flag * pos_pid_output - turn_speed;
+		
+		if(Target_Left > 1.5) Target_Left = 1.5;
+		else if(Target_Left < -1.5) Target_Left = -1.5;
+		if(Target_Right > 1.5) Target_Right = 1.5;
+		else if(Target_Right < -1.5) Target_Right = -1.5;
+		
+		
+		if(Final_Target_Left - Target_Left < 0.021 && Target_Left - Final_Target_Left  < 0.021 && Target_Left == 0)
+		{
+			Final_Target_Left = 0;
+		}
+		else if(Final_Target_Left < Target_Left)
+		{
+			Final_Target_Left = Final_Target_Left + 0.02;
+		}
+		else if(Final_Target_Left > Target_Left)
+		{
+			Final_Target_Left = Final_Target_Left - 0.02;
+		}
+		
+		if(Final_Target_Right - Target_Right < 0.021 && Target_Right - Final_Target_Right < 0.021 && Target_Right == 0)
+		{
+			Final_Target_Right = 0;
+		}
+		else if(Final_Target_Right < Target_Right)
+		{
+			Final_Target_Right = Final_Target_Right + 0.02;
+		}
+		else if(Final_Target_Right > Target_Right)
+		{
+			Final_Target_Right = Final_Target_Right - 0.02;
+		}
+		
+		Incremental_PI_Left(v_now_l,Final_Target_Left);  
+		Incremental_PI_Right(v_now_r,Final_Target_Right);//    *11/17
 //				Motor_Left = -Balance_PWM_output;
 //				Motor_Right = Balance_PWM_output;
-				Xianfu_Pwm(6900);                          //===PWM限幅
-				Set_Pwm(Motor_Left,-Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
-				oled_show();
+		Xianfu_Pwm(6900);                          //===PWM限幅
+		Set_Pwm(Motor_Left,-Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
+		oled_show();
 				
 	
 	}
