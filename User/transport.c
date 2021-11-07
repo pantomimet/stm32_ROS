@@ -144,10 +144,30 @@ void car2_mode2_go_to_target(void)
 	//直行到远端路口前，接下来和模式1一样
 	go_forward(0.50);
 	control_delay();
+	delay_ms(1000);
 	
-	//todo:加图像
+	go_forward(0.13);
 	
-	Green_LED_on;
+	if(next_move == 0)
+	{
+		next_move = 255;
+		turn(left);
+		
+		go_forward(0.5);
+		delay_ms(1000);
+		
+		go_forward(0.13);
+		if(next_move == 0)
+		{
+			next_move = 255;
+			turn(left);
+			
+			go_forward(0.29);
+
+		}
+	}
+
+	Red_LED_on;
 }
 
 
@@ -184,7 +204,7 @@ void go_forward(float distance)
 //	{
 //		delay_ms(1000);
 //	}
-	
+	control_delay();
 }
 
 long encoder_right_turn_cnt,encoder_left_turn_cnt;
@@ -219,6 +239,7 @@ void turn(int direction)
 	Target_Left = 0;
 	turn_speed =0;
 	turn_flag = 1;
+	control_delay();
 	TX_BUF[2] = state_5;//转弯结束
 }
 
