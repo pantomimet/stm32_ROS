@@ -347,7 +347,7 @@ void USART3_IRQHandler(void)
 			}
 			count=1;
 		}
-		else if(Usart_Flag==1) 
+		if(Usart_Flag==1) 
 		{
 			RX_BUF[count]=temp;
 			
