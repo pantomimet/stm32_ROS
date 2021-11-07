@@ -9,8 +9,8 @@
 #define far_distance_2 0.9
 #define patient_distance 0.15
 
-#define left 0
-#define right 1
+#define left 1
+#define right 2
 #define straight_near 2
 #define straight_patient 3
 

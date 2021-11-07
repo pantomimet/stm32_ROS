@@ -28,7 +28,7 @@ int car1_cmd = 0;//小车1控制标志位
 void car2_wait_to_start(void)
 {
 	//装货 或 车1给发指令 任意一种都跳出
-	while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) != 1 || car1_cmd == 0)
+	while(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) == 0 && car1_cmd == 0)
 	{
 		//识别手持房间号
 		while(start_number == 0)
@@ -39,36 +39,118 @@ void car2_wait_to_start(void)
 			}
 		}
 		delay_ms(100);
-		
 	}
 	delay_ms(1000);
-	
 }
 
 
 /*----------------mode1-----------------*/
 void car2_mode1_go_to_suspend(void)
 {
+	//直行到中端路口
+	go_forward(1.59);
+	control_delay();
+	
+	//1左转，2右转
+	//小车1也发吧要不
+	//或者加视觉判断同车1
+	car1_cmd = 1;
+	turn(car1_cmd);
+	control_delay();
+	
+	//走个小豁口
+	go_forward(0.15);
+	control_delay();
+	
+	//掉头
+	turn_round();
+	control_delay();
+	
+	//停车，亮黄灯
+	Yellow_LED_on;
 	
 }
 void car2_mode1_wait_to_continue(void)
 {
+	//todo:判断标志位,小车1过了十字路口就发
+//	while(car1_cmd == 6);
+	
+	//等车1 ，目前就硬延
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	
+	Yellow_LED_off;
 	
 }
 void car2_mode1_go_to_target(void)
 {
+	//直行即可
+	go_forward(0.70);
+	control_delay();
 	
+	Green_LED_on;
 }
 
 /*----------------mode2-----------------*/
 void car2_mode2_go_to_suspend(void)
 {
+	//直行到中端路口
+	go_forward(1.59);
+	control_delay();
+	
+	//1左转，2右转
+	turn(left);
+	control_delay();
+	
+	//走个小豁口
+	go_forward(0.15);
+	control_delay();
+	
+	//掉头
+	turn_round();
+	control_delay();
+	
+	//停车，亮黄灯
+	Yellow_LED_on;
 }
 void car2_mode2_wait_to_continue(void)
 {
+	//todo:判断标志位,小车1过了十字路口就发
+//	while(car1_cmd == 6);
+	
+	//等车1 ，目前就硬延
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	delay_ms(1000);
+	
+	
+	Yellow_LED_off;
 }
 void car2_mode2_go_to_target(void)
 {
+	//直行出路口
+	go_forward(0.15);
+	control_delay();
+	
+	//1左转，2右转
+	turn(left);
+	control_delay();
+	
+	//直行到远端路口前，接下来和模式1一样
+	go_forward(0.29);
+	control_delay();
+	
+	//todo:加
+	
+	Green_LED_on;
 }
 
 
@@ -76,7 +158,7 @@ void go_to_target(void)
 {
 	go_forward(1.59);
 	control_delay();
-	if(next_move == 0)		//????????
+	if(next_move == 0)
 	{
 		next_move = 255;
 		turn(left);
@@ -144,12 +226,14 @@ void turn(int direction)
 		while(encoder_right_cnt + encoder_left_cnt <= left_90)
 		{}
 	}
-	else 
+	else if(direction == right)
 	{
 //		Target_straight = 0.5;
 		turn_speed = 0.2;
-		while(-encoder_left_cnt - encoder_right_cnt<= right_90)
-		{}
+		while(-encoder_left_cnt - encoder_right_cnt<= right_90);
+	}
+	else
+	{
 	}
 	Target_straight = 0;
 	Target_Right = 0;

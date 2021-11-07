@@ -65,6 +65,7 @@ int main(void)
 	/*控制主函数*/
 	car2_wait_to_start();
 	
+	car1_cmd = 3;
 	//判断是发挥第一问还是发挥第二问
 	if(car1_cmd == 0)
     {
@@ -75,7 +76,7 @@ int main(void)
 		car2_mode1_wait_to_continue();
 		car2_mode1_go_to_target();
 	}
-	else if(car1_cmd != 0)
+	else if(car1_cmd == 3)
 	{
 		//有指令，说明是第二小问
 		//显示在oled上
