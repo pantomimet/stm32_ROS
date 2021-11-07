@@ -1,6 +1,7 @@
 #include "stm32f10x.h"
 #include "sys.h"
 
+
 u8 Flag_Left,Flag_Right,Flag_Direction=0,Flag_Way,Flag_Next; //蓝牙遥控相关的变量
 u8 operationMode;
 u8 Flag_Stop=1,Flag_Show;         
@@ -17,6 +18,9 @@ float Tand;
 int flag_50ms = 0;
 float ADC_ConvertedValueLocal = 0;
 int A0;
+
+int game_mode = 0;
+
 int main(void)
   { 
 	delay_init();	    	            
@@ -57,60 +61,34 @@ int main(void)
 //		MYDMA_Config(DMA1_Channel4,(u32)&USART1->DR,(u32)Send_rasberry,DMA_DIR_PeripheralDST,60);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
 //		MYDMA_Config(DMA1_Channel5,(u32)&USART1->DR,(u32)Urxbuf,DMA_DIR_PeripheralSRC,10);//发送：DMA1通道4,外设为串口1,存储器为Send_rasberry,方向DMA_DIR_PeripheralDST,长度SEND_BUF_SIZE.
 	
-	/*测试用*/
-//	while(1){
-//		if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0)
-//		{
-//			delay_ms(100);
-//			if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 )
-//			go_forward(0.69);
-//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-////			delay_ms(1000);
-//			turn(left);
-//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-////			delay_ms(1000);
-//			go_forward(0.28);
-//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-////			delay_ms(1000);
-////			turn(right);
-//			turn_round();
-//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-//			go_forward(0.28);
-//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-////			delay_ms(1000);
-//			turn(right);
-//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-////			delay_ms(1000);
-//			go_forward(0.69);
-//			while(Final_Target_Right > 1e-3 || -Final_Target_Right > 1e-3 );
-//			while(Final_Target_Left > 1e-3 || -Final_Target_Left > 1e-3 );
-////			delay_ms(1000);
-////			else if(GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_14) == 0 && Target_straight != 0)
-////				Target_straight = 0;
-//		}
-//	A0=GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0);
-//	}
 
 	/*控制主函数*/
+	car2_wait_to_start();
 	
-
-	/*装货阻塞，等待展示数字*/
-	wait_to_start();
-
-	/*前往十字*/
-	go_to_target();
-
-	/*等待回家*/
-//	wait_to_return();
+	//判断是发挥第一问还是发挥第二问
+	if(car1_cmd == 0)
+    {
+		//没指令，说明是第一小问
+		//显示在oled上
+		game_mode = 1;
+		car2_mode1_go_to_suspend();
+		car2_mode1_wait_to_continue();
+		car2_mode1_go_to_target();
+	}
+	else if(car1_cmd != 0)
+	{
+		//有指令，说明是第二小问
+		//显示在oled上
+		game_mode = 2;
+		car2_mode2_go_to_suspend();
+		car2_mode2_wait_to_continue();
+		car2_mode2_go_to_target();
+	}
+	else
+	{
+		//Beep();
+	}
 	
-	/*回家*/
-//	return_home();
 	
 	while(1)
     {	
