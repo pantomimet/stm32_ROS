@@ -62,29 +62,7 @@ void car2_wait_to_start(void)
 void car2_mode1_go_to_suspend(void)
 {
 	//直行到中端路口
-	go_forward(1.30);
-	control_delay();
-	
-	delay_ms(1000);
-	
-	go_forward(0.17);
-	
-	if(next_move == 0)
-	{
-		 next_move = 255;
-		turn(right);
-		
-		go_forward(0.15);
-	}
-	else
-	{
-		next_move = 255;
-		turn(left);
-		
-		go_forward(0.15);
-	}
-	control_delay();
-	
+	go_forward(1.70);
 	
 	//停车，亮黄灯
 	Yellow_LED_on;
@@ -93,20 +71,34 @@ void car2_mode1_go_to_suspend(void)
 void car2_mode1_wait_to_continue(void)
 {
 	//判断标志位,小车1过了十字路口就发
-	while(car1_cmd != 6);
+	while(car1_cmd != 5 && car1_cmd != 6);
 	delay_ms(3000);
 	
 	Yellow_LED_off;
 	
+}
+void car2_mode1_go_to_target(void)
+{
 	//掉头
 	turn_round();
 	control_delay();
 	
-}
-void car2_mode1_go_to_target(void)
-{
-	//直行即可
-	go_forward(0.70);
+	//直行回路口
+	go_forward(0.15);
+	control_delay();
+	
+	if(car1_cmd == 5)
+	{
+		turn(left);
+		control_delay();
+	}
+	else if(car1_cmd == 6)	
+	{
+		turn(right);
+		control_delay();
+	}
+	
+	go_forward(0.25);
 	control_delay();
 	
 	Green_LED_on;
