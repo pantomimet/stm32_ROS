@@ -38,7 +38,7 @@ int main(void)
 	Flag_Show = 0;
 	Flag_Stop=1;	
 	delay_ms(500);                  //=====—” ±µ»¥˝Œ»∂®
-
+	Beep_init();
 //	MPU9250_Init();
 //		MPU6050_Init();
 //		usart1_init(115200);

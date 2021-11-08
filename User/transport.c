@@ -45,7 +45,7 @@ void car2_wait_to_start(void)
 	{
 		game_mode = 1;
 	}
-	else if(car1_cmd == 3)
+	else if(car1_cmd == 03)
 	{
 		game_mode = 2;
 	}
@@ -62,7 +62,8 @@ void car2_wait_to_start(void)
 void car2_mode1_go_to_suspend(void)
 {
 	//直行到中端路口
-	go_forward(1.70);
+	go_forward(2.00);
+	control_delay();
 	
 	//停车，亮黄灯
 	Yellow_LED_on;
@@ -72,7 +73,6 @@ void car2_mode1_wait_to_continue(void)
 {
 	//判断标志位,小车1过了十字路口就发
 	while(car1_cmd != 5 && car1_cmd != 6);
-	delay_ms(3000);
 	
 	Yellow_LED_off;
 	
@@ -84,7 +84,7 @@ void car2_mode1_go_to_target(void)
 	control_delay();
 	
 	//直行回路口
-	go_forward(0.15);
+	go_forward(0.17);
 	control_delay();
 	
 	if(car1_cmd == 5)
@@ -98,10 +98,10 @@ void car2_mode1_go_to_target(void)
 		control_delay();
 	}
 	
-	go_forward(0.25);
+	go_forward(0.29);
 	control_delay();
 	
-	Green_LED_on;
+	Red_LED_on;
 }
 
 /*----------------mode2-----------------*/
@@ -130,14 +130,14 @@ void car2_mode2_wait_to_continue(void)
 {
 	//判断标志位,小车1过了十字路口就发
 	while(car1_cmd != 7);
-	delay_ms(5000);
+	delay_ms(3000);
 	
 	Yellow_LED_off;
 }
 void car2_mode2_go_to_target(void)
 {
 	//直行出路口
-	go_forward(0.15);
+	go_forward(0.13);
 	control_delay();
 	
 	//1左转，2右转
@@ -191,6 +191,7 @@ void go_forward(float distance)
 //		/*???????????????*/
 //		TX_BUF[2]=state_3;	//??????,????
 	}
+	Beep_on();
 	
 	/*停止*/
 //	if(openmv_number != 1 && openmv_number != 2)

@@ -12,7 +12,7 @@ u8 mode = 1; //手动或自动模式。手动为0，自动为1
 #define Balance_angle 0.00
 
 float pos_err,pos_err_pre,pos_err_sum;
-float pos_kp = 0.0040,pos_ki=0,pos_kd=0.0065;
+float pos_kp = 0.003,pos_ki=0,pos_kd=0.06; 
 float pos_pid_output;
 float Target_straight = 0;
 float total_distance = 0;
@@ -173,6 +173,7 @@ void TIM6_IRQHandler(void)   //TIM6中断
 		Xianfu_Pwm(6900);                          //===PWM限幅
 		Set_Pwm(Motor_Left,-Motor_Right,Servo);     //===赋值给PWM寄存器  Servo
 		oled_show();
+		Beep_off(); 
 				
 	
 	}
@@ -182,8 +183,8 @@ void TIM6_IRQHandler(void)   //TIM6中断
 void Position_PID(float err)
 {
 	pos_err = err;
-	pos_err_sum += pos_err;
-	pos_pid_output = pos_kp * pos_err + pos_ki * pos_err_sum + pos_ki * (pos_err - pos_err_pre);
+	pos_err_sum += pos_err; 
+	pos_pid_output = pos_kp * pos_err + pos_ki * pos_err_sum + pos_kd * (pos_err - pos_err_pre);
 	pos_err_pre = pos_err;
 }
 
@@ -396,15 +397,15 @@ void Get_openmv(void)
 	if(openmv_state == 0x00)//十字
 	{
 		openmv_number = (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
-		image_err = 0;
+//		image_err = 0;
 		if(next_move == 255 || next_move == 2)
 			next_move = openmv_number;
 	}
-	else if(openmv_state == 0x01)//虚线
-	{
-		openmv_number = (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
-		image_err = 0;
-	}
+//	else if(openmv_state == 0x01)//虚线
+//	{
+//		openmv_number = (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
+//		image_err = 0;
+//	}
 	else if(openmv_state == 0x02)//寻线
 	{
 		image_err =  (RX_BUF[6]<<24) | (RX_BUF[5]<<16) | (RX_BUF[4]<<8) | RX_BUF[3];
